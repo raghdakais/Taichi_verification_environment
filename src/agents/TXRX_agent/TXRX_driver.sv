@@ -1,0 +1,172 @@
+// UVM Driver class to transmit packets bit-by-bit on each clock edge
+//----------------------------------------------------------------
+class TXRX_driver extends uvm_driver#(TXRX_seq_item);
+//----------------------------------------------------------------
+    virtual TXRX_agent_if vif;
+
+    `uvm_component_utils(TXRX_driver)
+
+   TXRX_config cfg;            // Configuration object
+
+
+    function new(string name, uvm_component parent);
+        super.new(name, parent);
+    endfunction
+
+//----------------------------------------------------------------
+     function void build_phase(uvm_phase phase);
+//----------------------------------------------------------------
+        super.build_phase(phase);
+         endfunction
+
+//----------------------------------------------------------------
+     task run_phase(uvm_phase phase);
+//----------------------------------------------------------------
+            // Declare req variable to store the item
+        TXRX_seq_item req;
+
+        // Wait for reset to be deasserted
+        wait_for_reset();
+        forever begin
+           // Wait for an item to be available from the sequencer
+        seq_item_port.get_next_item(req);
+        
+        // If no item received (i.e., when the item is null), send IDLE byte
+        if (req == null) begin
+            `uvm_info(get_type_name(), "No Request.. driving idle", UVM_DEBUG)
+            send_idle();
+        end else begin
+            `uvm_info(get_type_name(), "there is a Request.. driving randomized packet", UVM_DEBUG)
+            drive_packet(req);
+            seq_item_port.item_done();
+        end
+        end
+    endtask
+
+//----------------------------------------------------------------
+   // Task to wait for reset to deassert
+  task wait_for_reset();
+//----------------------------------------------------------------
+    bit reset_deasserted = 0;
+    `uvm_info(get_type_name(), "Waiting for reset...", UVM_DEBUG)
+    
+  
+    fork
+    // Wait for reset deassertion
+    begin
+    //  wait (vif.rst == 1'b0);
+      @(negedge vif.rst);
+      reset_deasserted = 1;
+      @(posedge vif.clk);
+  
+    end
+
+    // Timeout logic
+    begin
+      repeat (cfg.timeout_cycles)
+          @(posedge vif.clk);
+      if (!reset_deasserted) begin
+        `uvm_fatal(get_type_name(), $sformatf("Timeout waiting for reset deassertion after %0d cycles!", cfg.timeout_cycles))
+      end
+    end
+  join_any 
+    disable fork; // Ensure the other process stops execution
+   
+   endtask
+   
+//----------------------------------------------------------------
+// Function to send IDLE byte (3B) bit-by-bit in Big Endian order
+task send_idle();
+    //----------------------------------------------------------------
+    bit [7:0] idle = IDLE; // IDLE byte value (0x3B = 0011 1011)
+    //----------------------------------------------------------------
+   
+    // Loop over bits from MSB to LSB (Big Endian order)
+    for (int i = 7; i >= 0; i--) begin
+        vif.tx <= idle[i]; // Send each bit one-by-one
+        @(posedge vif.clk); // Wait for the next clock cycle
+    end
+endtask
+
+//----------------------------------------------------------------
+ // Function to drive packet bit-by-bit over tx in Big Endian order for whole bytes,
+// with FIFO indexes driven from max size to 0
+task drive_packet(TXRX_seq_item pkt);
+    //----------------------------------------------------------------
+    // Send IDLE sequence (3B in binary: 0011 1011)
+   vif.active_package = 1;
+   vif.valid_crc = pkt.valid_crc;
+   vif.valid_start1 = pkt.valid_start1;
+   vif.valid_start2 = pkt.valid_start2;
+
+    `uvm_info(get_type_name(),  $sformatf("[IDLE was randomized [%d] times] :",pkt.times_sent_idle), UVM_DEBUG)      
+    repeat(pkt.times_sent_idle)
+       send_idle();
+
+    // Send Start1 (21)
+    for (int i = 7; i >= 0; i--) begin
+        vif.tx <= pkt.start1[i];  // Send the bits of start1 in Big Endian order
+        @(posedge vif.clk);
+    end
+
+    // Send Start2 (43)
+    for (int i = 7; i >= 0; i--) begin
+        vif.tx <= pkt.start2[i];  // Send the bits of start2 in Big Endian order
+        @(posedge vif.clk);
+    end
+
+      // Send Header with read/write bits in the first byte (bit 0 and bit 1)
+    // Bit 0 active for read, bit 1 active for write
+    for (int i = pkt.header.size()-1; i >= 0; i--) begin
+        // Set the read/write bits in header byte0 (bit 0 for read, bit 1 for write)
+        if (i == 0) begin
+            // Set the read/write operation based on randomized enum
+            if (pkt.rw_type == READ) begin
+                pkt.header[0][0] = 1;  // Set bit 0 for read
+                pkt.header[0][1] = 0;  // Clear bit 1 for write
+                if(pkt.do_wr_fail)  begin
+                pkt.header[0][0] = 1;  // Set bit 0 for read
+                pkt.header[0][1] = 1;  // No clear for write
+                end
+            end else if (pkt.rw_type == WRITE) begin
+                pkt.header[0][0] = 0;  // Clear bit 0 for read
+                pkt.header[0][1] = 1;  // Set bit 1 for write
+                  if(pkt.do_wr_fail)  begin
+                pkt.header[0][0] = 1;  // No clear for read
+                pkt.header[0][1] = 1;  // Set bit 1 for write
+                end
+            end
+        end
+        // Transmit header byte in Big Endian order
+        for (int j = 7; j >= 0; j--) begin
+            vif.tx <= pkt.header[i][j];
+            @(posedge vif.clk);
+        end
+    end
+
+    // Send Data (iterate from max index down to 0)
+    for (int i = pkt.data.size()-1; i >= 0; i--) begin
+        for (int j = 7; j >= 0; j--) begin
+            vif.tx <= pkt.data[i][j];  // Transmit bits from MSB to LSB in Big Endian
+            @(posedge vif.clk);
+        end
+    end
+
+    // Send Footer (iterate from max index down to 0)
+    for (int i = pkt.footer.size()-1; i >= 0; i--) begin
+        for (int j = 7; j >= 0; j--) begin
+            vif.tx <= pkt.footer[i][j];  // Transmit bits from MSB to LSB in Big Endian
+            @(posedge vif.clk);
+        end
+    end
+
+    // Send CRC (iterate from max index down to 0 - 1 variable for 16 bits)
+        for (int j = 15; j >= 0; j--) begin
+            vif.tx <= pkt.crc[j];  // Transmit bits from MSB to LSB in Big Endian
+            @(posedge vif.clk);
+        end
+          vif.active_package = 0;
+            repeat (2)
+             @(posedge vif.clk);
+endtask
+endclass

@@ -1,0 +1,676 @@
+--
+-- VHDL Architecture PMBUS_IF_lib.SMBUS_IF.behave
+--
+-- Created:
+--          by - ilq00571.UNKNOWN (ILQHFAATC1NB350)
+--          at - 15:30:31 14/08/2011
+--
+-- using Mentor Graphics HDL Designer(TM) 2009.2 (Build 10)
+--
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+USE ieee.std_logic_arith.all;
+USE ieee.std_logic_unsigned.all;
+ENTITY SMBUS_IF_TMP IS
+   PORT( 
+      address       : IN     std_logic_vector (7 DOWNTO 0);
+      clk           : IN     std_logic;
+      data2write    : IN     std_logic_vector (15 DOWNTO 0);
+      ena           : IN     std_logic;
+      RESET         : IN     std_logic;
+      rw            : IN     std_logic;
+      Sda           : INOUT  std_logic;
+      Scl           : INOUT  std_logic;
+      data2read_out : OUT    std_logic_vector (15 DOWNTO 0);
+      busy          : OUT    std_logic;      
+      read_valid    : OUT    std_logic;
+      Sensor_1      : IN     std_logic; -- 08/03/2023
+      next_sensor   : OUT    std_logic; -- 08/03/2023
+      scl_aux_rise  : OUT    std_logic -- 08/03/2023
+   );
+
+-- Declarations
+
+END SMBUS_IF_TMP ;
+
+--
+ARCHITECTURE behave OF SMBUS_IF_TMP IS
+
+constant SMBUS_addr_Sensor_1   : std_logic_vector(6 downto 0) := "1001000";
+constant SMBUS_addr_Sensor_2   : std_logic_vector(6 downto 0) := "1001001"; -- 08/03/2023
+
+constant bytes_num    : std_logic_vector(5 downto 0):= "000010";
+
+signal scl_aux        : std_logic;
+signal scl_aux_s      : std_logic;                                          --   AUX CLOCK
+signal counter        : integer range 0 to 255;                              --   COUNTER FOR CREATING AUX CLOCK
+signal cnt_clk        : integer range 0 to 3;
+type main_state is (idle,coordinator,read_process ,write_process);
+type second_state is ( idle_s,start1,start2,prestart,dev_sel1,dev_sel2,byte_add_l,data_read1,data_read2,data_write1,data_write2,prestop, stop);  --byte_add_m,
+signal m_state        : main_state;							                --   SIGNAL DESCRIBING THE MAIN STATE MACHINE	
+signal m_state_s      : main_state;                                         --   SIGNAL OF THE MAIN MACHINE SAMPLES WITH OTHER CLOCK  
+signal m_state_ss     : main_state;                                         --   SIGNAL OF THE MAIN MACHINE SAMPLES SECOND TIME WITH OTHER CLOCK
+signal s_state        : second_state;                                       --   SIGNAL DESCRIBING THE SECONDARY STATE MACHINE
+signal address_int    : std_logic_vector (7 downto 0);                     --   THE ADDRESS SAMPLES
+signal data2write_int : std_logic_vector (15 downto 0);                     --   THE DATA FROM FIFO IS SAMPLED 
+signal rw_int         : std_logic;                                          --   THE RW IS SAMPLED
+--signal E_int          : std_logic_vector (2 downto 0);
+signal data2read      : std_logic_vector (15 downto 0); 
+------------------------------------------------------------                     
+signal read_finish    : std_logic;
+-----------------------------------------------------------
+signal write_finish   : std_logic;
+ ------------------------------------------------------------
+signal index          : integer range 0 to 15;
+ ----------------------------------------------------------------
+--constant i_d_prom     : std_logic_vector (3 downto 0) := "1010";
+signal dev_sel_reg1   : std_logic_vector (7 downto 0);
+signal dev_sel_reg2   : std_logic_vector (7 downto 0);
+------------------------------------------------------------------
+signal ena_s : std_logic;
+signal bytes_num_s : std_logic_vector (5 downto 0);
+signal bytes_num_ss : std_logic_vector (5 downto 0);
+signal scl_i: std_logic;
+signal sda_vec : std_logic_vector(7 downto 0);
+signal continue: std_logic;
+type ack_sm is (idle,wait4ack,delay);
+signal ack_polling :ack_sm ;
+signal cnt_delay :integer range 0 to 255;
+signal scl_vec : std_logic_vector(7 downto 0);
+signal continue2: std_logic;
+type ack_sm2 is (idle,wait4scl,delay);
+signal scl_polling :ack_sm2 ;
+signal cnt2_delay :integer range 0 to 255;
+
+
+BEGIN
+
+process (reset, clk)
+
+	begin	
+	if reset ='0' then
+		counter <= 0;
+		scl_aux <= '0';                          -- last changed 201106 1523		
+	elsif clk'event and clk='1' then					
+			counter <= counter + 1;			
+			if counter >= 200 then 			
+				scl_aux <= not scl_aux;				
+			    counter <= 0;			    
+			end if;					
+	end if;	
+end process;
+----------------------------------------------------------------------------
+process (clk,reset)
+	begin
+	
+	if reset = '0' then	
+		m_state <= idle;																							
+		ena_s <= '0';
+		busy <= '0';
+		bytes_num_s<="000000";
+		read_valid<='0';
+		data2read_out<=x"0200";
+		rw_int         <=    '0';
+		data2write_int <= (others=>'0');
+		dev_sel_reg1   <= (others=>'0');
+		dev_sel_reg2   <= (others=>'0');
+		address_int    <= (others=>'0');
+						
+	elsif clk'event and clk ='1' then
+																						    	    	    		    							    								    	           	    	    	    
+	    m_state      <=m_state      ;
+	    ena_s        <=ena       ;
+	    --busy         <='0'         ;
+	    bytes_num_s  <=bytes_num_s  ;
+	    --data2read_out<=x"0200";	
+	   
+	    read_valid   <='0'   ;
+	    rw_int<=rw_int;
+	    address_int<=address_int;
+	    dev_sel_reg1   <=    dev_sel_reg1;
+	    dev_sel_reg2   <=    dev_sel_reg2;
+	    data2write_int <=    data2write_int;
+	    	    
+		case m_state is
+					   					
+			when idle  	         => 		
+											busy <= '0';
+											if ena = '1' and ena_s = '0'  then											
+											    rw_int         <=    rw;			                                    			                                   			                                   			                                 			                                 
+		   								 	    address_int    <=    address;
+                                                if (Sensor_1 = '1') then -- 08/03/2023
+                                                  dev_sel_reg1   <=    SMBUS_addr_Sensor_1 & '0';
+                                                  dev_sel_reg2   <=    SMBUS_addr_Sensor_1 & '1';
+                                                else
+                                                  dev_sel_reg1   <=    SMBUS_addr_Sensor_2 & '0';
+                                                  dev_sel_reg2   <=    SMBUS_addr_Sensor_2 & '1';
+                                                end if;
+
+			                                    busy <= '1';			                                    			                                   			                                    			                                     												
+												m_state     <=    coordinator;
+												bytes_num_s <=bytes_num;																																			
+											else                                              											 
+											 	m_state     <=    idle;											 	
+											end if;																																																					 											 											 					          					                                 			                                  			                                 		   								 	 		   								 	 		   								 	 			   								 		 			   							     			                                 			                                   			                                 			                                 			                                 			                                 			                                 			                                 			                                 			                                 
+----------------------------------------------------------------------------------------------------------------------------------------------------			                                 
+			when coordinator     =>          if rw_int = '0' then																		
+												m_state <= write_process;
+												data2write_int <=    data2write;												                                 
+											 else											  
+											 	m_state <= read_process;											 	
+											 end if;											 
+------------------------------------------------------------------------------------------------------------------------------------------------------											 			 											 
+			when write_process   =>			 m_state        <=    write_process;																					 										 
+											 if  write_finish ='1' then											 
+											 	m_state <= idle;											 	 
+											 end if;											 
+											 										 											 								 												 						 											 								 												 
+------------------------------------------------------------------------------------------------------------------------------------------------------											 												 
+			when read_process    =>      	              			
+											 m_state        <=    read_process;			 											 
+											 if read_finish = '1' then      --changing the state											 											 
+											 	  m_state <= idle;
+											 	  data2read_out <= x"0" & data2read (7 downto 0) & data2read (15 downto 12);--x"0" & data2read (15 downto 4)
+											 	  read_valid<='1';											 	
+											 end if;
+------------------------------------------------------------------------------------------------------------------------------------------------------											 													 		 											 											 														 											 
+		end case;									 		 							  											 	
+	end if;
+end process;
+
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+process (reset,clk)
+	begin
+	
+		if reset= '0' then		
+			s_state <= idle_s;			
+			m_state_s <= idle;			
+			m_state_ss <= idle;			
+			sda <= 'Z';			
+			scl_i <= '1';			                               -- check if '1' or 'Z'						
+			data2read <= (others => '0');																
+			write_finish <='0';			
+			read_finish  <= '0';										
+			Scl_aux_S<='0';			
+			index <= 0;				
+			bytes_num_ss<="000000";
+			cnt_clk  <= 0;										 	
+		elsif clk'event and clk ='1' then				    
+	        s_state<=s_state;	     
+		    scl_i <=scl_i;         
+		    sda <=sda;             
+		    data2read<=data2read;	 
+		    bytes_num_ss<=bytes_num_ss;
+		    index<=index;
+		    write_finish <='0' ;
+		    read_finish  <='0'  ;
+		    
+		    
+		    
+		    scl_aux_S <= scl_aux;		
+			if scl_aux = '1' and scl_aux_S ='0'   then       --and (continue ='1'and continue2='1')
+									
+			    if cnt_clk < 3 then		          
+		        	cnt_clk <=  cnt_clk + 1 ;		        	
+		        	else		        	 
+		        	cnt_clk  <= 0;		        	
+		       	end if;	
+		       														
+		      m_state_s <= m_state;		      
+		      m_state_ss <= m_state_s;		      
+		      
+		      
+		      
+		           		      		   	   
+		   	   if m_state_ss = write_process then
+		   	   
+		   	   	case s_state is
+		   	   	
+		   	   	    when idle_s      =>         scl_i <='1';		   	   	    		   	   	    								   	   	    							
+		   	   	    							index <= 0;		   	   	                             
+		   	   	    							sda <='Z';
+		   	   	    							data2read <= (others => '0');
+		   	   	    							bytes_num_ss<="000000";		   	   	    									   	   	    									   	   	    									      	    							
+		   	   	    							if cnt_clk = 0 then		   	   	    							
+		   	   	    								s_state <= start1;		   	   	    										   	   	    								
+		   	   	    							end if; 		   	   	    												   		   	   	    					   		 	
+------------------------------------------------------------------------------------------------------------------------		   	   	    		   	   	
+		   	   		when start1       =>       if cnt_clk = 1 then		   	   		
+		   	   		                             sda <= '0';		   	   		                             
+		   	   								     index <= 0;		   	   								     
+		   	   		 						   end if;
+		   	   		 						  
+		   	   							       if cnt_clk = 2 then
+		   	   							      	scl_i <= not scl_i;		   	   							      	
+		   	   							      	s_state <= dev_sel1;		   	   							      	
+		   	   							       end if;	
+---------------------------------------------------------------------------------------------------------------------------
+	       	         when dev_sel1     =>    if cnt_clk = 3 then           	       	         					   	                                		
+	       	         					   		if index < 8 then              			       	         					   		                               		
+	       	         							    index <= index + 1;	       	         							    
+	       	         							    if dev_sel_reg1 (7-index) = '1' then	       	         							    
+	       	         							    	sda <= 'Z';	       	         							    	
+	       	         							    else 
+	       	         							    	sda <= '0';	       	         							    
+	       	         							    end if;	        					         	 
+	       	         					   		elsif index = 8  then          			       	         					   		                               		
+	       	         					   			index <= 0;                   	 	       	         					   				                		             
+	       	         					   		 	sda <= 'Z';	       	         					   		 	
+	       	         					   		 	s_state <= byte_add_l;	       	         					   		 	
+	       	         					        end if;	       	         					        	                					   	                					        
+	       	         					     end if;           	       	         
+	       	                                 if cnt_clk = 0 or cnt_clk = 2 then
+	       	                                		scl_i <= not scl_i;	       	                                		
+	       	                                 end if;
+     	         					                          				                               					    	   			                              	  		                              				                		                   					   		 		                					   		 		       	         					     	                                    	       	                                	                                       	                                       	                                       	       	                                
+
+---------------------------------------------------------------------------------------------------------------------------------	       	                                	       	         					    
+	       	         when byte_add_l   =>   if cnt_clk = 3 then           	       	        					   	                                		
+	       	        					   			if index < 8 then              			       	        					   		                               		
+	       	        							    	index <= index + 1;	       	        							    	
+	       	        							    	if address_int (7-index) = '1' then	       	         							    
+	       	         							    	  sda <= 'Z';	       	         							    	
+	       	         							    	else 
+	       	         							    	  sda <= '0';	       	         							    
+	       	         							    	end if;        						       	        							                               					       	        					   					 	       	        					   			                              	 
+	       	        					   			elsif index = 8 and bytes_num_s=0 then          			       	        					   		                               		
+	       	        					   				index <= 0;                   	 	       	        					   				                		             
+	       	        					   		 		sda <= 'Z';	       	        					   		 			       	        					   		 		      	        					   		 	
+	       	        					   		 		s_state <= prestop;	
+	       	        					   		 	elsif index = 8 and bytes_num_s > 0 then          			       	        					   		                               		
+	       	        					   				index <= 0;                   	 	       	        					   				                		             
+	       	        					   		 		sda <= 'Z';	       	        					   		 			       	        					   		 		      	        					   		 	
+	       	        					   		 		s_state <= data_write1;			       	        					   		 	     	        					   		 			       	        					   		 		       	        					   		 			               					   		 			               					   		 		
+	       	        					        	end if;	               					      	               					   	   	       	        					        
+	       	        					    end if;           
+	       	        
+	       	                               if cnt_clk = 0 or cnt_clk = 2 then
+	       	                               		scl_i <= not scl_i;	       	                               		
+	       	                               end if;
+--------------------------------------------------------------------------------------------------------------------------------------	       	                                                                               					    	       	        					    
+	       	         	       	         
+	       	         when data_write1   =>	if cnt_clk = 3 then           	       	        					   	                                		
+	       	        					   			if index < 8 then              			       	        					   		                               		
+	       	        							    	index <= index + 1;	       	        							    	
+	       	        							    	if data2write_int (7-index) = '1' then  -- 15 instead of 7	       	         							    
+	       	         							    		sda <= 'Z';	       	         							    	
+	       	         							    	else 
+	       	         							    		sda <= '0';	       	         							    
+	       	         							    	end if;        						       	        							                               					       	        					   					 	       	        					   			                              	 
+	       	        					   			elsif index = 8  and bytes_num_ss = bytes_num_s - 1 then          			       	        					   		                               		
+	       	        					   				index <= 0;                   	 	       	        					   				                		             
+	       	        					   		 		sda <= 'Z';	       	        					   		 		
+	       	        					   		 		s_state <= prestop;	
+	       	        					   		 	elsif index = 8  and bytes_num_ss < bytes_num_s - 1 then          			       	        					   		                               		
+	       	        					   				index <= 0;                   	 	       	        					   				                		             
+	       	        					   		 		sda <= 'Z';	       	        					   		 		
+	       	        					   		 		s_state <= data_write2;	
+	       	        					   		 		bytes_num_ss<= bytes_num_ss + 1;	       	        					   		 			       	        					   		 			       	        					   		 		               					   		 		       	        					   		 	
+	       	        					        	end if;	               					        	               					   
+	       	        					             
+	       	        					    end if;	               					        	               					             	       	        
+	       	                               	if cnt_clk = 0 or cnt_clk = 2 then      	                               
+	       	                               		scl_i <= not scl_i;	       	                               		
+	       	                               	end if;                             
+----------------------------------------------------------------------------------------------------------------------------------------	       	         
+	       	         when data_write2   =>	if cnt_clk = 3 then           	       	        					   	                                		
+	       	        					   			if index < 8 then              			       	        					   		                               		
+	       	        							    	index <= index + 1;	       	        							    
+	       	        							    	if data2write_int (15-index) = '1' then --- 7 instead of 15	       	         							    
+	       	         							    		sda <= 'Z';	       	         							    	
+	       	         							    	else 
+	       	         							    		sda <= '0';	       	         							    
+	       	         							    	end if;        						       	        							                               					       	        					   				 	       	        					   			                              	 
+	       	        					   			elsif index = 8  and bytes_num_ss = bytes_num_s - 1 then          			       	        					   		                               		
+	       	        					   				index <= 0;                   	 	       	        					   				                		             
+	       	        					   		 		sda <= 'Z';	       	        					   		 		
+	       	        					   		 		s_state <= prestop;	
+	       	        					   		 	elsif index = 8  and bytes_num_ss < bytes_num_s - 1 then          			       	        					   		                               		
+	       	        					   				index <= 0;                   	 	       	        					   				                		             
+	       	        					   		 		sda <= 'Z';	       	        					   		 		
+	       	        					   		 		s_state <= data_write1;	
+	       	        					   		 		bytes_num_ss<= bytes_num_ss + 1;	       	        					   		 			       	        					   		 			       	        					   		 		               					   		 		       	        					   		 	
+	       	        					        	end if;	               				       					        	               					   			       	        					        
+	       	        					   	end if;           	       	        
+	       	                               	if cnt_clk = 0 or cnt_clk = 2 then
+	       	                               		scl_i <= not scl_i;	       	                               		
+	       	                               	end if;	       	                               
+----------------------------------------------------------------------------------------------------------------------------------------	       	                                                                                     
+	       	          	      	         
+	       	         when prestop     =>   	if cnt_clk = 3 then	       	         
+	       	         								sda <= '0';	       	         								
+	       	         								s_state <= stop;	       	         							
+	       	         				      	end if;		       	         							                       
+	       	                              	if cnt_clk = 0 or cnt_clk = 2 then
+	       	                              			scl_i <= not scl_i; 	       	                                    	                                            
+	       	                              	end if;
+-----------------------------------------------------------------------------------------------------------------------------------------
+	       	         when stop       => 	if cnt_clk = 1 then	       	                            	
+	       	         							sda <= 'Z' ;	       	          							
+	       	          							s_state <= idle_s;           
+	       	          							write_finish <= '1';	       	          							 	       	        						   		 				       	          									                 							                  						   		                 							                 							                 						
+	       	          				    	end if;	       	          				   
+	       	          				   		if cnt_clk = 0 or cnt_clk = 2 then	       	          				   			       	          				   			       	                           		        
+	       	                           		   		scl_i <= not scl_i; 	       	                           		         	                                            
+	       	                           		end if;
+-----------------------------------------------------------------------------------------------------------------------------------------------
+	       	         when others    =>  null;  				   	                       	       	                                 	       	                                 
+           	    end case;           	    
+           	    
+           	   elsif m_state_ss = read_process then		   	     
+		   	     	case s_state is		   	     	
+		   	     	    when idle_s      =>         scl_i <='1';		   	     	    
+		   	     	                                --scl_i <= 'Z';		   	     	    
+		   	     	    							sda <='Z';
+		   	     	    							data2read <= (others => '0');
+		   	     	    							bytes_num_ss<="000000";		   	     	    							
+		   	     	    							if cnt_clk = 0 then		   	     	    							
+		   	     	    								s_state <= start1;		   	     	    								
+		   	     	    							end if; 
+-----------------------------------------------------------------------------------------------------------------------------------
+		   	     		when start1       =>      if cnt_clk = 1 then		   	     		
+		   	     		                             sda <= '0';		   	     		                             
+		   	     								     index <= 0;		   	     								     
+		   	     		 						  end if;		   	     		 						  
+		   	     							      if cnt_clk = 2 then		   	     							      		   	     							      			   	     							        		        
+		   	     							      	scl_i <= not scl_i;		   	     							      	
+		   	     							      	s_state <= dev_sel1;		   	     							      	
+		   	     							      end if;
+------------------------------------------------------------------------------------------------------------------------------------		   	     							      
+		   	     		when start2       =>      if cnt_clk = 1 then		   	     		
+		   	     		                             sda <= '0';		   	     		                             
+		   	     								     index <= 0;		   	     								     
+		   	     								     s_state <= dev_sel2;		      								     		   	     								     
+		   	     		 						  end if;		   	     		 						  
+		   	     							      if cnt_clk = 0 or cnt_clk = 2 then		   	     							      		   	     							         		   	     							                   
+		   	     							      	scl_i <= not scl_i;		      							      			      							      			   	     							      	
+		   	     							      end if;					      
+-------------------------------------------------------------------------------------------------------------------------------------		   	     							      	
+		   	     		when prestart    =>		if cnt_clk = 3 then		   	     		
+		   	     									sda <= 'Z';			   		   	     							    
+		   	     									s_state <= start2;		   	     											   	     									
+		   	     								end if;		   	     								
+		   	     								if cnt_clk = 0 or cnt_clk = 2 then
+	       	                                  		scl_i <= not scl_i;		   	     								
+	       	                                  	end if;
+-------------------------------------------------------------------------------------------------------------------------------------	   	     							   	  
+	       	           when dev_sel1     =>     if cnt_clk = 3 then                 	           					   	                                		
+	       	           					   			if index < 8 then              			       	           					   			                               		
+	       	           								    index <= index + 1;	       	           								    
+	       	           								    if dev_sel_reg1 (7-index) = '1' then	       	           								    
+	       	           								    	sda <= 'Z';	       	           								    	
+	       	           								    else 
+	       	           								    	sda <= '0';	       	           								    
+	       	           								    end if;        						       	           								                               					       	           					   					 	       	           					   				                              	 
+	       	           					   			elsif index = 8  then          			       	           					   			                               			       	           					   				                   	 	       	           					   					                		             
+	       	           					   			 	sda <= 'Z';	       	           					   			 	
+	       	           					   			 	index<=0;
+	       	           					   			 	s_state<=byte_add_l;
+	       	           					   			 		       	           					   			 	
+	       	           					        	end if;	       	           					        	                					   	                					        
+	       	           					     	end if;           	       	           
+	       	                                  	if cnt_clk = 0 or cnt_clk = 2 then   	       	                                  
+	       	                                  			scl_i <= not scl_i;	       	                                  		
+	       	                                  	end if;
+-------------------------------------------------------------------------------------------------------------------------------------	       	                                  	       	           
+	       	            when dev_sel2     =>    if cnt_clk = 3 then           	       	           					   	                                		
+	       	           					   			if index < 8 then              			       	           					   			                               		
+	       	           								    index <= index + 1;	       	           								    
+	       	           								    if dev_sel_reg2 (7-index) = '1' then	       	           								    
+	       	           								    	sda <= 'Z';	       	           								    	
+	       	           								    else 
+	       	           								    	sda <= '0';	       	           								    
+	       	           								    end if;        						       	           								                               					       	           					   					 	       	           					   				                              	 
+	       	           					   			elsif index = 8  then          			       	           					   		                               		
+	       	           					   				index <= 9;                   	 	       	           					   				                		             
+	       	           					   		 		sda <= 'Z';
+	       	           					   		 		--index <= 0;
+	       	           					   		 		--s_state <= data_read1;	       	           					   		 	
+	       	           					   	 		elsif index = 9 then	       	           					   	 	
+	       	           					   	 			index <= 0 ;	       	           					   	 	
+	       	           					   	 			s_state <= data_read1;	                					   		       	           					   	 	 		                					   		 		                					   		 	
+	       	           					        	end if;	       	           					        	                					   	                					        
+	       	           					   		end if;           	       	           
+	       	                                  	if cnt_clk = 0 or cnt_clk = 2 then	       	                                                 
+	       	                                  		scl_i <= not scl_i;	       	                                  		
+	       	                                  	end if;                      	 
+---------------------------------------------------------------------------------------------------------------------------------------	    
+	     --  	           when byte_add_m   =>    if cnt_clk = 3 then           	       	           					   	                                		
+	     --  	           					   			if index < 8 then              			       	           					   			                               		
+	     --  	           								    index <= index + 1;	       	           								    
+	     --  	           								    if address_int (15-index) = '1' then	       	           								    
+	     --  	           								    	sda <= 'Z';	       	           								    	
+	     --  	           								    else 
+	     --  	           								    	sda <= '0';	       	           								    
+	     --  	           								    end if;        						       	           								                               					       	           					   					 	       	           					   				                              	 
+	     --  	           					   			elsif index = 8  then          			       	           					   			                               		
+	     --  	           					   				index <= 0;                   	 	       	           					   					                		             
+	     --  	           					   			 	sda <= 'Z';	       	           					   			 	
+	     --  	           					   			 	s_state <= byte_add_l;	       	           					   			 		       	           					   			 	
+	     --  	           					        	end if;	       	           					        	       	           					   	       	           					        
+	     --  	           					   	   end if;           	       	           
+	     --  	                                   if cnt_clk = 0 or cnt_clk = 2 then	       	                                  
+	     --  	                                  		scl_i <= not scl_i;	       	                                  		
+	     --  	                                   end if;
+---------------------------------------------------------------------------------------------------------------------------------------	       	           					    
+	       	           when byte_add_l   =>   	if cnt_clk = 3 then           	       	          					   	                                		
+	       	          					   			if index < 8  then              			       	          					   		                               		
+	       	          							    	index <= index + 1;	       	          							    	
+	       	          							    	if address_int (7-index) = '1' then	       	           							    
+	       	           							    		sda <= 'Z';	       	           							    	
+	       	           							    	else 
+	       	           							    		sda <= '0';	       	           							    
+	       	           							    	end if;        						       	          							                               					       	          					   					 	       	          					   			                              	 
+	       	          					   			elsif index = 8  then          			       	          					   		                               		
+	       	          					   				index <= 0;                   	 	       	          					   				                		             
+	       	          					   		 		sda <= 'Z';	       	          					   		 	
+	       	          					   		 		s_state <= prestart;	       	          					   		 		
+	       	          					        	end if;	               					      	               					   	   	       	          					        
+	       	          					   	  	end if;                  	          
+	       	                                 	if cnt_clk = 0 or cnt_clk = 2 then	       	                                 
+	       	                                 		scl_i <= not scl_i;	       	                                 		
+	       	                                	end if; 
+	       	                                	
+	       	                                	                                                  					    
+-----------------------------------------------------------------------------------------------------------------------------------------------	       	          					    
+	       	           	       	           
+	       	           when data_read1   =>	if cnt_clk = 1 then           	       	          					   	                                		
+	       	          					   			if index < 8 then              			       	          					   		                               		
+	       	          							    	index <= index + 1;        						       	          							                               				
+	       	          					   				data2read (7-index) <= sda;	       	          					   				
+	       	          					   			elsif index = 8 then	       	          					   			
+	       	          					   		    	index <= 9;	       	          					   						 
+	       	          					   			end if;	       	          					   			
+	       	          					   	end if;	       	          					   			                              	 
+	       	          					   	if index = 8 and bytes_num_ss = bytes_num_s-1 then	       	          					   		
+	       	          					   	   	if cnt_clk = 3 then	       	          					   	    	   
+	       	          					   	    	sda <= 'Z';	 
+	       	          					   	    	s_state <= prestop;	 
+	       	          					   	    	index <= 0 ;       	       	          					   	    		
+	       	          					   	    end if;
+	       	          					   	elsif index = 8 and bytes_num_ss < bytes_num_s-1 then
+	       	          					   	      if cnt_clk = 3 then
+	       	          					   	      	sda <= '0';	      
+	       	          					   	      end if;
+	       	          					   	   	       	          					   	    	
+	       	          					   	elsif index = 9 then	       	          					   	     
+	       	          					   	   	if cnt_clk = 3 then	       	          					   	    		
+	       	          					   	   	   sda <='Z';	       	          					   	    		   
+	       	          					   	   	   s_state <= data_read2;	       	          					   	    		   
+	       	          					   	   	   index <= 0;
+	       	          					   	   	   bytes_num_ss<=bytes_num_ss+1;	       	          					   	    		    		   
+	       	          					        end if;
+	       	          					    end if;		   	       	          					   		
+	       	          					   	if cnt_clk = 0 or cnt_clk = 2 then	       	          					   			       	                                       	       	                                                
+	       	                                	scl_i <= not scl_i;	       	                                 		
+	       	                                end if;
+                        	       	               	       	                                	       	                                	       	                                	       	                                
+	       	                                
+------------------------------------------------------------------------------------------------------------------------------------------------	       	                                 	      	       	          					   			               					   		 		       	          					   		 	
+	       	          	   	       	         
+	       	          	when data_read2   => 
+	       	                                   if cnt_clk = 1 then           	       	          			         
+	       	                                   		if index < 8 then              			       	                 
+	       	                                   	    	index <= index + 1;        						                      
+	       	                                   			data2read (15-index) <= sda;	       	          	           
+	       	                                   		elsif index = 8 then	       	          			                 
+	       	                                   	    	index <= 9;	       	          					                    
+	       	                                   		end if;	       	          					   		                       
+	       	                                   end if;	       	          					   			                        
+	       	                                   if index = 8 and bytes_num_ss = bytes_num_s-1 then	       	  
+	       	                                      	if cnt_clk = 3 then	       	          					              
+	       	                                       	sda <= 'Z';	                                            
+	       	                                       	s_state <= prestop;	                                    
+	       	                                       	index <= 0 ;       	       	          				              
+	       	                                       end if;                                                  
+	       	                                   elsif index = 8 and bytes_num_ss < bytes_num_s-1 then            
+	       	                                         if cnt_clk = 3 then                                    
+	       	                                         	sda <= '0';	                                          
+	       	                                         end if;                                                
+	       	                                      	       	          					   	    	                         
+	       	                                   elsif index = 9 then	       	          					                 
+	       	                                      	if cnt_clk = 3 then	       	          					              
+	       	                                      	   sda <='Z';	       	          					   	                
+	       	                                      	   s_state <= data_read1;	       	          			          
+	       	                                      	   index <= 0;
+	       	                                      	   bytes_num_ss<=bytes_num_ss+1;	       	          					   	               
+	       	                                       end if;                                                  
+	       	                                   end if;		   	       	          					   		                    
+	       	                                   if cnt_clk = 0 or cnt_clk = 2 then	       	          		      
+	       	                                   	scl_i <= not scl_i;	       	                                    
+	       	                                   end if;                                                      	               	
+---------------------------------------------------------------------------------------------------------------------------------------------------                                       
+	       	            		       	            
+	       	           when prestop     =>	if cnt_clk = 3 then	       	           
+	       	           							sda <= '0';	       	           								
+	       	           							s_state <= stop;	       	           							
+	       	           				     	end if;		       	           							                       
+	       	                                if cnt_clk = 0 or cnt_clk = 2 then
+	       	                                		scl_i <= not scl_i; 	       	                                      	                                            
+	       	                                end if;
+------------------------------------------------------------------------------------------------------------------------------------
+	       	           when stop       => 	if cnt_clk = 1 then	       	            
+	       	           							sda <= 'Z' ;	       	            						
+	       	            						s_state <= idle_s;              	       	            						
+	       	            						read_finish <= '1';	       	            						      	            							                 						
+	       	            				   	end if;	       	            				   
+	       	            				   	if cnt_clk = 0 or cnt_clk = 2 then	       	            				   
+	       	                                		scl_i <= not scl_i; 	       	                                      	                                            
+	       	                                end if;
+---------------------------------------------------------------------------------------------------------------------------------------------------	       	                                	       	                              	       	                           	       	            				   
+	       	          when others    =>     null;  				   	                       	       	                                   	       	                                   
+           	      end case;           	      
+           	   else          	   
+           	   	    write_finish <='0';           	   	    
+           	   	    read_finish  <='0';           	   	          	   	           	   	      
+           	   end if;          	   
+            end if;            
+        end if;        
+end process;
+
+scl<= 'Z' when scl_i='1' else '0';  
+
+process (reset,clk)
+	begin
+	
+		if reset= '0' then		
+			sda_vec<=x"ff";
+			continue<='1';
+			ack_polling<=idle;	
+			cnt_delay <= 31;  						 	
+		elsif clk'event and clk ='1' then				    
+	        continue<=continue;
+	        case ack_polling is
+	        when idle => continue<='1'; sda_vec<=x"ff";cnt_delay <= 31;
+	        			 if scl_aux = '1' and scl_aux_S ='0' then
+	        			 	if index=8 and cnt_clk=3 and not(s_state=data_read1 or s_state=data_read2)  then
+	        					continue<='0';
+	        					ack_polling<=delay;	        					
+	        			 	end if;
+	        			 end if;
+	        when delay =>    if cnt_delay = 0 then
+	                         	ack_polling<=wait4ack;
+	                         else
+	                         cnt_delay <= cnt_delay - 1;			 	
+	                         end if;
+	                         sda_vec<=x"ff";
+	        when wait4ack=> sda_vec<=sda_vec(6 downto 0) & sda;cnt_delay <= 31;
+	                        --if scl_vec="000000" then
+	                        --	Poll4SclLow<=Poll4SclLow+1;
+	                        --else
+	                        --	Poll4SclLow<=(others=>'0');
+	                        --end if;	
+	                        --if Poll4SclLow >=220000 then
+	                        --   continue<='1';
+	                        --    ack_polling<=idle;
+	                        --end if;    
+	        				if sda_vec(7 downto 2)="000000" then
+	                            continue<='1';
+	                            ack_polling<=idle;	                            
+	                        end if;                  
+		    end case;
+		 
+		end if;	    
+end process;			
+			
+process (reset,clk)
+	begin
+	
+		if reset= '0' then		
+			scl_vec<=x"00";
+			continue2<='1';
+			scl_polling<=idle;	
+			cnt2_delay <= 7;  						 	
+		elsif clk'event and clk ='1' then				    
+	        continue2<=continue2;
+	        case scl_polling is
+	        when idle => continue2<='1'; scl_vec<=x"00";cnt2_delay <= 7;
+	        			 if scl_aux = '1' and scl_aux_S ='0' then
+	        			 	if  cnt_clk=0 and index=0 and (s_state=data_read1 or s_state=data_read2)  then
+	        					continue2<='0';
+	        					scl_polling<=delay;	        					
+	        			 	end if;
+	        			 end if;
+	        when delay =>    if cnt2_delay = 0 then
+	                         	scl_polling<=wait4scl;
+	                         else
+	                         cnt2_delay <= cnt2_delay - 1;			 	
+	                         end if;
+	                         scl_vec<=x"00";
+	        when wait4scl=> scl_vec<=scl_vec(6 downto 0) & scl; cnt2_delay <= 7;
+	                        --if scl_vec="000000" then
+	                        --	Poll4SclLow<=Poll4SclLow+1;
+	                        --else
+	                        --	Poll4SclLow<=(others=>'0');
+	                        --end if;	
+	                        --if Poll4SclLow >=220000 then
+	                        --   continue<='1';
+	                        --    ack_polling<=idle;
+	                        --end if;    
+	        				if scl_vec(7 downto 2)="111111" then
+	                            continue2<='1';
+	                            scl_polling<=idle;	                            
+	                        end if;                  
+		    end case;
+
+            -- 08/03/2023
+            if (scl_aux = '1' and scl_aux_S ='0') then
+              scl_aux_rise <= '1';
+            else
+              scl_aux_rise <= '0';
+            end if;
+
+            if (m_state = coordinator and rw_int = '1') then
+              next_sensor <= '1';
+            else
+              next_sensor <= '0';
+            end if;
+            
+		end if;	    
+end process;			
+
+
+END ARCHITECTURE behave;
+
+

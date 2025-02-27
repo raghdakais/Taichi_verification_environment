@@ -1,0 +1,17 @@
+// UVM environment for taichi_tmb environment
+
+package taichi_tmb_env_package;
+
+  import uvm_pkg::*; // Import UVM base classes
+  import taichi_tmb_agent_package::*; // Import agent package that includes classes
+  import TXRX_agent_package::*; // Import agent package that includes classes
+  import controllers_agent_package::*; // Import agent package that includes classes
+
+   `include "uvm_macros.svh"
+
+  // Include all env components
+  `include "taichi_tmb_reference_model.sv"
+  `include "taichi_tmb_env.sv"
+
+endpackage : taichi_tmb_env_package
+
