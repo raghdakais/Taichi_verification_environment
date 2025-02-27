@@ -1,7 +1,7 @@
 transcript off
 ##restart -force
 
-set PROJ_PATH "../../taichi_tmb_env"
+set PROJ_PATH "../"
 set LOG_PATH "../log_result"
 
 # Check if LOG_PATH exists, if not, create it
