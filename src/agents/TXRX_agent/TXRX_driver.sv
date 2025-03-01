@@ -93,12 +93,27 @@ endtask
 // with FIFO indexes driven from max size to 0
 task drive_packet(TXRX_seq_item pkt);
     //----------------------------------------------------------------
-    // Send IDLE sequence (3B in binary: 0011 1011)
+  
    vif.active_package = 1;
    vif.valid_crc = pkt.valid_crc;
    vif.valid_start1 = pkt.valid_start1;
    vif.valid_start2 = pkt.valid_start2;
 
+
+    // copy the address to the footer, we copy it byte by byte
+    pkt.footer[0] = pkt.address[7:0];   // First 8 bits of address
+    pkt.footer[1] = pkt.address[15:8];  // Next 8 bits of address
+    pkt.footer[2] = pkt.address[23:16]; // Last 8 bits of address
+
+    // if there was a write operation, copy the random address to the footer, we copy it byte by byte
+    if(pkt.rw_type == TXRX_WRITE  )
+    begin
+        pkt.data[0] = pkt.wr_data[7:0];   // First 8 bits of address
+        pkt.data[1] = pkt.wr_data[15:8];  // Next 8 bits of address
+        pkt.data[2] = pkt.wr_data[23:16]; // Last 8 bits of address
+        pkt.data[3] = pkt.wr_data[31:24]; // Last 8 bits of address
+    end
+    // Send IDLE sequence (5B in binary: 0101 1011)
     `uvm_info(get_type_name(),  $sformatf("[IDLE was randomized [%d] times] :",pkt.times_sent_idle), UVM_DEBUG)      
     repeat(pkt.times_sent_idle)
        send_idle();
@@ -121,14 +136,15 @@ task drive_packet(TXRX_seq_item pkt);
         // Set the read/write bits in header byte0 (bit 0 for read, bit 1 for write)
         if (i == 0) begin
             // Set the read/write operation based on randomized enum
-            if (pkt.rw_type == READ) begin
+            if (pkt.rw_type == TXRX_READ) begin
                 pkt.header[0][0] = 1;  // Set bit 0 for read
                 pkt.header[0][1] = 0;  // Clear bit 1 for write
                 if(pkt.do_wr_fail)  begin
                 pkt.header[0][0] = 1;  // Set bit 0 for read
                 pkt.header[0][1] = 1;  // No clear for write
                 end
-            end else if (pkt.rw_type == WRITE) begin
+            end
+             else if (pkt.rw_type == TXRX_WRITE) begin
                 pkt.header[0][0] = 0;  // Clear bit 0 for read
                 pkt.header[0][1] = 1;  // Set bit 1 for write
                   if(pkt.do_wr_fail)  begin

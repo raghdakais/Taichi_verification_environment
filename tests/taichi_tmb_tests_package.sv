@@ -13,6 +13,6 @@ package taichi_tmb_tests_package;
   
   `include "taichi_tmb_test_base.sv"
   `include "taichi_tmb_basic_test.sv"
-
+  `include "diagnostic_registers_random_test.sv"
 endpackage : taichi_tmb_tests_package
 

@@ -1,8 +1,15 @@
 transcript off
-##restart -force
+set NumericStdNoWarnings 1
 
 set PROJ_PATH "../"
 set LOG_PATH "../log_result"
+set COV_PATH "../coverage"
+
+# Default coverage flag (0 = disabled)
+if {![info exists enable_cov]} {
+    set enable_cov 0
+}
+
 
 # Check if LOG_PATH exists, if not, create it
 if {![file exists $LOG_PATH]} {
@@ -10,6 +17,11 @@ if {![file exists $LOG_PATH]} {
     file mkdir $LOG_PATH
 }
 
+# Check if COV_PATH exists, if not, create it
+if {![file exists $COV_PATH]} {
+    puts "COV_PATH does not exist, creating directory: $COV_PATH"
+    file mkdir $COV_PATH
+}
 # Get the current date and time in YYYY-MM-DD_HH-MM-SS format
 set current_datetime [clock format [clock seconds] -format "%Y_%m_%d_%H_%M_%S"]
 
@@ -46,7 +58,9 @@ if { ![file exists compile_env.do] || ![file exists compile_design.do] } {
     exit 1
 }
 
+puts "Compiling Design..."
 do compile_design.do
+puts "Compiling Environment..."
 do compile_env.do
 
 # Verify compiled design
@@ -56,22 +70,58 @@ vdir
 view wave
 #add wave -r /*
 
-# Optimize the design with vopt
-vopt +acc work.taichi_tmb_tb -o taichi_tmb_optimized_sim
 
-# Run the optimized simulation, redirecting the log files to the specified log folder
-vsim -L unisim  -L secureip   -L fifo_generator_v13_2_7 -L xpm +UVM_VERBOSITY=UVM_DEBUG  -c -l "${LOG_PATH}/transcript" -voptargs="+acc" -warning 3 work.taichi_tmb_optimized_sim +UVM_TESTNAME=taichi_tmb_basic_test -onfinish stop
+
+# Enable coverage if the flag is set
+if {$enable_cov} {
+    puts "Coverage collection enabled."
+    set COVERAGE_DB "${COV_PATH}/functional_coverage.ucdb"
+    xml2ucdb -format Excel testplan.xml ${COV_PATH}/testplan.ucdb
+    set vopt_args "+cover=bcesft"
+    set vsim_args "-coverage"
+} else {
+    puts "Coverage collection disabled."
+    set vopt_args ""
+    set vsim_args ""
+}
+
+
+# Optimize the design with vopt
+# +cover=bcst  -- to enable coverage
+vopt +acc  work.taichi_tmb_tb -o taichi_tmb_optimized_sim +cover=bcesft
+
+
+# Run the optimized simulation
+vsim -L unisim -L secureip -L fifo_generator_v13_2_7 -L xpm \
+     +UVM_VERBOSITY=UVM_DEBUG -c -l "${LOG_PATH}/transcript" \
+     -voptargs="+acc" work.taichi_tmb_optimized_sim \
+     +UVM_TESTNAME=diagnostic_registers_random_test -onfinish stop $vsim_args
+
 
 puts "Running simulation..."
 
 # Save all signals
 log -r /*
 
+
 # Run simulation for a fixed time (e.g., 10,000 time units)
 run -all 
+
+
 
 # Exit simulation
 exit
 
+
+
+# Enable coverage logging if -cov is passed
+if {$enable_cov} {
+    # Enable coverage collection in QuestaSim
+    xml2ucdb -format Excel testplan.xml ${COV_PATH}/testplan.ucdb
+    # Enable coverage logging
+    coverage save ${COV_PATH}/testplan.ucdb
+    coverage open ${COV_PATH}/testplan.ucdb
+    vcover report ${COV_PATH}/testplan.ucdb -details -output ${COV_PATH}/coverage_report.txt
+}
 # Change directory to simulation path (if needed)
 cd $PROJ_PATH/sim

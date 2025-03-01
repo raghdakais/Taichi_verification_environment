@@ -13,20 +13,29 @@ class TXRX_seq_item extends uvm_sequence_item;
     rand bit [7:0] header[$];
     rand bit [7:0] data[$];
     rand bit [7:0] footer[$];
+    rand bit [23:0] address;
+    rand bit [31:0] wr_data;
+    bit [31:0] rd_data;
+
     bit [15:0] crc;
     rand bit valid_crc;
     rand bit valid_start1;
     rand bit valid_start2;
     bit active_package;
     // Configuration fields for header, data, and footer sizes
-    int HEADER_SIZE = 1;
-    int DATA_SIZE   = 1;
-    int FOOTER_SIZE = 1; 
+    int HEADER_SIZE = 2;
+    int DATA_SIZE   = 4;
+    int FOOTER_SIZE = 3; 
+    string command;
 
 `uvm_object_utils_begin(TXRX_seq_item)
  	`uvm_field_int (HEADER_SIZE  ,					UVM_DEFAULT)
  	`uvm_field_int (DATA_SIZE  ,					UVM_DEFAULT)
  	`uvm_field_int (FOOTER_SIZE  ,					UVM_DEFAULT)
+ 	`uvm_field_string (command  ,					UVM_DEFAULT)
+ 	`uvm_field_int (address  ,					UVM_DEFAULT)
+ 	`uvm_field_int (wr_data  ,					UVM_DEFAULT)
+ 	`uvm_field_int (rd_data  ,					UVM_DEFAULT)
  	`uvm_field_int (start1,					UVM_DEFAULT)
  	`uvm_field_int (start2   ,					UVM_DEFAULT)
  	`uvm_field_queue_int (header  ,					UVM_DEFAULT)
@@ -86,6 +95,7 @@ endfunction
     function bit [15:0] crc_xor(bit [7:0] val, bit [15:0] crc);
         return {crc[7:0], val} ^ crc;
     endfunction
+
 
     endclass : TXRX_seq_item
 

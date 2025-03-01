@@ -1,0 +1,384 @@
+ <!-- WorkBook Path: https://docs.philips.com/personal/partner_raghda_kais_philips_com/Documents/Documents/Verification/CT_testplan.xlsx -->
+ <!-- Date: 1/1/0001 12:25:28 PM -->
+<Workbook>
+	<Worksheet>
+		<Table>
+			 <!-- Testplan -->
+			<Row>
+				<Cell>1</Cell>  <!-- Section -->
+				<Cell>Clock and reset</Cell>  <!-- Title -->
+				<Cell>checking design performance with several clock domains</Cell>  <!-- Description -->
+				<Cell></Cell>  <!-- Link -->
+				<Cell></Cell>  <!-- Type -->
+				<Cell>1</Cell>  <!-- Weight -->
+				<Cell>100</Cell>  <!-- Goal -->
+			</Row>
+			<Row>
+				<Cell>1.1</Cell>
+				<Cell>50Mhz</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>1.2</Cell>
+				<Cell>100Mhrz</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>1.3</Cell>
+				<Cell>1Ghrz</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2</Cell>
+				<Cell>TXRX - ZYNQ</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1</Cell>
+				<Cell>protocol checking</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1.1</Cell>
+				<Cell>STATn_DYN</Cell>
+				<Cell>STATn_DYN is defining whether the packet is Static or dynamic (‘0&#39; for Static, ‘1&#39; for dynamic)</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1.1.1</Cell>
+				<Cell>STATn_DYN is 0 in static data</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1.1.2</Cell>
+				<Cell>STATn_DYN is 1 in dynamic data</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1.1.3</Cell>
+				<Cell>STATn_DYN  changed from static to dynamic while transmitting static data</Cell>
+				<Cell>[Expected] : should be ignored and changed in the next transaction</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1.1.4</Cell>
+				<Cell>STATn_DYN  changed from dynamic to static while transmitting dynamic data </Cell>
+				<Cell>[Expected] : should be ignored and changed in the next transaction</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1.2</Cell>
+				<Cell>IP</Cell>
+				<Cell>is defining whether the packet is IP packet or not. In case of IP packet, the STATn_DYN signal is ignored.</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1.2.1</Cell>
+				<Cell>set IP packet to active  </Cell>
+				<Cell>[Expected] : IP packet is accepted</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1.2.2</Cell>
+				<Cell>set IP packet to inactive  </Cell>
+				<Cell>[Expected] : IP packet is not accepted</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1.2.3</Cell>
+				<Cell>set IP packet to active while sending dynamic data</Cell>
+				<Cell>[Expected] : should not affect the current transaction and changed in the next one</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1.2.4</Cell>
+				<Cell>set IP packet to active while sending static  data</Cell>
+				<Cell>[Expected] : should not affect the current transaction and changed in the next one</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1.2.5</Cell>
+				<Cell>set IP packet to active then change it to inactive in static data</Cell>
+				<Cell>[Expected] : should accept IP packet and then back to static packet</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1.2.6</Cell>
+				<Cell>set IP packet to active then change it to inactive in dynamic data</Cell>
+				<Cell>[Expected] : should accept IP packet and then back to synamic packet</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1.3</Cell>
+				<Cell>PayloadSize </Cell>
+				<Cell>is being used when the packet is dynamic this signal is used to determine the length of RD_REQ.</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1.3.1</Cell>
+				<Cell>set size to &#39;0&#39; </Cell>
+				<Cell>TBD</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1.3.2</Cell>
+				<Cell>set random size</Cell>
+				<Cell>[10:50] bytes
+[90: 200] bytes
+[200: 500] bytes</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.1.3.3</Cell>
+				<Cell>set max size</Cell>
+				<Cell>TBD</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.2</Cell>
+				<Cell>Static Packet</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.3</Cell>
+				<Cell>Dynamic Packet</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>2.4</Cell>
+				<Cell>IP Packet</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>3</Cell>
+				<Cell>Diagnostic_RXTX</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>3.1</Cell>
+				<Cell>write random data</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>3.2</Cell>
+				<Cell>write to random address</Cell>
+				<Cell>cover: 
+first address = 
+[</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>3.3</Cell>
+				<Cell>write to invalid address</Cell>
+				<Cell>[expected]:  should be ignored</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>3.4</Cell>
+				<Cell>rewrite to same address </Cell>
+				<Cell>[expected]:  data must be overwited</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>3.5</Cell>
+				<Cell>write to RO registers </Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>4</Cell>
+				<Cell>Operational_RXTX</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>4.1</Cell>
+				<Cell>write random data</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>4.2</Cell>
+				<Cell>write to random address</Cell>
+				<Cell>cover: 
+first address = 
+[</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>4.3</Cell>
+				<Cell>write to invalid address</Cell>
+				<Cell>[expected]:  should be ignored</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>4.4</Cell>
+				<Cell>rewrite to same address </Cell>
+				<Cell>[expected]:  data must be overwited</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>5</Cell>
+				<Cell>write to RO registers </Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>6</Cell>
+				<Cell>BUFFER_REQ_TXRX</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>6.1</Cell>
+				<Cell>sending sanity request for reading data</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>6.2</Cell>
+				<Cell>do not sending request until buffer is full</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>6.3</Cell>
+				<Cell>send request when buffer is empty</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+		</Table>
+	</Worksheet>
+</Workbook>

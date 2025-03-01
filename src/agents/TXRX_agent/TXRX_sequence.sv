@@ -11,20 +11,26 @@ class TXRX_sequence extends uvm_sequence #(TXRX_seq_item);
   `uvm_object_utils(TXRX_sequence)
   `uvm_declare_p_sequencer(TXRX_sequencer)
    rand TXRX_seq_item item;
+   TXRX_config cfg;            // Configuration object
+
   // Constructor
   function new(string name = "TXRX_sequence");
     super.new(name);
      item = TXRX_seq_item::type_id::create("TXRX_item");
-  // Ensure p_sequencer and cfg are valid
- //   if (p_sequencer != null && p_sequencer.cfg != null)
-  begin
-    /////      item.HEADER_SIZE = p_sequencer.cfg.HEADER_SIZE;
-    /////      item.DATA_SIZE   = p_sequencer.cfg.DATA_SIZE;
-    /////      item.FOOTER_SIZE = p_sequencer.cfg.FOOTER_SIZE;
-        `uvm_info("TXRX_SEQUENCE", $sformatf("Pre-start: Assigned HEADER_SIZE=%0d, DATA_SIZE=%0d, FOOTER_SIZE=%0d",
-                                              item.HEADER_SIZE, item.DATA_SIZE, item.FOOTER_SIZE), UVM_LOW)
-   end   
+
+
+   ///////      // Get configuration from config_db
+   ///////       if (!uvm_config_db#(TXRX_config)::get("", "", "cfg", cfg)) begin
+   ///////           uvm_report_fatal (get_type_name (), $sformatf ("[FATAL] Virtual TXRX_agent_cfg interface not found for TXRX agent"));
+   ///////       end
+   ///////         item.HEADER_SIZE = cfg.HEADER_SIZE;
+   ///////         item.DATA_SIZE   = cfg.DATA_SIZE;
+   ///////         item.FOOTER_SIZE = cfg.FOOTER_SIZE;
+   ///////       `uvm_info("TXRX_SEQUENCE", $sformatf("Pre-start: Assigned HEADER_SIZE=%0d, DATA_SIZE=%0d, FOOTER_SIZE=%0d",
+   ///////                                             item.HEADER_SIZE, item.DATA_SIZE, item.FOOTER_SIZE), UVM_LOW)
+   ///////   $stop;
     endfunction
+
 
  extern virtual  task  body();
 

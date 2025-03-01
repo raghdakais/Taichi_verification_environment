@@ -8,8 +8,15 @@
    // generator modules that will be instantiated elsewhere
    // For simple designs, it can be put into testbench top
    bit clk;
+   bit mclk;
    bit reset;
-   always #2.5ns clk <= ~clk;
+//   always #2.5ns clk <= ~clk;
+//    always #1.7ps mclk <= ~mclk;
+
+  always #1ns clk <= ~clk;
+    always #0.125ns mclk <= ~mclk;
+
+
 initial begin
   reset = 1;
   #100ns;
@@ -26,10 +33,10 @@ end
    //-------------------------------------------------------
     // Clocks and reset
    //-------------------------------------------------------
-    .MCLK   ( {7{taichi_tmb_vif.clk}} ),
-    .MCLK_N ( {7{~taichi_tmb_vif.clk}}),   
-    .ACLK_MASTER   ( taichi_tmb_vif.clk ),
-    .ACLK_MASTER_N ( ~taichi_tmb_vif.clk),
+    .MCLK   ( {7{~mclk}} ),
+    .MCLK_N ( {7{mclk}}),   
+    .ACLK_MASTER   ( clk ),
+    .ACLK_MASTER_N ( ~clk),
     .RESET         (reset               ),
    //-------------------------------------------------------
     // Diagnostic TXRX

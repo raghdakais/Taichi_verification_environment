@@ -9,16 +9,14 @@ package TXRX_agent_package;
 
   typedef enum {IP, STATIC, DYNAMIC} packet_type_t;
   // Enum to represent read and write operations
-    typedef enum bit [1:0] {
-    READ  = 2'b01,   // Bit 0 is active for READ
-    WRITE = 2'b10    // Bit 1 is active for WRITE
+    typedef enum bit {
+    TXRX_READ ,   
+    TXRX_WRITE    
     } rw_type_t;
 
 
   `include "TXRX_agent_params.svh"
 
-    string cfg_str="USER DID NOT SET YET";
-   
   // Include all agent components
   `include "TXRX_config.sv"
   `include "TXRX_seq_item.sv"
@@ -28,4 +26,5 @@ package TXRX_agent_package;
   `include "TXRX_monitor.sv"
   `include "TXRX_agent.sv"
 endpackage : TXRX_agent_package
+
 `endif

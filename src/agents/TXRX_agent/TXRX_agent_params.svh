@@ -4,7 +4,7 @@
 `define TXRX_AGENT_PARAMS_SV
 
 // Parameter definitions
-   parameter int  IDLE       ='hAA;
+   parameter int  IDLE       ='hB5;
 // Configurable packet structure sizes
   int HEADER_SIZE  = 2;
   int DATA_SIZE    = 2;

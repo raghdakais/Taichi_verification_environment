@@ -81,23 +81,28 @@ class TXRX_monitor extends uvm_monitor;
         item.start2 = temp_byte;
 
         // Collect Header
-        foreach (item.header[i]) begin
+        for (int i = item.header.size()-1; i >= 0; i--) begin    
             for (int j = 7; j >= 0; j--) begin
                 item.header[i][j]  = (stream_type == "TX") ? vif.tx : vif.rx;  // Correct signal reference
                 @(negedge vif.clk);
             end
         end
-
+            if (item.header[0][0] == 1 &&   item.header[0][1] == 0)
+              item.command = "[READ]";
+            else if (item.header[0][0] == 0 &&   item.header[0][1] == 1)
+              item.command = "[WRITE]";
+            else 
+              item.command = "[INVALID READ/WRITE COMMAND]";
         // Collect Data
-        foreach (item.data[i]) begin
-            for (int j = 7; j >= 0; j--) begin
+        for (int i = item.data.size()-1; i >= 0; i--) begin    
+             for (int j = 7; j >= 0; j--) begin
                 item.data[i][j] = (stream_type == "TX") ? vif.tx : vif.rx; 
                 @(negedge vif.clk);
             end
         end
 
         // Collect Footer
-        foreach (item.footer[i]) begin
+           for (int i = item.footer.size()-1; i >= 0; i--) begin
             for (int j = 7; j >= 0; j--) begin
                 item.footer[i][j] = (stream_type == "TX") ? vif.tx : vif.rx; 
                 @(negedge vif.clk);
@@ -109,12 +114,44 @@ class TXRX_monitor extends uvm_monitor;
             item.crc[j] = (stream_type == "TX") ? vif.tx : vif.rx; 
             @(negedge vif.clk);
         end
+
+
+    // copy the address to the footer, we copy it byte by byte
+    item.address[7:0]   =  item.footer[0] ; // First 8 bits of address
+    item.address[15:8]  =  item.footer[1] ; // Next 8 bits of address
+    item.address[23:16] =  item.footer[2] ; // Last 8 bits of address
+
+    // if there was a write operation, copy the random address to the footer, we copy it byte by byte
+   if(item.command == "WRITE")
+    begin
+        item.wr_data[7:0]    = item.data[0] ; // First 8 bits of address
+        item.wr_data[15:8]   = item.data[1] ; // Next 8 bits of address
+        item.wr_data[23:16]  = item.data[2] ; // Last 8 bits of address
+        item.wr_data[31:24]  = item.data[3] ; // Last 8 bits of address
+    end
+    // if there was a write operation, copy the random address to the footer, we copy it byte by byte
+ //   else if(item.op_type == "READ")
+////    begin
+////        item.rd_data[7:0]    = item.data[0] ; // First 8 bits of address
+////        item.rd_data[15:8]   = item.data[1] ; // Next 8 bits of address
+////        item.rd_data[23:16]  = item.data[2] ; // Last 8 bits of address
+////        item.rd_data[31:24]  = item.data[3] ; // Last 8 bits of address
+////    end
+////
+
+
+
+
+
         // printing item fields only in UVM_DEBUG Mode
          if (get_report_verbosity_level() >= UVM_DEBUG)
         begin
             $display("[%s] Monitor Printing %s Item: ",stream_type,this.get_type_name());
             item.print();
         end
+
+
+
 
     endtask
 endclass
