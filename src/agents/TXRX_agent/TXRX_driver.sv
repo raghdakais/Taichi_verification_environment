@@ -27,20 +27,25 @@ class TXRX_driver extends uvm_driver#(TXRX_seq_item);
 
         // Wait for reset to be deasserted
         wait_for_reset();
-        forever begin
-           // Wait for an item to be available from the sequencer
-        seq_item_port.get_next_item(req);
-        
-        // If no item received (i.e., when the item is null), send IDLE byte
-        if (req == null) begin
+     forever begin
+        @(posedge vif.clk);
+
+        // Try to get a sequence item (non-blocking)
+            seq_item_port.try_next_item(req);
+        if(req==null) begin
             `uvm_info(get_type_name(), "No Request.. driving idle", UVM_DEBUG)
             send_idle();
-        end else begin
-            `uvm_info(get_type_name(), "there is a Request.. driving randomized packet", UVM_DEBUG)
+        end 
+        else begin
+            `uvm_info(get_type_name(), $sformatf("Driving packet: %s", req.sprint()), UVM_DEBUG)
+
+            // Drive the received packet
             drive_packet(req);
+            
+            // Notify sequencer that item has been processed
             seq_item_port.item_done();
         end
-        end
+    end
     endtask
 
 //----------------------------------------------------------------

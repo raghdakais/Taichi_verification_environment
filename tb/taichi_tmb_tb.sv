@@ -10,11 +10,11 @@
    bit clk;
    bit mclk;
    bit reset;
-//   always #2.5ns clk <= ~clk;
-//    always #1.7ps mclk <= ~mclk;
+   always #750.75ns clk <= ~clk;
+    always #2.5ns mclk <= ~mclk;
 
-  always #1ns clk <= ~clk;
-    always #0.125ns mclk <= ~mclk;
+  ///always #1ns clk <= ~clk;
+  ///  always #0.125ns mclk <= ~mclk;
 
 
 initial begin
@@ -24,10 +24,10 @@ initial begin
 end
 
    // Instantiate the Interface and pass it to Design
-   taichi_tmb_agent_if           taichi_tmb_vif  (.clk(clk));
-   TXRX_agent_if                 diag_txrx_vif(.clk(clk),.rst(reset)); 
-   TXRX_agent_if                 oper_txrx_vif(.clk(clk),.rst(reset)); 
-   controllers_agent_if          controllers_vif(.clk(clk),.rst(reset)); 
+   taichi_tmb_agent_if           taichi_tmb_vif  (.clk(mclk));
+   TXRX_agent_if                 diag_txrx_vif(.clk(mclk),.rst(reset)); 
+   TXRX_agent_if                 oper_txrx_vif(.clk(mclk),.rst(reset)); 
+   controllers_agent_if          controllers_vif(.clk(mclk),.rst(reset)); 
   
    Taichi_TMB_top DUT  (
    //-------------------------------------------------------
