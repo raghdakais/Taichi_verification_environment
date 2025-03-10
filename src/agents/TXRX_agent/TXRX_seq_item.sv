@@ -80,23 +80,57 @@ endfunction
 
     // CRC calculation function, including start1 till footer
     function void post_randomize();
-        bit [15:0] crc_calc = 0;
-        crc_calc = crc_xor(8'h21, crc_calc); // Include Start1 (21)
-        crc_calc = crc_xor(8'h43, crc_calc); // Include Start2 (43)
-        foreach (header[i]) crc_calc = crc_xor(header[i], crc_calc); // Include Header
-        foreach (data[i]) crc_calc = crc_xor(data[i], crc_calc); // Include Data
-        foreach (footer[i]) crc_calc = crc_xor(footer[i], crc_calc); // Include Footer
-        if(valid_crc)
+       bit [15:0] crc_calc = 16'hFFFF; // Initialize CRC with 0xFFFF
+    bit [7:0] serial_byte;
+    
+    // Process each byte in the packet serially (bit by bit)
+    crc_calc = calculate_crc16_byte(crc_calc, 8'h21); // Start1 (21)
+    crc_calc = calculate_crc16_byte(crc_calc, 8'h43); // Start2 (43)
+    
+    foreach (header[i]) begin
+        crc_calc = calculate_crc16_byte(crc_calc, header[i]); // Header
+    end
+    
+    foreach (data[i]) begin
+        crc_calc = calculate_crc16_byte(crc_calc, data[i]); // Data
+    end
+    
+    foreach (footer[i]) begin
+        crc_calc = calculate_crc16_byte(crc_calc, footer[i]); // Footer
+    end
+    
+    if (valid_crc)
         crc = crc_calc; // Store calculated CRC value
-        else crc = crc_calc+1;
+    else 
+        crc = crc_calc + 1; // Corrupt CRC if valid_crc is false
     endfunction
 
-    // XOR-based CRC calculation helper function
-    function bit [15:0] crc_xor(bit [7:0] val, bit [15:0] crc);
-        return {crc[7:0], val} ^ crc;
+ // XOR-based CRC calculation helper function
+    function bit [15:0] calculate_crc16_byte(bit [15:0] crc, bit [7:0] data_byte);
+    logic [15:0] new_crc;
+
+    new_crc[15] = data[0] ^ data[1] ^ data[2] ^ data[3] ^ data[4] ^ data[5] ^ data[6] ^ data[7] ^ 
+                  crc[7] ^ crc[6] ^ crc[5] ^ crc[4] ^ crc[3] ^ crc[2] ^ crc[1] ^ crc[0];
+    new_crc[14] = data[0] ^ data[1] ^ data[2] ^ data[3] ^ data[4] ^ data[5] ^ data[6] ^ 
+                  crc[6] ^ crc[5] ^ crc[4] ^ crc[3] ^ crc[2] ^ crc[1] ^ crc[0];
+    new_crc[13] = data[6] ^ data[7] ^ crc[7] ^ crc[6];
+    new_crc[12] = data[5] ^ data[6] ^ crc[6] ^ crc[5];
+    new_crc[11] = data[4] ^ data[5] ^ crc[5] ^ crc[4];
+    new_crc[10] = data[3] ^ data[4] ^ crc[4] ^ crc[3];
+    new_crc[9]  = data[2] ^ data[3] ^ crc[3] ^ crc[2];
+    new_crc[8]  = data[1] ^ data[2] ^ crc[2] ^ crc[1];
+    new_crc[7]  = data[0] ^ data[1] ^ crc[15] ^ crc[1] ^ crc[0];
+    new_crc[6]  = data[0] ^ crc[14] ^ crc[0];
+    new_crc[5]  = crc[13];
+    new_crc[4]  = crc[12];
+    new_crc[3]  = crc[11];
+    new_crc[2]  = crc[10];
+    new_crc[1]  = crc[9];
+    new_crc[0]  = data[0] ^ data[1] ^ data[2] ^ data[3] ^ data[4] ^ data[5] ^ data[6] ^ data[7] ^ 
+                  crc[8] ^ crc[7] ^ crc[6] ^ crc[5] ^ crc[4] ^ crc[3] ^ crc[2] ^ crc[1] ^ crc[0];
+
+    return new_crc;
     endfunction
-
-
     endclass : TXRX_seq_item
 
 `endif

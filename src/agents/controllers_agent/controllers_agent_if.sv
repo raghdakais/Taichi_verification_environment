@@ -32,5 +32,7 @@ interface controllers_agent_if(input logic clk, input logic rst);
    bit       HEATER_1      ; 
    bit       HEATER_2      ; 
 
+bit start_sig2;
+bit sig2_clk = 1;
 endinterface
 `endif

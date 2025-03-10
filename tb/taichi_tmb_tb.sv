@@ -10,12 +10,13 @@
    bit clk;
    bit mclk;
    bit reset;
-   always #750.75ns clk <= ~clk;
+   bit sig_2_clk;
+   bit sig_2_rst;
+   bit txrx_clk;
+    always #750.75ns clk <= ~clk;
     always #2.5ns mclk <= ~mclk;
-
-  ///always #1ns clk <= ~clk;
-  ///  always #0.125ns mclk <= ~mclk;
-
+    always #20ns sig_2_clk <= ~sig_2_clk;
+    always #1.25ns txrx_clk <= ~txrx_clk;
 
 initial begin
   reset = 1;
@@ -25,9 +26,10 @@ end
 
    // Instantiate the Interface and pass it to Design
    taichi_tmb_agent_if           taichi_tmb_vif  (.clk(mclk));
-   TXRX_agent_if                 diag_txrx_vif(.clk(mclk),.rst(reset)); 
-   TXRX_agent_if                 oper_txrx_vif(.clk(mclk),.rst(reset)); 
-   controllers_agent_if          controllers_vif(.clk(mclk),.rst(reset)); 
+   TXRX_agent_if                 diag_txrx_vif(.clk(txrx_clk),.rst(reset)); 
+   TXRX_agent_if                 oper_txrx_vif(.clk(txrx_clk),.rst(reset)); 
+   controllers_agent_if          controllers_vif(.clk(mclk),.rst(sig_2_rst)); 
+   asic_tiles_agent_if          asic_tiles_vif(.clk(mclk),.rst(reset)); 
   
    Taichi_TMB_top DUT  (
    //-------------------------------------------------------
@@ -88,7 +90,14 @@ end
       uvm_config_db #(virtual TXRX_agent_if)::set (null, "", "diag_txrx_agent_vif", diag_txrx_vif);
       uvm_config_db #(virtual TXRX_agent_if)::set (null, "", "oper_txrx_agent_vif", oper_txrx_vif);
       uvm_config_db #(virtual controllers_agent_if)::set (null, "", "vif", controllers_vif);
+      uvm_config_db #(virtual asic_tiles_agent_if)::set (null, "", "vif", asic_tiles_vif);
       run_test ();
    end
+
+
+
+assign sig_2_rst = taichi_tmb_tb.DUT.RX_serial_inst.RESET;
+
+
 endmodule
 

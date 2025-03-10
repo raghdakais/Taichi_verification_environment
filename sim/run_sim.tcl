@@ -88,10 +88,12 @@ if {$enable_cov} {
 
 # Optimize the design with vopt
 # +cover=bcst  -- to enable coverage
+ puts "Start Optimization.."
 vopt +acc  work.taichi_tmb_tb -o taichi_tmb_optimized_sim +cover=bcesft
 
 
 # Run the optimized simulation
+ puts "Start VSIM command.."
 vsim -L unisim -L secureip -L fifo_generator_v13_2_7 -L xpm \
      +UVM_VERBOSITY=UVM_DEBUG -c -l "${LOG_PATH}/transcript" \
      -voptargs="+acc" work.taichi_tmb_optimized_sim \
@@ -110,7 +112,7 @@ run -all
 
 
 # Exit simulation
-exit
+quit -force
 
 
 

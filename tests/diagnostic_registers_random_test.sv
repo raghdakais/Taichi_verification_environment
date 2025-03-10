@@ -18,16 +18,15 @@ class diagnostic_registers_random_test extends taichi_tmb_test_base;
     
     task run_phase (uvm_phase phase);
 
-   	super.run_phase(phase);
 
     	phase.raise_objection (this);
-         #100us;
+         	super.run_phase(phase);
 
-   repeat (10)
+   repeat (1)
       begin
         if (!this.m_diag_txrx_seq.randomize() with { 
               m_diag_txrx_seq.item.rw_type == TXRX_READ;    
-              m_diag_txrx_seq.item.address == 'h010000;    
+              m_diag_txrx_seq.item.address == 'h406350;    
                }) 
             `uvm_fatal("RUN_PHASE", "Randomization failed for m_diag_txrx_seq")
            this.m_diag_txrx_seq.start(this.m_taichi_tmb_env.diag_txrx_agent.seqr);

@@ -32,8 +32,14 @@ class controllers_seq_item extends uvm_sequence_item;
    bit       HEATER_2      ; 
 
 
+ rand bit sig2_soft_reset; // Reconstructed 8-bit byte
+ rand bit sig2_ch_rdy; // Reconstructed 8-bit byte
 
-
+    // Constraint to ensure valid_start1 defaults to 1 unless explicitly constrained to 0 in a test
+    constraint valid_start1_default_c {
+        soft sig2_soft_reset == 0;  // Default valid_start1 is 1 unless overridden in the test
+        soft sig2_ch_rdy       == 1;  // Default valid_start1 is 1 unless overridden in the test
+    }
 
   // Each variable has to be registered with a macro corresponding to its data
   // type. For example, "int" types use `uvm_field int, "enum" types use

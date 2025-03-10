@@ -10,6 +10,25 @@ add wave -noupdate /taichi_tmb_tb/DUT/Diag_in_N
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/S_TX_IN
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/S_IDLY_CNT
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/S_EN
+add wave -noupdate -divider <NULL>
+add wave -noupdate -divider <NULL>
+add wave -noupdate -divider <NULL>
+add wave -noupdate -color Yellow /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/sm4sync
+add wave -noupdate -radix unsigned /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/delay_cnt_byte
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/Bitslip
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/FCLK
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/CLKDIV
+add wave -noupdate /taichi_tmb_tb/diag_txrx_vif/clk
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/sDataIn
+add wave -noupdate -color {Orange Red} /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/pDataIn
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/pDataIn_q
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/cnt_idle_byte
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/cnt_num_byte
+add wave -noupdate -radix unsigned /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/delay_cnt_byte
+add wave -noupdate -divider <NULL>
+add wave -noupdate -divider <NULL>
+add wave -noupdate -divider <NULL>
+add wave -noupdate -divider <NULL>
 add wave -noupdate -divider {DIAG REG}
 add wave -noupdate -color Yellow -itemcolor Firebrick /taichi_tmb_tb/DUT/registers_inst_A/S_WRITE
 add wave -noupdate -color Yellow -itemcolor Firebrick /taichi_tmb_tb/DUT/registers_inst_A/S_READ
@@ -42,7 +61,6 @@ add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/chann
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/good_packet_received
 add wave -noupdate -color Cyan /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/Channel_data_locked_int
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/channel_data_locked_vec
-add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/sm4sync
 add wave -noupdate -color {Dark Orchid} /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/channel_RDY
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/channel_OK
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/channel_RDY_stable
@@ -53,8 +71,8 @@ add wave -noupdate /taichi_tmb_tb/DUT/sig_2_packet_received_50m
 add wave -noupdate /taichi_tmb_tb/DUT/sig_2_good_packet
 add wave -noupdate /taichi_tmb_tb/DUT/sig_2_data_50m
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {17175450 ps} 0} {{Cursor 2} {40082500 ps} 0} {{Cursor 3} {63272485 ps} 0}
-quietly wave cursor active 1
+WaveRestoreCursors {{Cursor 1} {10065000 ps} 0} {{Cursor 2} {28112577 ps} 0} {{Cursor 3} {211579551 ps} 0} {{Cursor 4} {10163185 ps} 0}
+quietly wave cursor active 4
 configure wave -namecolwidth 228
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
@@ -69,4 +87,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {105937125 ps}
+WaveRestoreZoom {10015767 ps} {10364914 ps}

@@ -76,7 +76,7 @@ class TXRX_driver extends uvm_driver#(TXRX_seq_item);
     end
   join_any 
     disable fork; // Ensure the other process stops execution
-   
+    #10us;
    endtask
    
 //----------------------------------------------------------------
@@ -187,7 +187,7 @@ task drive_packet(TXRX_seq_item pkt);
             @(posedge vif.clk);
         end
           vif.active_package = 0;
-            repeat (2)
-             @(posedge vif.clk);
+     //       repeat (2)
+     //        @(posedge vif.clk);
 endtask
 endclass
