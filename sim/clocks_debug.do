@@ -11,6 +11,8 @@ add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/S_TX_IN
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/S_IDLY_CNT
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/S_EN
 add wave -noupdate -divider <NULL>
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/TX_series7_COMPONENT/DATA_IN
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/TX_series7_COMPONENT/TX_data_byte
 add wave -noupdate -divider <NULL>
 add wave -noupdate -divider <NULL>
 add wave -noupdate -color Yellow /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/sm4sync
@@ -31,6 +33,15 @@ add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/cnt_n
 add wave -noupdate -radix unsigned /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/delay_cnt_byte
 add wave -noupdate -divider <NULL>
 add wave -noupdate -divider <NULL>
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/channel_data_sm
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/start_valid_int
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/Headers_valid_int
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/data_valid_int
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/Footers_valid_int
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/CRC_valid_int
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/crc_calc
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/good_packet
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/bad_packet
 add wave -noupdate -divider <NULL>
 add wave -noupdate -divider <NULL>
 add wave -noupdate -divider {DIAG REG}
@@ -75,8 +86,8 @@ add wave -noupdate /taichi_tmb_tb/DUT/sig_2_packet_received_50m
 add wave -noupdate /taichi_tmb_tb/DUT/sig_2_good_packet
 add wave -noupdate /taichi_tmb_tb/DUT/sig_2_data_50m
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {151655527 ps} 0} {{Cursor 13} {21250 ps} 0}
-quietly wave cursor active 1
+WaveRestoreCursors {{Cursor 1} {98866951 ps} 0} {{Cursor 13} {42781327 ps} 0}
+quietly wave cursor active 2
 configure wave -namecolwidth 228
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
@@ -91,4 +102,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {151535568 ps} {151875534 ps}
+WaveRestoreZoom {42586133 ps} {43183012 ps}

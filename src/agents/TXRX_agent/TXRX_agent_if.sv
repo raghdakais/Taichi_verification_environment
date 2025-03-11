@@ -15,5 +15,7 @@ interface TXRX_agent_if(input logic clk,input logic rst );
 
     bit byte_collected;
     bit channel_ok;
+    bit tx_sync_signal;
+    bit rx_sync_signal;
 endinterface
 `endif

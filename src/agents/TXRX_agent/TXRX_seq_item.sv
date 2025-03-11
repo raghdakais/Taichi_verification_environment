@@ -84,19 +84,19 @@ endfunction
     bit [7:0] serial_byte;
     
     // Process each byte in the packet serially (bit by bit)
-    crc_calc = calculate_crc16_byte(crc_calc, 8'h21); // Start1 (21)
-    crc_calc = calculate_crc16_byte(crc_calc, 8'h43); // Start2 (43)
+    crc_calc = nextCRC16_D8(crc_calc, 8'h21); // Start1 (21)
+    crc_calc = nextCRC16_D8(crc_calc, 8'h43); // Start2 (43)
     
     foreach (header[i]) begin
-        crc_calc = calculate_crc16_byte(crc_calc, header[i]); // Header
+        crc_calc = nextCRC16_D8(crc_calc, header[i]); // Header
     end
     
     foreach (data[i]) begin
-        crc_calc = calculate_crc16_byte(crc_calc, data[i]); // Data
+        crc_calc = nextCRC16_D8(crc_calc, data[i]); // Data
     end
     
     foreach (footer[i]) begin
-        crc_calc = calculate_crc16_byte(crc_calc, footer[i]); // Footer
+        crc_calc = nextCRC16_D8(crc_calc, footer[i]); // Footer
     end
     
     if (valid_crc)
@@ -105,8 +105,8 @@ endfunction
         crc = crc_calc + 1; // Corrupt CRC if valid_crc is false
     endfunction
 
- // XOR-based CRC calculation helper function
-    function bit [15:0] calculate_crc16_byte(bit [15:0] crc, bit [7:0] data_byte);
+   // Function to compute next CRC16 value given an 8-bit data and 16-bit current CRC
+  static function logic [15:0] nextCRC16_D8(logic [15:0] crc  ,  logic [7:0] data );
     logic [15:0] new_crc;
 
     new_crc[15] = data[0] ^ data[1] ^ data[2] ^ data[3] ^ data[4] ^ data[5] ^ data[6] ^ data[7] ^ 
@@ -130,7 +130,7 @@ endfunction
                   crc[8] ^ crc[7] ^ crc[6] ^ crc[5] ^ crc[4] ^ crc[3] ^ crc[2] ^ crc[1] ^ crc[0];
 
     return new_crc;
-    endfunction
+  endfunction
     endclass : TXRX_seq_item
 
 `endif

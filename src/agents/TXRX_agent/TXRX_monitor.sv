@@ -29,6 +29,8 @@ class TXRX_monitor extends uvm_monitor;
         fork
             collect_stream(tx_analysis_port, "TX");
             collect_stream(rx_analysis_port, "RX");
+            sync_serial("TX");
+            sync_serial("RX");
         join_none
     endtask
 
@@ -43,16 +45,12 @@ class TXRX_monitor extends uvm_monitor;
           @(negedge vif.clk);
         // Wait for 1 byte (8 bits) in Big Endian order
          byte_collected = 0;
-    //     @(posedge  vif.active_package);
-           while (vif.active_package)       ///// @(negedge vif.clk);
+           while (vif.active_package)  
          begin  
-            vif.byte_collected = 1;      
             for (int i = 0 ; i <=7 ; i++) begin
                   @(negedge vif.clk);
                 byte_collected[i] = (stream_type == "TX") ? vif.tx : vif.rx;  // Correct signal reference
              end
-            vif.byte_collected = 0;  
-             $display("byte_collected is %x", byte_collected);
              // Check if the collected byte is IDLE and not zero
              if (byte_collected != IDLE) begin
              `uvm_info(get_type_name(),  $sformatf("[STEAM TYPE = %s] -  [Collected byte that is not IDLE is %x]:",stream_type,byte_collected), UVM_DEBUG)
@@ -79,12 +77,13 @@ class TXRX_monitor extends uvm_monitor;
         // Collect Start2 (43)
         for (int i = 0 ; i <=7 ; i++) begin
             @(negedge vif.clk);
-       temp_byte[i] = (stream_type == "TX") ? vif.tx : vif.rx;  // Correct signal reference
+            temp_byte[i] = (stream_type == "TX") ? vif.tx : vif.rx;  // Correct signal reference
         end
         item.start2 = temp_byte;
 
         // Collect Header
-        for (int i = item.header.size()-1; i >= 0; i--) begin    
+////         for (int i = item.header.size()-1; i >= 0; i--) begin    
+        for (int i = 0 ; i <= item.header.size()-1 ; i++) begin    
            for (int j = 0 ; j <=7 ; j++) begin
                 @(negedge vif.clk);
                 item.header[i][j]  = (stream_type == "TX") ? vif.tx : vif.rx;  // Correct signal reference
@@ -105,7 +104,8 @@ class TXRX_monitor extends uvm_monitor;
         end
 
         // Collect Footer
-           for (int i = item.footer.size()-1; i >= 0; i--) begin
+    ///       for (int i = item.footer.size()-1; i >= 0; i--) begin
+           for (int i = 0 ; i <= item.footer.size()-1  ; i++) begin
             for (int j = 0 ; j <=7 ; j++) begin
                 @(negedge vif.clk);
                 item.footer[i][j] = (stream_type == "TX") ? vif.tx : vif.rx; 
@@ -141,11 +141,6 @@ class TXRX_monitor extends uvm_monitor;
 ////        item.rd_data[31:24]  = item.data[3] ; // Last 8 bits of address
 ////    end
 ////
-
-
-
-
-
         // printing item fields only in UVM_DEBUG Mode
          if (get_report_verbosity_level() >= UVM_DEBUG)
         begin
@@ -157,4 +152,31 @@ class TXRX_monitor extends uvm_monitor;
 
 
     endtask
+
+
+
+  // Task to sync serial data and find the sync word 0xB5
+  task sync_serial(string stream_type);
+    logic [7:0] shift_reg = 8'h00; // Shift register to capture incoming bits
+    bit serial_in;
+    while (!vif.sync_signal)
+   begin
+      @(negedge vif.clk); // Wait for a clock edge
+       serial_in  = (stream_type == "TX") ? vif.tx : vif.rx;  // Correct signal reference
+      shift_reg = {shift_reg[6:0], vif.rx}; // Shift in the next bit
+
+        if (shift_reg == 8'hB5) begin // Check for sync word
+            if (stream_type == "TX"  )
+                vif.tx_sync_signal = 1'b1; // Toggle sync signal
+            else if (stream_type == "RX") 
+                vif.rx_sync_signal = 1'b1; // Toggle sync signal
+      
+            $display("Sync %s word 0xB5 detected at time %0t",stream_type,  $time);
+        end
+      end
+
+  endtask
+
+     
+
 endclass
