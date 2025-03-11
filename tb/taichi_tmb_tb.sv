@@ -12,11 +12,22 @@
    bit reset;
    bit sig_2_clk;
    bit sig_2_rst;
-   bit txrx_clk;
+   reg  txrx_clk = 0;
     always #750.75ns clk <= ~clk;
     always #2.5ns mclk <= ~mclk;
     always #20ns sig_2_clk <= ~sig_2_clk;
-    always #1.25ns txrx_clk <= ~txrx_clk;
+ ////   always #1.25ns txrx_clk <= ~txrx_clk;
+
+// Generate the derived clock toggling on both edges of clk
+  always @(posedge mclk) begin
+    txrx_clk = ~txrx_clk;
+    #1.25ns;
+     txrx_clk <= ~txrx_clk;
+      @(negedge mclk)
+       txrx_clk <= ~txrx_clk;
+        #1.25ns;
+     txrx_clk <= ~txrx_clk;
+  end
 
 initial begin
   reset = 1;
@@ -26,10 +37,10 @@ end
 
    // Instantiate the Interface and pass it to Design
    taichi_tmb_agent_if           taichi_tmb_vif  (.clk(mclk));
-   TXRX_agent_if                 diag_txrx_vif(.clk(txrx_clk),.rst(reset)); 
-   TXRX_agent_if                 oper_txrx_vif(.clk(txrx_clk),.rst(reset)); 
+   TXRX_agent_if                 diag_txrx_vif(.clk(txrx_clk),.rst(sig_2_rst)); 
+   TXRX_agent_if                 oper_txrx_vif(.clk(txrx_clk),.rst(sig_2_rst)); 
    controllers_agent_if          controllers_vif(.clk(mclk),.rst(sig_2_rst)); 
-   asic_tiles_agent_if          asic_tiles_vif(.clk(mclk),.rst(reset)); 
+   asic_tiles_agent_if          asic_tiles_vif(.clk(mclk),.rst(sig_2_rst)); 
   
    Taichi_TMB_top DUT  (
    //-------------------------------------------------------
@@ -97,6 +108,7 @@ end
 
 
 assign sig_2_rst = taichi_tmb_tb.DUT.RX_serial_inst.RESET;
+assign diag_txrx_vif.channel_ok = taichi_tmb_tb.DUT.registers_inst_A.RX_series_COMPONENT.channel_RDY; 
 
 
 endmodule

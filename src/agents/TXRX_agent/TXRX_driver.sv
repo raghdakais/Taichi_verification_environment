@@ -28,8 +28,6 @@ class TXRX_driver extends uvm_driver#(TXRX_seq_item);
         // Wait for reset to be deasserted
         wait_for_reset();
      forever begin
-        @(posedge vif.clk);
-
         // Try to get a sequence item (non-blocking)
             seq_item_port.try_next_item(req);
         if(req==null) begin
@@ -76,7 +74,6 @@ class TXRX_driver extends uvm_driver#(TXRX_seq_item);
     end
   join_any 
     disable fork; // Ensure the other process stops execution
-    #10us;
    endtask
    
 //----------------------------------------------------------------
@@ -87,9 +84,9 @@ task send_idle();
     //----------------------------------------------------------------
    
     // Loop over bits from MSB to LSB (Big Endian order)
-    for (int i = 7; i >= 0; i--) begin
-        vif.tx <= idle[i]; // Send each bit one-by-one
+   for (int i = 0 ; i <=7 ; i++) begin
         @(posedge vif.clk); // Wait for the next clock cycle
+        vif.tx <= idle[i]; // Send each bit one-by-one
     end
 endtask
 
@@ -99,7 +96,8 @@ endtask
 task drive_packet(TXRX_seq_item pkt);
     //----------------------------------------------------------------
   
-   vif.active_package = 1;
+   vif.active_package = 1;   // for debug
+
    vif.valid_crc = pkt.valid_crc;
    vif.valid_start1 = pkt.valid_start1;
    vif.valid_start2 = pkt.valid_start2;
@@ -124,15 +122,15 @@ task drive_packet(TXRX_seq_item pkt);
        send_idle();
 
     // Send Start1 (21)
-    for (int i = 7; i >= 0; i--) begin
-        vif.tx <= pkt.start1[i];  // Send the bits of start1 in Big Endian order
+  for (int i = 0 ; i <=7 ; i++) begin
         @(posedge vif.clk);
+         vif.tx <= pkt.start1[i];  // Send the bits of start1 in Big Endian order
     end
 
     // Send Start2 (43)
-    for (int i = 7; i >= 0; i--) begin
-        vif.tx <= pkt.start2[i];  // Send the bits of start2 in Big Endian order
+   for (int i = 0 ; i <=7 ; i++) begin
         @(posedge vif.clk);
+        vif.tx <= pkt.start2[i];  // Send the bits of start2 in Big Endian order
     end
 
       // Send Header with read/write bits in the first byte (bit 0 and bit 1)
@@ -159,15 +157,15 @@ task drive_packet(TXRX_seq_item pkt);
             end
         end
         // Transmit header byte in Big Endian order
-        for (int j = 7; j >= 0; j--) begin
-            vif.tx <= pkt.header[i][j];
+   for (int j = 0 ; j <=7 ; j++) begin
             @(posedge vif.clk);
+            vif.tx <= pkt.header[i][j];
         end
     end
 
     // Send Data (iterate from max index down to 0)
     for (int i = pkt.data.size()-1; i >= 0; i--) begin
-        for (int j = 7; j >= 0; j--) begin
+      for (int j = 0 ; j <=7 ; j++) begin
             vif.tx <= pkt.data[i][j];  // Transmit bits from MSB to LSB in Big Endian
             @(posedge vif.clk);
         end
@@ -175,19 +173,17 @@ task drive_packet(TXRX_seq_item pkt);
 
     // Send Footer (iterate from max index down to 0)
     for (int i = pkt.footer.size()-1; i >= 0; i--) begin
-        for (int j = 7; j >= 0; j--) begin
-            vif.tx <= pkt.footer[i][j];  // Transmit bits from MSB to LSB in Big Endian
+      for (int j = 0 ; j <=7 ; j++) begin
+         vif.tx <= pkt.footer[i][j];  // Transmit bits from MSB to LSB in Big Endian
             @(posedge vif.clk);
         end
     end
 
     // Send CRC (iterate from max index down to 0 - 1 variable for 16 bits)
-        for (int j = 15; j >= 0; j--) begin
-            vif.tx <= pkt.crc[j];  // Transmit bits from MSB to LSB in Big Endian
+   for (int j = 0 ; j <=15 ; j++) begin
             @(posedge vif.clk);
+            vif.tx <= pkt.crc[j];  // Transmit bits from MSB to LSB in Big Endian
         end
           vif.active_package = 0;
-     //       repeat (2)
-     //        @(posedge vif.clk);
 endtask
 endclass

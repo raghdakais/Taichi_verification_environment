@@ -18,11 +18,15 @@ add wave -noupdate -radix unsigned /taichi_tmb_tb/DUT/registers_inst_A/RX_series
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/Bitslip
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/FCLK
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/CLKDIV
+add wave -noupdate /taichi_tmb_tb/diag_txrx_vif/rst
+add wave -noupdate -color {Dark Orchid} /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/channel_RDY
 add wave -noupdate /taichi_tmb_tb/diag_txrx_vif/clk
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/sDataIn
+add wave -noupdate /taichi_tmb_tb/diag_txrx_vif/byte_collected
+add wave -noupdate /taichi_tmb_tb/diag_txrx_vif/active_package
 add wave -noupdate -color {Orange Red} /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/pDataIn
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/pDataIn_q
-add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/cnt_idle_byte
+add wave -noupdate -color Magenta /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/cnt_idle_byte
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/cnt_num_byte
 add wave -noupdate -radix unsigned /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/delay_cnt_byte
 add wave -noupdate -divider <NULL>
@@ -71,8 +75,8 @@ add wave -noupdate /taichi_tmb_tb/DUT/sig_2_packet_received_50m
 add wave -noupdate /taichi_tmb_tb/DUT/sig_2_good_packet
 add wave -noupdate /taichi_tmb_tb/DUT/sig_2_data_50m
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {10065000 ps} 0} {{Cursor 2} {28112577 ps} 0} {{Cursor 3} {211579551 ps} 0} {{Cursor 4} {10163185 ps} 0}
-quietly wave cursor active 4
+WaveRestoreCursors {{Cursor 1} {151655527 ps} 0} {{Cursor 13} {21250 ps} 0}
+quietly wave cursor active 1
 configure wave -namecolwidth 228
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
@@ -87,4 +91,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {10015767 ps} {10364914 ps}
+WaveRestoreZoom {151535568 ps} {151875534 ps}

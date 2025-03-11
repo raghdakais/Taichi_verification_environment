@@ -35,12 +35,13 @@ class taichi_tmb_test_base extends uvm_test;
 //--------------------------------------------------------
 // sending a syncronization sequence for sig 2 signal
 //--------------------------------------------------------
+   #30us;
         if (!this.m_controllers_seq.randomize() with { 
                }) 
             `uvm_fatal("RUN_PHASE", "Randomization failed for m_controllers_seq")
            this.m_controllers_seq.start(this.m_taichi_tmb_env.m_controllers_agent.seqr);
 
-#100us;
+#10us;
    endtask
 
 

@@ -37,19 +37,22 @@ class TXRX_monitor extends uvm_monitor;
     //------------------------------------------------------------
     task collect_stream(uvm_analysis_port#(TXRX_seq_item) analysis_port, string stream_type);
         bit [7:0] byte_collected;
-        int byte_number = 0;
 
     forever
      begin
           @(negedge vif.clk);
         // Wait for 1 byte (8 bits) in Big Endian order
          byte_collected = 0;
-         while(  vif.active_package)
-         begin        
-             for (int i = 7; i >= 0; i--) begin  // Collect MSB first
-                 byte_collected[i] = (stream_type == "TX") ? vif.tx : vif.rx;  // Correct signal reference
+    //     @(posedge  vif.active_package);
+           while (vif.active_package)       ///// @(negedge vif.clk);
+         begin  
+            vif.byte_collected = 1;      
+            for (int i = 0 ; i <=7 ; i++) begin
                   @(negedge vif.clk);
+                byte_collected[i] = (stream_type == "TX") ? vif.tx : vif.rx;  // Correct signal reference
              end
+            vif.byte_collected = 0;  
+             $display("byte_collected is %x", byte_collected);
              // Check if the collected byte is IDLE and not zero
              if (byte_collected != IDLE) begin
              `uvm_info(get_type_name(),  $sformatf("[STEAM TYPE = %s] -  [Collected byte that is not IDLE is %x]:",stream_type,byte_collected), UVM_DEBUG)
@@ -74,17 +77,17 @@ class TXRX_monitor extends uvm_monitor;
         bit [7:0] temp_byte;
 
         // Collect Start2 (43)
-        for (int i = 7; i >= 0; i--) begin
-            temp_byte[i] = (stream_type == "TX") ? vif.tx : vif.rx;  // Correct signal reference
+        for (int i = 0 ; i <=7 ; i++) begin
             @(negedge vif.clk);
+       temp_byte[i] = (stream_type == "TX") ? vif.tx : vif.rx;  // Correct signal reference
         end
         item.start2 = temp_byte;
 
         // Collect Header
         for (int i = item.header.size()-1; i >= 0; i--) begin    
-            for (int j = 7; j >= 0; j--) begin
-                item.header[i][j]  = (stream_type == "TX") ? vif.tx : vif.rx;  // Correct signal reference
+           for (int j = 0 ; j <=7 ; j++) begin
                 @(negedge vif.clk);
+                item.header[i][j]  = (stream_type == "TX") ? vif.tx : vif.rx;  // Correct signal reference
             end
         end
             if (item.header[0][0] == 1 &&   item.header[0][1] == 0)
@@ -95,24 +98,24 @@ class TXRX_monitor extends uvm_monitor;
               item.command = "[INVALID READ/WRITE COMMAND]";
         // Collect Data
         for (int i = item.data.size()-1; i >= 0; i--) begin    
-             for (int j = 7; j >= 0; j--) begin
-                item.data[i][j] = (stream_type == "TX") ? vif.tx : vif.rx; 
+      for (int j = 0 ; j <=7 ; j++) begin
                 @(negedge vif.clk);
+             item.data[i][j] = (stream_type == "TX") ? vif.tx : vif.rx; 
             end
         end
 
         // Collect Footer
            for (int i = item.footer.size()-1; i >= 0; i--) begin
-            for (int j = 7; j >= 0; j--) begin
-                item.footer[i][j] = (stream_type == "TX") ? vif.tx : vif.rx; 
+            for (int j = 0 ; j <=7 ; j++) begin
                 @(negedge vif.clk);
+                item.footer[i][j] = (stream_type == "TX") ? vif.tx : vif.rx; 
             end
         end
 
         // Collect CRC (2 bytes, 16 bits total)
-        for (int j = 15; j >= 0; j--) begin
-            item.crc[j] = (stream_type == "TX") ? vif.tx : vif.rx; 
+     for (int j = 0 ; j <=15 ; j++) begin
             @(negedge vif.clk);
+             item.crc[j] = (stream_type == "TX") ? vif.tx : vif.rx; 
         end
 
 

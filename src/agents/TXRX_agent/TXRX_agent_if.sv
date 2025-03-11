@@ -13,6 +13,7 @@ interface TXRX_agent_if(input logic clk,input logic rst );
     bit valid_start1;
     bit valid_start2;
 
-
+    bit byte_collected;
+    bit channel_ok;
 endinterface
 `endif

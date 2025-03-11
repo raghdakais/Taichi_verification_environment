@@ -49,7 +49,7 @@ class TXRX_seq_item extends uvm_sequence_item;
 
   //constraint to ensure time_sent_idle has no big values
   constraint times_sent_idle_c {
-    times_sent_idle inside {[1:10]};
+    times_sent_idle inside {[0:10]};
 }
     // Constraint to ensure valid_crc defaults to 1 unless explicitly constrained to 0 in a test
     constraint valid_crc_default_c {
