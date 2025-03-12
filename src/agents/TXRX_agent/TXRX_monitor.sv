@@ -26,11 +26,11 @@ class TXRX_monitor extends uvm_monitor;
      task run_phase(uvm_phase phase);
     //------------------------------------------------------------
     super.run_phase(phase);
+
+        @(negedge vif.rst);
         fork
             collect_stream(tx_analysis_port, "TX");
             collect_stream(rx_analysis_port, "RX");
-            sync_serial("TX");
-            sync_serial("RX");
         join_none
     endtask
 
@@ -39,13 +39,14 @@ class TXRX_monitor extends uvm_monitor;
     //------------------------------------------------------------
     task collect_stream(uvm_analysis_port#(TXRX_seq_item) analysis_port, string stream_type);
         bit [7:0] byte_collected;
-
+        fork
+           sync_serial( stream_type );
+        join
     forever
      begin
-          @(negedge vif.clk);
-        // Wait for 1 byte (8 bits) in Big Endian order
+//         @(negedge vif.clk);
          byte_collected = 0;
-           while (vif.active_package)  
+  //         while (vif.active_package)  
          begin  
             for (int i = 0 ; i <=7 ; i++) begin
                   @(negedge vif.clk);
@@ -62,7 +63,6 @@ class TXRX_monitor extends uvm_monitor;
                  item.start1       = byte_collected;
                  collect_packet(stream_type, item);
                  analysis_port.write(item);
-
              end
         end
     end
@@ -82,30 +82,38 @@ class TXRX_monitor extends uvm_monitor;
         item.start2 = temp_byte;
 
         // Collect Header
-////         for (int i = item.header.size()-1; i >= 0; i--) begin    
-        for (int i = 0 ; i <= item.header.size()-1 ; i++) begin    
+      for (int i = item.header.size()-1; i >= 0; i--) begin    
            for (int j = 0 ; j <=7 ; j++) begin
                 @(negedge vif.clk);
                 item.header[i][j]  = (stream_type == "TX") ? vif.tx : vif.rx;  // Correct signal reference
             end
         end
-            if (item.header[0][0] == 1 &&   item.header[0][1] == 0)
+            if (item.header[0][0] == 1 &&   item.header[0][1] == 0  && (stream_type == "TX"))
               item.command = "[READ]";
-            else if (item.header[0][0] == 0 &&   item.header[0][1] == 1)
+            else if (item.header[0][0] == 0 &&   item.header[0][1] == 1 && (stream_type == "TX"))
               item.command = "[WRITE]";
-            else 
+            else if(stream_type == "TX")
               item.command = "[INVALID READ/WRITE COMMAND]";
+            else if ((stream_type == "RX")) 
+              item.command = "[READ BACK ACK]";
         // Collect Data
-        for (int i = item.data.size()-1; i >= 0; i--) begin    
+     for (int i = item.data.size()-1; i >= 0; i--) begin    
       for (int j = 0 ; j <=7 ; j++) begin
                 @(negedge vif.clk);
              item.data[i][j] = (stream_type == "TX") ? vif.tx : vif.rx; 
             end
         end
-
+           if (item.command == "[READ BACK ACK]")
+           begin
+             item.rd_data[31:24] = item.data[3];
+             item.rd_data[23:16] = item.data[2];
+             item.rd_data[15:8 ] = item.data[1];
+             item.rd_data[7 :0 ] = item.data[0];
+           end
+  
+  
         // Collect Footer
-    ///       for (int i = item.footer.size()-1; i >= 0; i--) begin
-           for (int i = 0 ; i <= item.footer.size()-1  ; i++) begin
+      for (int i = item.footer.size()-1; i >= 0; i--) begin
             for (int j = 0 ; j <=7 ; j++) begin
                 @(negedge vif.clk);
                 item.footer[i][j] = (stream_type == "TX") ? vif.tx : vif.rx; 
@@ -117,8 +125,6 @@ class TXRX_monitor extends uvm_monitor;
             @(negedge vif.clk);
              item.crc[j] = (stream_type == "TX") ? vif.tx : vif.rx; 
         end
-
-
     // copy the address to the footer, we copy it byte by byte
     item.address[7:0]   =  item.footer[0] ; // First 8 bits of address
     item.address[15:8]  =  item.footer[1] ; // Next 8 bits of address
@@ -156,25 +162,27 @@ class TXRX_monitor extends uvm_monitor;
 
 
   // Task to sync serial data and find the sync word 0xB5
+ //-----------------------------------------------------------------------------
   task sync_serial(string stream_type);
+ //-----------------------------------------------------------------------------
     logic [7:0] shift_reg = 8'h00; // Shift register to capture incoming bits
     bit serial_in;
-    while (!vif.sync_signal)
+    bit sync; 
+    sync  = (stream_type == "TX") ? vif.tx_sync_signal : vif.rx_sync_signal;  // Correct signal reference
+while (!sync)
    begin
-      @(negedge vif.clk); // Wait for a clock edge
-       serial_in  = (stream_type == "TX") ? vif.tx : vif.rx;  // Correct signal reference
-      shift_reg = {shift_reg[6:0], vif.rx}; // Shift in the next bit
-
-        if (shift_reg == 8'hB5) begin // Check for sync word
-            if (stream_type == "TX"  )
-                vif.tx_sync_signal = 1'b1; // Toggle sync signal
-            else if (stream_type == "RX") 
-                vif.rx_sync_signal = 1'b1; // Toggle sync signal
-      
-            $display("Sync %s word 0xB5 detected at time %0t",stream_type,  $time);
+    @(negedge vif.clk); // Wait for a clock edge
+     serial_in  = (stream_type == "TX") ? vif.tx : vif.rx;  // Correct signal reference
+     shift_reg = {serial_in, shift_reg[7:1]}; // Shift bits from LSB to MSB
+     if (shift_reg == 8'hB5) begin // Check for sync word
+        if (stream_type == "TX"  )
+          vif.tx_sync_signal = 1'b1; // Toggle sync signal
+        else if (stream_type == "RX") 
+          vif.rx_sync_signal = 1'b1; // Toggle sync signal
+        sync  = (stream_type == "TX") ? vif.tx_sync_signal : vif.rx_sync_signal;  // Correct signal reference
+        $display("Sync %s word 0xB5 detected at time %0t",stream_type,  $time);
         end
-      end
-
+    end
   endtask
 
      

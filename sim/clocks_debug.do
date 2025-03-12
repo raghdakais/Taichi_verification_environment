@@ -15,6 +15,13 @@ add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/TX_series7_COMPONENT/DATA
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/TX_series7_COMPONENT/TX_data_byte
 add wave -noupdate -divider <NULL>
 add wave -noupdate -divider <NULL>
+add wave -noupdate /taichi_tmb_tb/diag_txrx_vif/clk
+add wave -noupdate -color Orange /taichi_tmb_tb/diag_txrx_vif/rx_sync_signal
+add wave -noupdate -color Orange /taichi_tmb_tb/DUT/Diag_out_P
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/TX_series7_COMPONENT/DATA_IN
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/TX_series7_COMPONENT/TX_data_byte
+add wave -noupdate -divider <NULL>
+add wave -noupdate -divider TX
 add wave -noupdate -color Yellow /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/sm4sync
 add wave -noupdate -radix unsigned /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/delay_cnt_byte
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/Bitslip
@@ -23,6 +30,7 @@ add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/CLKDI
 add wave -noupdate /taichi_tmb_tb/diag_txrx_vif/rst
 add wave -noupdate -color {Dark Orchid} /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/channel_RDY
 add wave -noupdate /taichi_tmb_tb/diag_txrx_vif/clk
+add wave -noupdate /taichi_tmb_tb/diag_txrx_vif/tx_sync_signal
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/RX_series_COMPONENT/sDataIn
 add wave -noupdate /taichi_tmb_tb/diag_txrx_vif/byte_collected
 add wave -noupdate /taichi_tmb_tb/diag_txrx_vif/active_package
@@ -86,8 +94,8 @@ add wave -noupdate /taichi_tmb_tb/DUT/sig_2_packet_received_50m
 add wave -noupdate /taichi_tmb_tb/DUT/sig_2_good_packet
 add wave -noupdate /taichi_tmb_tb/DUT/sig_2_data_50m
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {98866951 ps} 0} {{Cursor 13} {42781327 ps} 0}
-quietly wave cursor active 2
+WaveRestoreCursors {{Cursor 3} {227500 ps} 0}
+quietly wave cursor active 1
 configure wave -namecolwidth 228
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
@@ -102,4 +110,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {42586133 ps} {43183012 ps}
+WaveRestoreZoom {204700 ps} {287090 ps}

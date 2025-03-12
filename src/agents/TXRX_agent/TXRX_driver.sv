@@ -140,8 +140,7 @@ task drive_packet(TXRX_seq_item pkt);
     
       // Send Header with read/write bits in the first byte (bit 0 and bit 1)
     // Bit 0 active for read, bit 1 active for write
-//    for (int i = pkt.header.size()-1; i >= 0; i--) begin
-    for (int i = 0 ; i <= pkt.header.size()-1; i++) begin
+    for (int i = pkt.header.size()-1; i >= 0; i--) begin
         // Set the read/write bits in header byte0 (bit 0 for read, bit 1 for write)
         if (i == 0) begin
             // Set the read/write operation based on randomized enum
@@ -172,8 +171,7 @@ task drive_packet(TXRX_seq_item pkt);
     end
 
     // Send Data (iterate from max index down to 0)
-   // for (int i = pkt.data.size()-1; i >= 0; i--) begin
-     for (int i = 0  ; i<= pkt.data.size()-1 ; i++) begin
+    for (int i = pkt.data.size()-1; i >= 0; i--) begin
      for (int j = 0 ; j <=7 ; j++) begin
             @(posedge vif.clk);
             vif.tx <= pkt.data[i][j];  // Transmit bits from MSB to LSB in Big Endian
@@ -183,8 +181,7 @@ task drive_packet(TXRX_seq_item pkt);
     end
 
     // Send Footer (iterate from max index down to 0)
- //    for (int i = pkt.footer.size()-1; i >= 0; i--) begin
-    for (int i = 0 ; i <= pkt.footer.size()-1  ; i++) begin
+     for (int i = pkt.footer.size()-1; i >= 0; i--) begin
         for (int j = 0 ; j <=7 ; j++) begin
             @(posedge vif.clk);
          vif.tx <= pkt.footer[i][j];  // Transmit bits from MSB to LSB in Big Endian
