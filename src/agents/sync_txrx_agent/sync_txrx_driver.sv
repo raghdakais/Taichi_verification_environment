@@ -1,0 +1,234 @@
+`ifndef SYNC_TXRX_DRIVER_SV
+`define SYNC_TXRX_DRIVER_SV
+//----------------------------------------------------------------
+class sync_txrx_driver extends uvm_driver #(sync_txrx_seq_item);
+//----------------------------------------------------------------
+    `uvm_component_utils(sync_txrx_driver)
+
+    virtual sync_txrx_agent_if vif;
+   sync_txrx_config cfg;            // Configuration object
+
+    function new(string name = "m_sync_txrx_driver", uvm_component parent);
+        super.new(name, parent);
+    endfunction
+
+//----------------------------------------------------------------
+    task run_phase(uvm_phase phase);
+//----------------------------------------------------------------
+     super.run_phase(phase);
+        // Wait for reset to be deasserted
+        wait_for_reset();
+      forever begin
+        // Try to get a sequence item (non-blocking)
+            seq_item_port.try_next_item(req);
+        if(req==null) begin
+            `uvm_info(get_type_name(), "No Request.. driving idle", UVM_DEBUG)
+            send_idle();
+        end 
+        else begin
+            `uvm_info(get_type_name(), $sformatf("Driving packet: %s", req.sprint()), UVM_DEBUG)
+            // Drive the received packet if its IP packet
+             if (req.pkt_type == SYNC_IP)
+              drive_IP_packet(req);
+             if (req.pkt_type == SYNC_HEADER)
+              drive_HEADER_packet(req);
+            // Notify sequencer that item has been processed
+            seq_item_port.item_done();
+        end
+    end
+    endtask
+
+
+//----------------------------------------------------------------
+// Function to send IDLE byte (3B) bit-by-bit in Big Endian order
+task send_idle();
+    //----------------------------------------------------------------
+    bit [7:0] idle = IDLE; // IDLE byte value (0x3B = 0011 1011)
+    //----------------------------------------------------------------
+   
+    // Loop over bits from MSB to LSB (Big Endian order)
+   for (int i = 0 ; i <=7 ; i++) begin
+        @(posedge vif.clk); // Wait for the next clock cycle
+        vif.tx <= idle[i]; // Send each bit one-by-one
+    end
+endtask
+
+//----------------------------------------------------------------
+task drive_IP_packet(sync_txrx_seq_item pkt);
+//----------------------------------------------------------------
+    bit [15:0] crc_calc = 16'hFFFF; // Initialize CRC with 0xFFFF
+    bit [7:0] serial_byte;
+
+  //------------------------------------------------------------ 
+  //  IDLE |  START1  | START2  |  Data  |  CRC         |
+  //  1byte    1byte     1byte     1byte    2byte 
+  //------------------------------------------------------------ 
+    vif.ip_valid_crc = pkt.ip_valid_crc;
+    vif.header_valid_crc = pkt.header_valid_crc;
+ 
+
+      // Send Start1 (21)
+        for (int i = 0 ; i <=7 ; i++) begin
+              @(posedge vif.clk);
+               vif.tx <= pkt.start1[i];  // Send the bits of start1 in Big Endian order
+          end
+
+          // Process each byte in the packet serially (bit by bit)
+          crc_calc = calculate_crc16_byte(crc_calc, pkt.start1); // Start1 (21)
+
+          // Send Start2 (43)
+         for (int i = 0 ; i <=7 ; i++) begin
+              @(posedge vif.clk);
+              vif.tx <= pkt.start2_ip[i];  // Send the bits of start2 in Big Endian order
+          end
+          crc_calc = calculate_crc16_byte(crc_calc, pkt.start2_ip); // Start2 (43)
+
+        // Send 1 random data
+         for (int i = 0 ; i <=7 ; i++) begin
+              @(posedge vif.clk);
+              vif.tx <= pkt.ip_data[i];  // Send the bits of start2 in Big Endian order
+          end
+          crc_calc = calculate_crc16_byte(crc_calc, pkt.ip_data); 
+
+         // Send CRC (iterate from max index down to 0 - 1 variable for 16 bits)
+         for (int j = 0 ; j <=15 ; j++) begin
+                  @(posedge vif.clk);
+                  vif.tx <= crc_calc[j];  // Transmit bits from MSB to LSB in Big Endian
+              end
+endtask
+
+
+//----------------------------------------------------------------
+task drive_HEADER_packet(sync_txrx_seq_item pkt);
+//----------------------------------------------------------------
+    bit [15:0] crc_calc = 16'hFFFF; // Initialize CRC with 0xFFFF
+    bit [7:0] serial_byte;
+
+  //------------------------------------------------------------ 
+  //  IDLE |  START1  | START2  |  Data  |  CRC         |
+  //  1byte    1byte     1byte     1byte    2byte 
+  //------------------------------------------------------------ 
+    vif.ip_valid_crc = pkt.ip_valid_crc;
+    vif.header_valid_crc = pkt.header_valid_crc;
+ 
+
+
+
+
+ 
+
+      // Send Start1 (21)
+        for (int i = 0 ; i <=7 ; i++) begin
+              @(posedge vif.clk);
+               vif.tx <= pkt.start1[i];  // Send the bits of start1 in Big Endian order
+          end
+
+          // Process each byte in the packet serially (bit by bit)
+          crc_calc = calculate_crc16_byte(crc_calc, pkt.start1); // Start1 (21)
+
+          // Send Start2 (43)
+         for (int i = 0 ; i <=7 ; i++) begin
+              @(posedge vif.clk);
+              vif.tx <= pkt.start2_header[i];  // Send the bits of start2 in Big Endian order
+          end
+          crc_calc = calculate_crc16_byte(crc_calc, pkt.start2_ip); // Start2 (43)
+
+        // Send 64 random data words
+        // Drive the ff_headers_sig signals based on the item values
+            for (int i = HEADER_DATA_SIZE -1 ; i <= 0  ; i--) begin
+               for (int j = 0 ; j <=7 ; j++) begin
+                 @(posedge vif.clk);
+                 vif.tx <= pkt.header_data[i][j];  // Send the bits of start2 in Big Endian order
+          end
+         end
+
+        // Send 12 random data byte
+        // Drive the ff_headers_sig signals based on the item values
+            for (int i = 12 -1 ; i <= 0  ; i--) begin
+               for (int j = 0 ; j <=7 ; j++) begin
+                 @(posedge vif.clk);
+                 vif.tx <= pkt.header_data[i][j];  // Send the bits of start2 in Big Endian order
+          end
+         end
+
+
+
+         // Send CRC (iterate from max index down to 0 - 1 variable for 16 bits)
+         for (int j = 0 ; j <=15 ; j++) begin
+                  @(posedge vif.clk);
+                  vif.tx <= crc_calc[j];  // Transmit bits from MSB to LSB in Big Endian
+              end
+endtask
+
+
+   // Function to compute next CRC16 value given an 8-bit data and 16-bit current CRC
+  static function logic [15:0] calculate_crc16_byte(logic [15:0] crc  ,  logic [7:0] data );
+    logic [15:0] new_crc;
+
+    new_crc[15] = data[0] ^ data[1] ^ data[2] ^ data[3] ^ data[4] ^ data[5] ^ data[6] ^ data[7] ^ 
+                  crc[7] ^ crc[6] ^ crc[5] ^ crc[4] ^ crc[3] ^ crc[2] ^ crc[1] ^ crc[0];
+    new_crc[14] = data[0] ^ data[1] ^ data[2] ^ data[3] ^ data[4] ^ data[5] ^ data[6] ^ 
+                  crc[6] ^ crc[5] ^ crc[4] ^ crc[3] ^ crc[2] ^ crc[1] ^ crc[0];
+    new_crc[13] = data[6] ^ data[7] ^ crc[7] ^ crc[6];
+    new_crc[12] = data[5] ^ data[6] ^ crc[6] ^ crc[5];
+    new_crc[11] = data[4] ^ data[5] ^ crc[5] ^ crc[4];
+    new_crc[10] = data[3] ^ data[4] ^ crc[4] ^ crc[3];
+    new_crc[9]  = data[2] ^ data[3] ^ crc[3] ^ crc[2];
+    new_crc[8]  = data[1] ^ data[2] ^ crc[2] ^ crc[1];
+    new_crc[7]  = data[0] ^ data[1] ^ crc[15] ^ crc[1] ^ crc[0];
+    new_crc[6]  = data[0] ^ crc[14] ^ crc[0];
+    new_crc[5]  = crc[13];
+    new_crc[4]  = crc[12];
+    new_crc[3]  = crc[11];
+    new_crc[2]  = crc[10];
+    new_crc[1]  = crc[9];
+    new_crc[0]  = data[0] ^ data[1] ^ data[2] ^ data[3] ^ data[4] ^ data[5] ^ data[6] ^ data[7] ^ 
+                  crc[8] ^ crc[7] ^ crc[6] ^ crc[5] ^ crc[4] ^ crc[3] ^ crc[2] ^ crc[1] ^ crc[0];
+
+    return new_crc;
+  endfunction
+
+
+
+//----------------------------------------------------------------
+   // Task to wait for reset to deassert
+  task wait_for_reset();
+//----------------------------------------------------------------
+    bit reset_deasserted = 0;
+    `uvm_info(get_type_name(), "Waiting for reset...", UVM_DEBUG)
+    
+   // Check if vif is assigned before using it
+        if (vif == null) begin
+            `uvm_fatal(get_type_name(), "Virtual interface (vif) is NULL! Cannot wait for reset.")
+        end
+
+        // Check if cfg is assigned before using timeout_cycles
+        if (cfg == null) begin
+            `uvm_fatal(get_type_name(), "Configuration object (cfg) is NULL! Cannot proceed with timeout check.")
+        end
+    
+
+    fork
+    // Wait for reset deassertion
+    begin
+    //  wait (vif.rst == 1'b0);
+      @(negedge vif.rst);
+      reset_deasserted = 1;
+      @(posedge vif.clk);
+    end
+
+    // Timeout logic
+    begin
+      repeat (cfg.timeout_cycles)
+          @(posedge vif.clk);
+      if (!reset_deasserted) begin
+        `uvm_fatal(get_type_name(), $sformatf("Timeout waiting for reset deassertion after %0d cycles!", cfg.timeout_cycles))
+      end
+    end
+  join_any 
+    disable fork; // Ensure the other process stops execution
+   
+   endtask
+    
+endclass: sync_txrx_driver
+`endif

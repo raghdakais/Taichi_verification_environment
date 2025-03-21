@@ -42,6 +42,7 @@ class TXRX_monitor extends uvm_monitor;
         fork
            sync_serial( stream_type );
         join
+  
     forever
      begin
 //         @(negedge vif.clk);
@@ -95,7 +96,7 @@ class TXRX_monitor extends uvm_monitor;
             else if(stream_type == "TX")
               item.command = "[INVALID READ/WRITE COMMAND]";
             else if ((stream_type == "RX")) 
-              item.command = "[READ BACK ACK]";
+              item.command = "[READ_BACK_ACK]";
         // Collect Data
      for (int i = item.data.size()-1; i >= 0; i--) begin    
       for (int j = 0 ; j <=7 ; j++) begin
@@ -103,7 +104,7 @@ class TXRX_monitor extends uvm_monitor;
              item.data[i][j] = (stream_type == "TX") ? vif.tx : vif.rx; 
             end
         end
-           if (item.command == "[READ BACK ACK]")
+           if (item.command == "[READ_BACK_ACK]")
            begin
              item.rd_data[31:24] = item.data[3];
              item.rd_data[23:16] = item.data[2];
@@ -138,15 +139,6 @@ class TXRX_monitor extends uvm_monitor;
         item.wr_data[23:16]  = item.data[2] ; // Last 8 bits of address
         item.wr_data[31:24]  = item.data[3] ; // Last 8 bits of address
     end
-    // if there was a write operation, copy the random address to the footer, we copy it byte by byte
- //   else if(item.op_type == "READ")
-////    begin
-////        item.rd_data[7:0]    = item.data[0] ; // First 8 bits of address
-////        item.rd_data[15:8]   = item.data[1] ; // Next 8 bits of address
-////        item.rd_data[23:16]  = item.data[2] ; // Last 8 bits of address
-////        item.rd_data[31:24]  = item.data[3] ; // Last 8 bits of address
-////    end
-////
         // printing item fields only in UVM_DEBUG Mode
          if (get_report_verbosity_level() >= UVM_DEBUG)
         begin

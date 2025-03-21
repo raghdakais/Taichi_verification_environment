@@ -4,16 +4,15 @@
 // Packet class representing different types of packets
 class TXRX_seq_item extends uvm_sequence_item;
 
-    packet_type_t   pkt_type;
-    rand rw_type_t  rw_type;
-    rand bit        do_wr_fail;
-    rand int times_sent_idle;
-    rand bit [7:0] start1;
-    rand bit [7:0] start2;
-    rand bit [7:0] header[$];
-    rand bit [7:0] data[$];
-    rand bit [7:0] footer[$];
-    rand bit [23:0] address;
+    randc rw_type_t  rw_type;
+    randc bit        do_wr_fail;
+    randc int times_sent_idle;
+    randc bit [7:0] start1;
+    randc bit [7:0] start2;
+    randc bit [7:0] header[$];
+    randc bit [7:0] data[$];
+    randc bit [7:0] footer[$];
+    randc bit [23:0] address;
     rand bit [31:0] wr_data;
     bit [31:0] rd_data;
 

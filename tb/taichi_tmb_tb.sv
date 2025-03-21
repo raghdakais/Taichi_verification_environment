@@ -41,6 +41,7 @@ end
    TXRX_agent_if                 oper_txrx_vif(.clk(txrx_clk),.rst(sig_2_rst)); 
    controllers_agent_if          controllers_vif(.clk(mclk),.rst(sig_2_rst)); 
    asic_tiles_agent_if          asic_tiles_vif(.clk(mclk),.rst(sig_2_rst)); 
+   sync_txrx_agent_if                 sync_txrx_vif(.clk(txrx_clk),.rst(sig_2_rst)); 
   
    Taichi_TMB_top DUT  (
    //-------------------------------------------------------
@@ -65,6 +66,11 @@ end
     .Reg_out_N           (oper_txrx_vif.rx_n),  
     .Reg_in_P            (oper_txrx_vif.tx ),  
     .Reg_in_N            (~oper_txrx_vif.tx), 
+   //-------------------------------------------------------
+    // SYNC TXRX
+   //-------------------------------------------------------
+    .Sync_P            (sync_txrx_vif.tx ),  
+    .Sync_N            (~sync_txrx_vif.tx),   
    //-------------------------------------------------------
    // Controllers
    //-------------------------------------------------------
@@ -102,6 +108,7 @@ end
       uvm_config_db #(virtual TXRX_agent_if)::set (null, "", "oper_txrx_agent_vif", oper_txrx_vif);
       uvm_config_db #(virtual controllers_agent_if)::set (null, "", "vif", controllers_vif);
       uvm_config_db #(virtual asic_tiles_agent_if)::set (null, "", "vif", asic_tiles_vif);
+      uvm_config_db #(virtual sync_txrx_agent_if)::set (null, "", "sync_txrx_agent_vif", sync_txrx_vif);
       run_test ();
    end
 

@@ -7,7 +7,7 @@ package TXRX_agent_package;
   import uvm_pkg::*; // Import UVM base classes
   `include "uvm_macros.svh"
 
-  typedef enum {IP, STATIC, DYNAMIC} packet_type_t;
+ /// typedef enum {IP, STATIC, DYNAMIC} packet_type_t;
   // Enum to represent read and write operations
     typedef enum bit {
     TXRX_READ ,   

@@ -38,7 +38,10 @@ class TXRX_driver extends uvm_driver#(TXRX_seq_item);
             `uvm_info(get_type_name(), $sformatf("Driving packet: %s", req.sprint()), UVM_DEBUG)
 
             // Drive the received packet
+           fork
             drive_packet(req);
+            
+           join
             
             // Notify sequencer that item has been processed
             seq_item_port.item_done();

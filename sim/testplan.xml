@@ -1,5 +1,5 @@
  <!-- WorkBook Path: https://docs.philips.com/personal/partner_raghda_kais_philips_com/Documents/Documents/Verification/Module1_Taichi_testplan.xlsx -->
- <!-- Date: 1/1/0001 12:42:59 PM -->
+ <!-- Date: 1/1/0001 12:45:41 AM -->
 <Workbook>
 	<Worksheet>
 		<Table>
@@ -65,7 +65,7 @@ Bits [7:4]: 0xC – Optional soft reset command.
 			<Row>
 				<Cell>2.3</Cell>
 				<Cell>Send sig_2 with soft reset = 0xC in Bits [7:4]</Cell>
-				<Cell>should be ignored - not implemented</Cell>
+				<Cell></Cell>
 				<Cell></Cell>
 				<Cell></Cell>
 				<Cell>1</Cell>
@@ -320,8 +320,8 @@ random data</Cell>
 				<Cell>4.6</Cell>
 				<Cell>check default values</Cell>
 				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>default_value_diag_reg_cg,\/taichi_tmb_env_package::taichi_tmb_reference_model::default_value_diag_reg_cg :element_inside_cp</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>

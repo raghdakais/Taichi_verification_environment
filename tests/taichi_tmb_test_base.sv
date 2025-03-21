@@ -8,7 +8,8 @@ class taichi_tmb_test_base extends uvm_test;
    	TXRX_sequence m_oper_txrx_seq;
     taichi_tmb_sequence m_taichi_tmb_seq;
     controllers_sequence m_controllers_seq;
-        
+     sync_txrx_sequence m_sync_txrx_seq;
+            
 
         // This is standard code for all components
     function new (string name = "taichi_tmb_test_base", uvm_component parent = null);
@@ -24,6 +25,8 @@ class taichi_tmb_test_base extends uvm_test;
         m_controllers_seq = controllers_sequence::type_id::create ("m_controllers_seq");
         m_diag_txrx_seq = TXRX_sequence::type_id::create ("m_diag_txrx_seq");
         m_oper_txrx_seq = TXRX_sequence::type_id::create ("m_oper_txrx_seq");
+        m_sync_txrx_seq = sync_txrx_sequence::type_id::create ("m_sync_txrx_seq");
+ 
  
     endfunction
 
@@ -45,6 +48,15 @@ class taichi_tmb_test_base extends uvm_test;
    endtask
 
 
+    task send_valid_ip_sync ();    
+         if (!this.m_sync_txrx_seq.randomize() with { 
+               }) 
+            `uvm_fatal("RUN_PHASE", "Randomization failed for m_sync_txrx_seq")
+           this.m_sync_txrx_seq.start(this.m_taichi_tmb_env.m_sync_txrx_agent.seqr);
 
+    endtask
+ 
+
+ 
 
 endclass
