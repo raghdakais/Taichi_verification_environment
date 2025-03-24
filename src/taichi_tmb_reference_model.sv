@@ -49,7 +49,7 @@ covergroup default_value_oper_reg_cg with function sample (int address);
 
 
   //----------------------------------------------------------------------------------------
-    covergroup read_only_registers_cg  with function sample (int address); 
+    covergroup diagnostical_read_only_registers_cg  with function sample (int address); 
   //----------------------------------------------------------------------------------------
         coverpoint address {
             bins diagnostical_address[] = { 
@@ -60,10 +60,20 @@ covergroup default_value_oper_reg_cg with function sample (int address);
                 32'h406508, 32'h40650C, 32'h406510, 32'h406518, 32'h406554, 
                 32'h406830, 32'h406840, 32'h406860, 32'h406920, 32'h406930 
             };
+        }
+         
+    endgroup
+
+
+//----------------------------------------------------------------------------------------
+    covergroup operational_read_only_registers_cg  with function sample (int address); 
+  //----------------------------------------------------------------------------------------
+        coverpoint address {
              bins operational_address[] = { 32'h406740 };
         }
          
     endgroup
+
 
   //----------------------------------------------------------------------------------------
 covergroup diagnostic_data_cg with function sample (bit[31:0] writing_data); 
@@ -160,7 +170,8 @@ endgroup
 //----------------------------------------------------------------------------------------
           super.new(name, parent); // Call the parent constructor
         default_value_diag_reg_cg         = new();
-        read_only_registers_cg    = new();
+        diagnostical_read_only_registers_cg    = new();
+        operational_read_only_registers_cg    = new();
         diagnostic_data_cg                = new();
         diagnostic_address_cg             = new();
         diagnostic_write_read_to_oper_addr_cg = new();
@@ -211,7 +222,7 @@ endfunction
  begin   
       // Loop through diagnostic registers to check if the address is writable and update expected regbank
     foreach (DIAG_REGISTERS[i]) begin
-        read_only_registers_cg.sample(item.address);
+        diagnostical_read_only_registers_cg.sample(item.address);
         diagnostic_data_cg.sample(item.wr_data);
         diagnostic_address_cg.sample(item.address);
         if (item.address == DIAG_REGISTERS[i].address && DIAG_REGISTERS[i].is_writable) 
@@ -248,7 +259,7 @@ endfunction
  begin   
       // Loop through diagnostic registers to check if the address is writable and update expected regbank
     foreach (OPER_REGISTERS[i]) begin
-        read_only_registers_cg.sample(item.address);
+        operational_read_only_registers_cg.sample(item.address);
         operational_data_cg.sample(item.wr_data);
         operational_address_cg.sample(item.address);
         if (item.address == OPER_REGISTERS[i].address && OPER_REGISTERS[i].is_writable) 

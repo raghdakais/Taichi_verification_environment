@@ -36,7 +36,7 @@ if {![file exists $LOG_PATH]} { file mkdir $LOG_PATH }
 if {![file exists $COV_PATH]} { file mkdir $COV_PATH }
 
 # Define the log file name using the test name
-set LOG_FILE "${LOG_PATH}/${test_name}_transcript.log"
+set LOG_FILE "${LOG_PATH}/transcript.log"
 
 
 # Get the current date and time in YYYY-MM-DD_HH-MM-SS format
@@ -111,7 +111,6 @@ vopt +acc  work.taichi_tmb_tb -o taichi_tmb_optimized_sim $vopt_args
 
 
 # Run the optimized simulation
- puts "Start VSIM command.."
 vsim -L unisim -L secureip -L fifo_generator_v13_2_7 -L xpm \
      +UVM_VERBOSITY=UVM_DEBUG -c -l "$LOG_FILE" \
      -cvgperinstance -vopt -voptargs=+acc -coverage -sva -c work.taichi_tmb_optimized_sim \

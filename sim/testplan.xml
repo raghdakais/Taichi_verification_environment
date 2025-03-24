@@ -1,5 +1,5 @@
  <!-- WorkBook Path: https://docs.philips.com/personal/partner_raghda_kais_philips_com/Documents/Documents/Verification/Module1_Taichi_testplan.xlsx -->
- <!-- Date: 1/1/0001 3:26:28 AM -->
+ <!-- Date: 1/1/0001 11:04:12 AM -->
 <Workbook>
 	<Worksheet>
 		<Table>
@@ -293,7 +293,7 @@ random data</Cell>
 				<Cell>4.3</Cell>
 				<Cell>write to RO registers </Cell>
 				<Cell>Confirm that read-only and write-only registers behave as expected</Cell>
-				<Cell>read_only_registers_cg,\/taichi_tmb_env_package::taichi_tmb_reference_model::read_only_registers_cg :address</Cell>
+				<Cell>diagnostical_read_only_registers_cg:address</Cell>
 				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
@@ -302,8 +302,8 @@ random data</Cell>
 				<Cell>4.4</Cell>
 				<Cell>check default values</Cell>
 				<Cell></Cell>
-				<Cell>default_value_diag_reg_cg,\/taichi_tmb_env_package::taichi_tmb_reference_model::default_value_diag_reg_cg :all_diagnostics_registers</Cell>
-				<Cell>CoverPoint</Cell>
+				<Cell>default_value_diag_reg_cg</Cell>
+				<Cell>CoverGroup</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
@@ -362,7 +362,7 @@ random data</Cell>
 				<Cell>5.3</Cell>
 				<Cell>write to RO registers </Cell>
 				<Cell>Confirm that read-only and write-only registers behave as expected</Cell>
-				<Cell>read_only_registers_cg,\/taichi_tmb_env_package::taichi_tmb_reference_model::read_only_registers_cg :address</Cell>
+				<Cell>operational_read_only_registers_cg:address</Cell>
 				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
@@ -371,8 +371,8 @@ random data</Cell>
 				<Cell>5.4</Cell>
 				<Cell>check default values</Cell>
 				<Cell></Cell>
-				<Cell>default_value_oper_reg_cg:address</Cell>
-				<Cell>CoverPoint</Cell>
+				<Cell>default_value_oper_reg_cg</Cell>
+				<Cell>CoverGroup</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
