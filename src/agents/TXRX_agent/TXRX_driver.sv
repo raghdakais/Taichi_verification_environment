@@ -3,7 +3,7 @@
 class TXRX_driver extends uvm_driver#(TXRX_seq_item);
 //----------------------------------------------------------------
     virtual TXRX_agent_if vif;
-
+    bit allow_sending_idle =1;
     `uvm_component_utils(TXRX_driver)
 
    TXRX_config cfg;            // Configuration object
@@ -31,8 +31,9 @@ class TXRX_driver extends uvm_driver#(TXRX_seq_item);
         // Try to get a sequence item (non-blocking)
             seq_item_port.try_next_item(req);
         if(req==null) begin
-            `uvm_info(get_type_name(), "No Request.. driving idle", UVM_DEBUG)
-            send_idle();
+         //   `uvm_info(get_type_name(), "No Request.. driving idle", UVM_DEBUG)
+            if (allow_sending_idle)
+                send_idle();
         end 
         else begin
             `uvm_info(get_type_name(), $sformatf("Driving packet: %s", req.sprint()), UVM_DEBUG)
@@ -64,7 +65,6 @@ class TXRX_driver extends uvm_driver#(TXRX_seq_item);
       @(negedge vif.rst);
       reset_deasserted = 1;
       @(posedge vif.clk);
-  
     end
 
     // Timeout logic

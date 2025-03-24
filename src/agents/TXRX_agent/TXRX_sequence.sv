@@ -31,14 +31,17 @@ endclass : TXRX_sequence
  //------------------------------------------------------------
  `uvm_info(get_type_name(), "Executing TXRS sequence", UVM_DEBUG)
 
-   // Ensure item is valid before running
-    if (item == null) begin
-      `uvm_error("TXRX_SEQUENCE", "Sequence item is NULL in body()! Skipping execution.")
-      return;
-    end
+  // Raise an objection to keep the test running
+      if (starting_phase != null) 
+         starting_phase.raise_objection(this);
+
     
       start_item(item);
       finish_item(item);
+
+            // Drop the objection to allow the test to end
+      if (starting_phase != null) 
+         starting_phase.drop_objection(this);
   endtask
 
 

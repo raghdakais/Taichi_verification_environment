@@ -23,22 +23,13 @@ class taichi_tmb_basic_test extends taichi_tmb_test_base;
     	phase.raise_objection (this);
 
        
-      repeat (3)
-      begin
-        
-            if (!m_taichi_tmb_seq.randomize() with { 
-           //   m_taichi_tmb_seq.item.address == 32'h900D_900D;
-               }) 
-            `uvm_fatal("RUN_PHASE", "Randomization failed for m_taichi_tmb_seq")
-              m_taichi_tmb_seq.start(this.m_taichi_tmb_env.m_taichi_tmb_agent.seqr);      
-      end
+     
 
       repeat (3)
       begin
         
             if (!m_controllers_seq.randomize() with { 
-           //   m_taichi_tmb_seq.item.address == 32'h900D_900D;
-               }) 
+       }) 
             `uvm_fatal("RUN_PHASE", "Randomization failed for m_taichi_tmb_seq")
               m_controllers_seq.start(this.m_taichi_tmb_env.m_controllers_agent.seqr);      
       end

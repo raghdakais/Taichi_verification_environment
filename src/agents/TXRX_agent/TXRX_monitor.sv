@@ -8,7 +8,7 @@ class TXRX_monitor extends uvm_monitor;
 
     TXRX_config cfg;  // Configuration object
     TXRX_seq_item item;
-     
+    int read_req_counter = 0; 
     // Constructor
     function new(string name, uvm_component parent);
         super.new(name, parent);
@@ -90,13 +90,21 @@ class TXRX_monitor extends uvm_monitor;
             end
         end
             if (item.header[0][0] == 1 &&   item.header[0][1] == 0  && (stream_type == "TX"))
+             begin
               item.command = "[READ]";
+              read_req_counter++;
+             end
             else if (item.header[0][0] == 0 &&   item.header[0][1] == 1 && (stream_type == "TX"))
               item.command = "[WRITE]";
             else if(stream_type == "TX")
               item.command = "[INVALID READ/WRITE COMMAND]";
-            else if ((stream_type == "RX")) 
+            else if ((stream_type == "RX" && read_req_counter>0)) 
+            begin
               item.command = "[READ_BACK_ACK]";
+              read_req_counter--;
+            end
+            else if (stream_type == "RX")
+             item.command = "[STATUS_SENDING]";
         // Collect Data
      for (int i = item.data.size()-1; i >= 0; i--) begin    
       for (int j = 0 ; j <=7 ; j++) begin
@@ -132,7 +140,7 @@ class TXRX_monitor extends uvm_monitor;
     item.address[23:16] =  item.footer[2] ; // Last 8 bits of address
 
     // if there was a write operation, copy the random address to the footer, we copy it byte by byte
-   if(item.command == "WRITE")
+   if(item.command == "[WRITE]")
     begin
         item.wr_data[7:0]    = item.data[0] ; // First 8 bits of address
         item.wr_data[15:8]   = item.data[1] ; // Next 8 bits of address

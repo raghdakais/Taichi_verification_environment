@@ -26,6 +26,8 @@ class sync_txrx_sequence extends uvm_sequence #(sync_txrx_seq_item);
    task body();
 //----------------------------------------------------------------
  
+ if (starting_phase != null) 
+         starting_phase.raise_objection(this);
  `uvm_info(get_type_name(), "Executing sync_txrx sequence", UVM_DEBUG)
    // Ensure item is valid before running
     if (item == null) begin
@@ -41,6 +43,11 @@ class sync_txrx_sequence extends uvm_sequence #(sync_txrx_seq_item);
            item.print();
         end
       finish_item(item);
+
+      // Drop the objection to allow the test to end
+      if (starting_phase != null) 
+         starting_phase.drop_objection(this);
+
   endtask
 
 endclass : sync_txrx_sequence

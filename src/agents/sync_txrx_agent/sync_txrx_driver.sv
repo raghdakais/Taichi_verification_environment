@@ -22,11 +22,11 @@ class sync_txrx_driver extends uvm_driver #(sync_txrx_seq_item);
         // Try to get a sequence item (non-blocking)
             seq_item_port.try_next_item(req);
         if(req==null) begin
-            `uvm_info(get_type_name(), "No Request.. driving idle", UVM_DEBUG)
+          //  `uvm_info(get_type_name(), "No Request.. driving idle", UVM_DEBUG)
             send_idle();
         end 
         else begin
-            `uvm_info(get_type_name(), $sformatf("Driving packet: %s", req.sprint()), UVM_DEBUG)
+           // `uvm_info(get_type_name(), $sformatf("Driving packet: %s", req.sprint()), UVM_DEBUG)
             // Drive the received packet if its IP packet
              if (req.pkt_type == SYNC_IP)
               drive_IP_packet(req);
@@ -95,6 +95,9 @@ task drive_IP_packet(sync_txrx_seq_item pkt);
                   @(posedge vif.clk);
                   vif.tx <= crc_calc[j];  // Transmit bits from MSB to LSB in Big Endian
               end
+
+
+
 endtask
 
 
@@ -111,12 +114,6 @@ task drive_HEADER_packet(sync_txrx_seq_item pkt);
     vif.ip_valid_crc = pkt.ip_valid_crc;
     vif.header_valid_crc = pkt.header_valid_crc;
  
-
-
-
-
- 
-
       // Send Start1 (21)
         for (int i = 0 ; i <=7 ; i++) begin
               @(posedge vif.clk);

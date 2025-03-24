@@ -4,7 +4,7 @@ class diagnostic_registers_random_test extends taichi_tmb_test_base;
     // Testbench configuration and stimulus generation
        `uvm_component_utils(diagnostic_registers_random_test)  // Register with the factory
   
-
+rand int i = 0;
         // This is standard code for all components
     function new (string name = "diagnostic_registers_random_test", uvm_component parent = null);
       super.new (name, parent);
@@ -18,48 +18,58 @@ class diagnostic_registers_random_test extends taichi_tmb_test_base;
     
     task run_phase (uvm_phase phase);
 
+
     	phase.raise_objection (this);
          	super.run_phase(phase);
 
 
+repeat(10)
+begin
+        //------------------------------------------------------
+        // WRITE TO OPERATIONAL REGISTER 
+        //------------------------------------------------------
+       int i = $urandom_range(OPER_REGISTERS.size() - 1, 0); // Generate a random index between 0 and size-1
+        m_diag_txrx_seq = TXRX_sequence::type_id::create($sformatf("m_diag_txrx_seq_%0d", i));
+           if (!this.m_diag_txrx_seq.randomize() with { 
+              m_diag_txrx_seq.item.rw_type == TXRX_WRITE;     
+              m_diag_txrx_seq.item.wr_data == 'h0BAD_0BAD;     
+              m_diag_txrx_seq.item.address == OPER_REGISTERS[i].address;    
+               }) 
+            `uvm_fatal("RUN_PHASE", "Randomization failed for m_diag_txrx_seq write operational")
+           this.m_diag_txrx_seq.start(this.m_taichi_tmb_env.diag_txrx_agent.seqr);
+ #500ns;
+        //------------------------------------------------------
+        // WRITE TO OPERATIONAL REGISTER 
+        //------------------------------------------------------
+        m_diag_txrx_seq = TXRX_sequence::type_id::create($sformatf("m_diag_txrx_seq_%0d", i));
+           if (!this.m_diag_txrx_seq.randomize() with { 
+              m_diag_txrx_seq.item.rw_type == TXRX_READ;     
+              m_diag_txrx_seq.item.address == OPER_REGISTERS[i].address;    
+               }) 
+            `uvm_fatal("RUN_PHASE", "Randomization failed for m_diag_txrx_seq read operational ")
+           this.m_diag_txrx_seq.start(this.m_taichi_tmb_env.diag_txrx_agent.seqr);
+ #1.5us;
+end
+
 //------------------------------------------------------
 // Check Random READ WRITE 
 //------------------------------------------------------
-foreach(DIAG_REGISTERS[i])
+repeat(10)
    begin
+        i = $urandom_range(DIAG_REGISTERS.size() - 1, 0); // Generate a random index between 0 and size-1
+   
        m_diag_txrx_seq = TXRX_sequence::type_id::create($sformatf("m_diag_txrx_seq_%0d", i));
-          if(DIAG_REGISTERS[i].is_writable == 0)
-          begin
            if (!this.m_diag_txrx_seq.randomize() with { 
-              m_diag_txrx_seq.item.rw_type == TXRX_WRITE;     
-              m_diag_txrx_seq.item.address == DIAG_REGISTERS[i].address;    
-              m_diag_txrx_seq.item.wr_data == 'h0BAD_0BAD;    
-               }) 
-            `uvm_fatal("RUN_PHASE", "Randomization failed for m_diag_txrx_seq")
-           this.m_diag_txrx_seq.start(this.m_taichi_tmb_env.diag_txrx_agent.seqr);
-
-           //----- READ BACK 
-          //  #1us;
-           if (!this.m_diag_txrx_seq.randomize() with { 
-              m_diag_txrx_seq.item.rw_type == TXRX_READ;    
+          //    m_diag_txrx_seq.item.rw_type == TXRX_WRITE;     
               m_diag_txrx_seq.item.address == DIAG_REGISTERS[i].address;    
                }) 
-            `uvm_fatal("RUN_PHASE", "Randomization failed for m_diag_txrx_seq")
+            `uvm_fatal("RUN_PHASE", "Randomization failed for m_diag_txrx_seq random registers")
            this.m_diag_txrx_seq.start(this.m_taichi_tmb_env.diag_txrx_agent.seqr);
-          end
    #1.5us;
 
     end
 
-
-
-
-
-
-#1us;
-send_valid_ip_sync (); 
-
-              #100us;
+  #100us;
     	phase.drop_objection (this);
    endtask
 

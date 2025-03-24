@@ -1,5 +1,5 @@
  <!-- WorkBook Path: https://docs.philips.com/personal/partner_raghda_kais_philips_com/Documents/Documents/Verification/Module1_Taichi_testplan.xlsx -->
- <!-- Date: 1/1/0001 1:08:29 AM -->
+ <!-- Date: 1/1/0001 3:26:28 AM -->
 <Workbook>
 	<Worksheet>
 		<Table>
@@ -265,59 +265,41 @@ END_ADDRESS: 0x581700</Cell>
 			</Row>
 			<Row>
 				<Cell>4.1</Cell>
-				<Cell>[Sanity]Verify that data written to a register can be correctly read back</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>4.2</Cell>
 				<Cell>write random data</Cell>
 				<Cell>[one bit hit] x32
 [&#39;hFFFF_FFFF] 
 [0000_0000]
 one bit hit
 random data</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>diagnostic_data_cg:writing_data</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>4.3</Cell>
+				<Cell>4.2</Cell>
 				<Cell>write to random address</Cell>
 				<Cell>[base address] - Write to the lowest valid register address
 [0 - 50]
 [50:100] 
 [END_ADDRESS] -  Write to the highest valid register address
 [OUT_OFF_RANGE] - Ensure that only valid addresses can be accessed</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>diagnostic_address_cg:address</Cell>
+				<Cell>CoverPoint</Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>4.3</Cell>
+				<Cell>write to RO registers </Cell>
+				<Cell>Confirm that read-only and write-only registers behave as expected</Cell>
+				<Cell>read_only_registers_cg,\/taichi_tmb_env_package::taichi_tmb_reference_model::read_only_registers_cg :address</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
 				<Cell>4.4</Cell>
-				<Cell>rewrite to same address </Cell>
-				<Cell>[expected]:  data must be overwited</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>4.5</Cell>
-				<Cell>write to RO registers </Cell>
-				<Cell>Confirm that read-only and write-only registers behave as expected</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>4.6</Cell>
 				<Cell>check default values</Cell>
 				<Cell></Cell>
 				<Cell>default_value_diag_reg_cg,\/taichi_tmb_env_package::taichi_tmb_reference_model::default_value_diag_reg_cg :all_diagnostics_registers</Cell>
@@ -326,7 +308,7 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>4.7</Cell>
+				<Cell>4.5</Cell>
 				<Cell>[Stress] Perform continuous read/write operations for an extended period</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -335,11 +317,11 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>4.8</Cell>
+				<Cell>4.6</Cell>
 				<Cell>write and read  to operational register</Cell>
 				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>diagnostic_write_read_to_oper_addr_cg:wr</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
@@ -354,75 +336,48 @@ random data</Cell>
 			</Row>
 			<Row>
 				<Cell>5.1</Cell>
-				<Cell>[Sanity]Verify that data written to a register can be correctly read back</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>5.2</Cell>
 				<Cell>write random data</Cell>
 				<Cell>[one bit hit] x32
 [&#39;hFFFF_FFFF] 
 [0000_0000]
 random data</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>operational_data_cg:writing_data</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>5.3</Cell>
+				<Cell>5.2</Cell>
 				<Cell>write to random address</Cell>
 				<Cell>[base address] - Write to the lowest valid register address
 [0 - 50]
 [50:100] 
 [END_ADDRESS] -  Write to the highest valid register address</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>operational_address_cg:address</Cell>
+				<Cell>CoverPoint</Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>5.3</Cell>
+				<Cell>write to RO registers </Cell>
+				<Cell>Confirm that read-only and write-only registers behave as expected</Cell>
+				<Cell>read_only_registers_cg,\/taichi_tmb_env_package::taichi_tmb_reference_model::read_only_registers_cg :address</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
 				<Cell>5.4</Cell>
-				<Cell>write to invalid address</Cell>
-				<Cell>Ensure that only valid addresses can be accessed</Cell>
+				<Cell>check default values</Cell>
 				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>default_value_oper_reg_cg:address</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
 				<Cell>5.5</Cell>
-				<Cell>rewrite to same address </Cell>
-				<Cell>[expected]:  data must be overwited</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>5.6</Cell>
-				<Cell>write to RO registers </Cell>
-				<Cell>Confirm that read-only and write-only registers behave as expected</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>5.7</Cell>
-				<Cell>check default values</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>5.8</Cell>
 				<Cell>[Stress] Perform continuous read/write operations for an extended period</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -431,11 +386,11 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>5.9</Cell>
+				<Cell>5.6</Cell>
 				<Cell>write and read  to diagnostic register</Cell>
 				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>operational_write_read_to_oper_addr_cg:wr</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
@@ -452,8 +407,8 @@ random data</Cell>
 				<Cell>6.1</Cell>
 				<Cell>Package Structure</Cell>
 				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>diagnostic_read_only_registers_cg:address</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>

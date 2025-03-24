@@ -3,7 +3,6 @@ class taichi_tmb_env extends uvm_env;
     // Environment setup here
     `uvm_component_utils(taichi_tmb_env)
     
-     taichi_tmb_agent m_taichi_tmb_agent;
      TXRX_agent diag_txrx_agent;
      TXRX_agent oper_txrx_agent;
      TXRX_agent buffer_txrx_agent;
@@ -28,7 +27,6 @@ class taichi_tmb_env extends uvm_env;
     function void build_phase(uvm_phase phase);
    //-------------------------------------------------------------------------------
         super.build_phase(phase);
-       this.m_taichi_tmb_agent = taichi_tmb_agent::type_id::create("m_taichi_tmb_agent", this);
        this.m_controllers_agent = controllers_agent::type_id::create("m_controllers_agent", this);
        set_config_int("m_controllers_agent", "is_active", UVM_ACTIVE);
       // Set configurations for different controllers agent instances
@@ -75,7 +73,6 @@ class taichi_tmb_env extends uvm_env;
   ////    m_diagnostic_reg_block.build ();
   ////    m_diagnostic_reg_block.lock_model ();
   ////    uvm_config_db #(diagnostic_reg_block)::set (null, "", "m_diagnostic_reg_block", m_diagnostic_reg_block);
-   uvm_reg::include_coverage ("*", UVM_CVR_ALL);
 
 
    this.taichi_tmb_rm = taichi_tmb_reference_model::type_id::create("taichi_tmb_rm", this);
@@ -86,6 +83,8 @@ class taichi_tmb_env extends uvm_env;
   ///   m_apb2reg_predictor.map       = m_diagnostic_reg_block.default_map;
       this.diag_txrx_agent.mon.tx_analysis_port.connect(this.taichi_tmb_rm.diag_tx_imp);
       this.diag_txrx_agent.mon.rx_analysis_port.connect(this.taichi_tmb_rm.diag_rx_imp);
+      this.oper_txrx_agent.mon.tx_analysis_port.connect(this.taichi_tmb_rm.oper_tx_imp);
+      this.oper_txrx_agent.mon.rx_analysis_port.connect(this.taichi_tmb_rm.oper_rx_imp);
 
   endfunction
 endclass

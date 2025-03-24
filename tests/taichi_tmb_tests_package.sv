@@ -15,6 +15,8 @@ package taichi_tmb_tests_package;
   `include "taichi_tmb_test_base.sv"
   `include "taichi_tmb_basic_test.sv"
   `include "diagnostic_registers_random_test.sv"
-  `include "diagnostic_check_default_test.sv"
+  `include "check_default_value_for_all_registers_test.sv"
+  `include "check_RO_registers_test.sv"
+  `include "operational_registers_random_test.sv"
 endpackage : taichi_tmb_tests_package
 

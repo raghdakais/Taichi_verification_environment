@@ -2,38 +2,54 @@ transcript off
 set NumericStdNoWarnings 1
 
 set PROJ_PATH "../"
-set LOG_PATH "../log_result"
-set COV_PATH "../coverage"
+set LOG_PATH "log_result"
+set COV_PATH "log_result/coverage"
 
 # Default coverage flag (0 = disabled)
 if {![info exists enable_cov]} {
     set enable_cov 0
 }
 
+#### maybe later  # Get test name from command line argument
+#### maybe later  if { $argc < 1 } {
+#### maybe later      puts "Error: No test name provided!"
+#### maybe later      exit 1
+#### maybe later  }
+#### maybe later  
+#### maybe later  set test_name [lindex $argv 0]
+#### maybe later  puts "Running test: $test_name"
 
-# Check if LOG_PATH exists, if not, create it
-if {![file exists $LOG_PATH]} {
-    puts "LOG_PATH does not exist, creating directory: $LOG_PATH"
-    file mkdir $LOG_PATH
+# Ensure that the test_name is set
+if {![info exists test_name]} {
+    puts "Error: No test name provided!"
+    exit 1
 }
 
-# Check if COV_PATH exists, if not, create it
-if {![file exists $COV_PATH]} {
-    puts "COV_PATH does not exist, creating directory: $COV_PATH"
-    file mkdir $COV_PATH
-}
+# Print the test name to confirm it's captured
+puts "Running test: $test_name"
+
+
+
+
+# Create log and coverage directories if they don’t exist
+if {![file exists $LOG_PATH]} { file mkdir $LOG_PATH }
+if {![file exists $COV_PATH]} { file mkdir $COV_PATH }
+
+# Define the log file name using the test name
+set LOG_FILE "${LOG_PATH}/${test_name}_transcript.log"
+
+
 # Get the current date and time in YYYY-MM-DD_HH-MM-SS format
 set current_datetime [clock format [clock seconds] -format "%Y_%m_%d_%H_%M_%S"]
 
 # Define the base folder path inside LOG_PATH using the current date and time
-####set folder_path "${LOG_PATH}/work_${current_datetime}"
+# Define work library path
 set folder_path "${LOG_PATH}/."
-
-# Define the full work library path inside the folder
+####set folder_path "${LOG_PATH}/work_${current_datetime}"
 set work_library_path "${folder_path}/work"
 
 # Create the base directory inside LOG_PATH
-file mkdir $folder_path
+## maybe no need  file mkdir $folder_path
 
 # Create the "work" library inside the folder
 vlib $work_library_path
@@ -48,7 +64,9 @@ vmap unisim C:/questasim64_2024.1/unisim
 vmap xpm C:/questasim64_2024.1/xpm
 
  
-
+puts "Log path: $LOG_PATH"
+puts "Coverage path: $COV_PATH"
+puts "Test name: $test_name"
 
 # Output confirmation
 puts "Created and mapped work library at: $work_library_path"
@@ -77,7 +95,6 @@ view wave
 # Enable coverage if the flag is set
 if {$enable_cov} {
     puts "Coverage collection enabled."
-    set COVERAGE_DB "${COV_PATH}/functional_coverage.ucdb"
     set vopt_args "+cover=bcesft"
     set vsim_args "-coverage"
 } else {
@@ -96,9 +113,9 @@ vopt +acc  work.taichi_tmb_tb -o taichi_tmb_optimized_sim $vopt_args
 # Run the optimized simulation
  puts "Start VSIM command.."
 vsim -L unisim -L secureip -L fifo_generator_v13_2_7 -L xpm \
-     +UVM_VERBOSITY=UVM_LOW -c -l "${LOG_PATH}/transcript" \
+     +UVM_VERBOSITY=UVM_DEBUG -c -l "$LOG_FILE" \
      -cvgperinstance -vopt -voptargs=+acc -coverage -sva -c work.taichi_tmb_optimized_sim \
-     +UVM_TESTNAME=diagnostic_check_default_test -onfinish stop  -do "set StdArithNoWarnings 1 ; set NumericStdNoWarnings 1"
+     +UVM_TESTNAME=$test_name -onfinish stop  -do "set StdArithNoWarnings 1 ; set NumericStdNoWarnings 1"
 
 
 puts "Running simulation..."
@@ -112,11 +129,17 @@ if {[catch {run -all} err]} {
 }
 
 
+
 # Save coverage results if enabled
 if {$enable_cov} {
-coverage save  ${COV_PATH}/functional_coverage_result.ucdb
+set COVERAGE_DB "${COV_PATH}/functional_coverage_result_${test_name}.ucdb"
+coverage save $COVERAGE_DB
+##coverage save  ${COV_PATH}/functional_coverage_result_$test_name.ucdb
 xml2ucdb -format Excel testplan.xml -ucdbfilename ${COV_PATH}/testplan.ucdb
-vcover merge testplan.ucdb ${COV_PATH}/testplan.ucdb ${COV_PATH}/functional_coverage_result.ucdb 
+vcover merge testplan.ucdb ${COV_PATH}/testplan.ucdb $COVERAGE_DB 
 vcover report -cvg -details -nocompactcrossbins -codeAll -assert -directive -html -htmldir ${COV_PATH}/htmlcoverreport testplan.ucdb -details -testhitdata
 }
 
+# Stop the simulation after it completes
+##stop
+quit -force

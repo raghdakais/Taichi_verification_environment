@@ -25,24 +25,26 @@ class controllers_sequence extends uvm_sequence #(controllers_seq_item);
   // Main task
    task body();
 //----------------------------------------------------------------
- 
+   // Raise an objection to keep the test running
+      if (starting_phase != null) 
+         starting_phase.raise_objection(this);
+
  `uvm_info(get_type_name(), "Executing controllers sequence", UVM_LOW)
-   // Ensure item is valid before running
-    if (item == null) begin
-      `uvm_error("TXRX_SEQUENCE", "Sequence item is NULL in body()! Skipping execution.")
-      return;
-    end
- 
+  
       start_item(item);
       // printing item fields only in UVM_DEBUG Mode
-        if (uvm_top.get_report_verbosity_level() >= UVM_DEBUG)
-        begin
-           $display("Printing Item: ");
-           item.print();
-        end
+    /////    if (uvm_top.get_report_verbosity_level() >= UVM_DEBUG)
+    /////    begin
+    /////       $display("Printing Item: ");
+    /////       item.print();
+    /////    end
 
 
       finish_item(item);
+
+            // Drop the objection to allow the test to end
+      if (starting_phase != null) 
+         starting_phase.drop_objection(this);
   endtask
 
 endclass : controllers_sequence
