@@ -44,6 +44,8 @@ class TXRX_seq_item extends uvm_sequence_item;
  	`uvm_field_int (valid_crc  ,					UVM_DEFAULT)
  	`uvm_field_int (valid_start1  ,					UVM_DEFAULT)
  	`uvm_field_int (valid_start2  ,					UVM_DEFAULT)
+ 	`uvm_field_int (do_wr_fail  ,					UVM_DEFAULT)
+
 `uvm_object_utils_end
 
   //constraint to ensure time_sent_idle has no big values

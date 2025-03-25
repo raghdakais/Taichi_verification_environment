@@ -95,25 +95,28 @@ view wave
 # Enable coverage if the flag is set
 if {$enable_cov} {
     puts "Coverage collection enabled."
-    set vopt_args "+cover=bcesft"
-    set vsim_args "-coverage"
+ #   set vopt_args "-vopt -voptargs=+acc +cover=bcesft"
+     set vopt_args [list +cover=bcesft]
+   # set vsim_args "-coverage -msgmode both -displaymsgmode both -c"
+     set vsim_args [list -coverage -msgmode wlf -displaymsgmode wlf -c]
 } else {
     puts "Coverage collection disabled."
-    set vopt_args ""
-    set vsim_args ""
+   set vopt_args [list ]
+   #   set vsim_args "-msgmode both -displaymsgmode both -c"
+    set vsim_args [list -msgmode both   -c]
 }
 
 
 # Optimize the design with vopt
 # +cover=bcst  -- to enable coverage
  puts "Start Optimization.."
-vopt +acc  work.taichi_tmb_tb -o taichi_tmb_optimized_sim $vopt_args
+vopt +acc  work.taichi_tmb_tb -o taichi_tmb_optimized_sim {*}$vopt_args
 
 
 # Run the optimized simulation
 vsim -L unisim -L secureip -L fifo_generator_v13_2_7 -L xpm \
-     +UVM_VERBOSITY=UVM_DEBUG -c -l "$LOG_FILE" \
-     -cvgperinstance -vopt -voptargs=+acc -coverage -sva -c work.taichi_tmb_optimized_sim \
+     +UVM_VERBOSITY=UVM_DEBUG  -l "$LOG_FILE" \
+     -cvgperinstance -vopt -voptargs=+acc  {*}$vsim_args  work.taichi_tmb_optimized_sim \
      +UVM_TESTNAME=$test_name -onfinish stop  -do "set StdArithNoWarnings 1 ; set NumericStdNoWarnings 1"
 
 

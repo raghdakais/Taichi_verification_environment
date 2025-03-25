@@ -265,7 +265,10 @@ endfunction
         if (item.address == OPER_REGISTERS[i].address && OPER_REGISTERS[i].is_writable) 
         begin
             keep_default_oper[i] = 0;
-            EXPECTED_DIAG_OPER_RAM[(item.address - BASE_REG_ADDRESS)/4] = item.wr_data; 
+            if(item.address == 'h406660    ) // TODO : check with Evgenue
+            EXPECTED_DIAG_OPER_RAM[(item.address - BASE_REG_ADDRESS)/4][31:24] = item.wr_data[31:24]; 
+            else
+                EXPECTED_DIAG_OPER_RAM[(item.address - BASE_REG_ADDRESS)/4] = item.wr_data; 
             break;
         end   
      end  
@@ -305,7 +308,7 @@ bit address_found = 0;
             if(keep_default_diag[i])
               default_value_diag_reg_cg.sample(i);
             address_found = 1;
-           if(item.rd_data != EXPECTED_DIAG_OPER_RAM[(item.address - BASE_REG_ADDRESS)/4] )
+           if(item.rd_data !== EXPECTED_DIAG_OPER_RAM[(item.address - BASE_REG_ADDRESS)/4] )
               begin  
               uvm_report_error (get_type_name (), $sformatf ("[ERROR] [DIAGNOSTICAL] READ DATA IS NOT AS EXPECTED"));
               $display("[ADDRESS ] -  0x%h", item.address );
@@ -334,6 +337,7 @@ endfunction
 //---------------------------------------------------------------------------
  
  bit address_found = 0;
+ string data_error;
  // Check if the command is a WRITE operation
  if(item.command == "[READ_BACK_ACK]")
  begin   
@@ -346,12 +350,13 @@ endfunction
             if(keep_default_oper[i])
               default_value_oper_reg_cg.sample(i);
             address_found = 1;
-           if(item.rd_data != EXPECTED_DIAG_OPER_RAM[(item.address - BASE_REG_ADDRESS)/4] )
+           if(item.rd_data !== EXPECTED_DIAG_OPER_RAM[(item.address - BASE_REG_ADDRESS)/4] )
               begin  
               uvm_report_error (get_type_name (), $sformatf ("[ERROR] [OPERATIONAL] READ DATA IS NOT AS EXPECTED"));
               $display("[ADDRESS ] -  0x%h", item.address );
               $display("[EXPECTED] -  0x%h", EXPECTED_DIAG_OPER_RAM[(item.address - BASE_REG_ADDRESS)/4] );
-              $display("[ ACTUAL ] -  0x%h", item.rd_data );
+              $display("[ ACTUAL ] -  0x%0h", item.rd_data );
+       
               end
               else begin
                 `uvm_info(get_type_name(),  $sformatf("[PASSED] [OPERATIONAL] READ DATA IS AS EXPECTED - ADDRESS  [0x%h] ",item.address), UVM_DEBUG)      

@@ -27,7 +27,7 @@ typedef struct {
 
 // Define an array of operational registers with their properties
 reg_t OPER_REGISTERS [] = '{
-    '{32'h406430, 1, 32'h00000000},   // SoftReset_Reset Sticky (R/W)
+    '{32'h406430, 0, 32'h00000000},   // SoftReset_Reset Sticky (R/W)
     '{32'h406620, 1, 32'h00000000},  // Asics FW Management block Reset (PowerUp, SPI, Align, Receiver, LDOs) (R/W)
     '{32'h406650, 1, 32'h00000000},  // Asics Read/Write operations (R/W)
     '{32'h406660, 1, 32'h00000000},  // Asics Read Select (R/W)

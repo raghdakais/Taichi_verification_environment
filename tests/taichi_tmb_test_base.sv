@@ -55,6 +55,40 @@ class taichi_tmb_test_base extends uvm_test;
       endtask
  
 
+////    //=====================================================================================
+////    virtual function void send_txrx_sequence(bit rw, int index, bit [31:0] data = 'h0BAD_0BAD);
+////    //=====================================================================================
+////        m_oper_txrx_seq = TXRX_sequence::type_id::create($sformatf("m_oper_txrx_seq_%0d", index));
+////        if (m_oper_txrx_seq == null)
+////            `uvm_fatal("RUN_PHASE", "Failed to create TXRX_sequence instance");
+////    
+////        if (!this.m_oper_txrx_seq.randomize() with {
+////            m_oper_txrx_seq.item.rw_type -> rw;
+////            m_oper_txrx_seq.item.address -> OPER_REGISTERS[index].address;
+////      //      if (rw == TXRX_WRITE)
+////      //           m_oper_txrx_seq.item.wr_data -> data;
+////        })
+////            `uvm_fatal("RUN_PHASE", "Randomization failed for TXRX_sequence");
+////    
+////        this.m_oper_txrx_seq.start(this.m_taichi_tmb_env.oper_txrx_agent.seqr);
+////    endfunction
+
+
+
+  // Function to generate values to hit coverage bins
+    function bit [31:0] get_random_writing_data();
+        case ($urandom_range(0, 6))
+            0: return 32'h0000_0000; // all_zeros
+            1: return 32'hFFFF_FFFF; // all_ones
+            2: return 32'hAAAA_AAAA; // alt_bits
+            3: return 32'h5555_5555; // alt_bits
+            4: return (1 << $urandom_range(0, 31)); // one_bit_hit
+            5: return ~(1 << $urandom_range(0, 31)); // one_bit_cold
+            default: return $urandom(); // random_data
+        endcase
+    endfunction
+
+
 //=====================================================================================
 	function void report_phase(uvm_phase phase);
 //=====================================================================================
