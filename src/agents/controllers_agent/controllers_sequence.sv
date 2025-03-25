@@ -26,9 +26,6 @@ class controllers_sequence extends uvm_sequence #(controllers_seq_item);
    task body();
 //----------------------------------------------------------------
    // Raise an objection to keep the test running
-      if (starting_phase != null) 
-         starting_phase.raise_objection(this);
-
  `uvm_info(get_type_name(), "Executing controllers sequence", UVM_LOW)
   
       start_item(item);
@@ -42,9 +39,6 @@ class controllers_sequence extends uvm_sequence #(controllers_seq_item);
 
       finish_item(item);
 
-            // Drop the objection to allow the test to end
-      if (starting_phase != null) 
-         starting_phase.drop_objection(this);
   endtask
 
 endclass : controllers_sequence

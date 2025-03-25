@@ -292,7 +292,7 @@ endfunction
 //---------------------------------------------------------------------------
     function void write_diag_rx(TXRX_seq_item item); // The "_rd" suffix is needed due to imp_decl macro
 //---------------------------------------------------------------------------
-
+bit address_found = 0;
 // Check if the command is a WRITE operation
  if(item.command == "[READ_BACK_ACK]")
  begin   
@@ -304,7 +304,7 @@ endfunction
         begin
             if(keep_default_diag[i])
               default_value_diag_reg_cg.sample(i);
-       
+            address_found = 1;
            if(item.rd_data != EXPECTED_DIAG_OPER_RAM[(item.address - BASE_REG_ADDRESS)/4] )
               begin  
               uvm_report_error (get_type_name (), $sformatf ("[ERROR] [DIAGNOSTICAL] READ DATA IS NOT AS EXPECTED"));
@@ -318,6 +318,9 @@ endfunction
           break;
         end   
      end   
+                 if(!address_found)
+                `uvm_warning(get_type_name(),  $sformatf("[WARNING] [DIAGNOSTICAL] READ ADDRESS IS OUT OF RANGE  - ADDRESS  [0x%h] ",item.address)) ;     
+  
  end
   
 endfunction
@@ -330,6 +333,7 @@ endfunction
     function void write_oper_rx(TXRX_seq_item item); // The "_rd" suffix is needed due to imp_decl macro
 //---------------------------------------------------------------------------
  
+ bit address_found = 0;
  // Check if the command is a WRITE operation
  if(item.command == "[READ_BACK_ACK]")
  begin   
@@ -341,7 +345,7 @@ endfunction
         begin
             if(keep_default_oper[i])
               default_value_oper_reg_cg.sample(i);
-       
+            address_found = 1;
            if(item.rd_data != EXPECTED_DIAG_OPER_RAM[(item.address - BASE_REG_ADDRESS)/4] )
               begin  
               uvm_report_error (get_type_name (), $sformatf ("[ERROR] [OPERATIONAL] READ DATA IS NOT AS EXPECTED"));
@@ -355,6 +359,11 @@ endfunction
           break;
         end   
      end   
+
+            if(!address_found)
+                `uvm_warning(get_type_name(),  $sformatf("[WARNING] [OPERATIONAL] READ ADDRESS IS OUT OF RANGE  - ADDRESS  [0x%h] ",item.address))      
+         
+
  end
   endfunction
 

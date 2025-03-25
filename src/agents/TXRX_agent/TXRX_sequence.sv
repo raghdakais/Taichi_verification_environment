@@ -32,16 +32,16 @@ endclass : TXRX_sequence
  `uvm_info(get_type_name(), "Executing TXRS sequence", UVM_DEBUG)
 
   // Raise an objection to keep the test running
-      if (starting_phase != null) 
-         starting_phase.raise_objection(this);
-
+    ////  if (starting_phase != null) 
+    ////     starting_phase.raise_objection(this);
+////
     
       start_item(item);
       finish_item(item);
 
             // Drop the objection to allow the test to end
-      if (starting_phase != null) 
-         starting_phase.drop_objection(this);
+   ///    if (starting_phase != null) 
+   ///       starting_phase.drop_objection(this);
   endtask
 
 

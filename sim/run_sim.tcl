@@ -141,4 +141,4 @@ vcover report -cvg -details -nocompactcrossbins -codeAll -assert -directive -htm
 
 # Stop the simulation after it completes
 ##stop
-quit -force
+##quit -force

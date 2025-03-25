@@ -120,6 +120,17 @@ task drive_packet(TXRX_seq_item pkt);
         pkt.data[3] = pkt.wr_data[31:24]; // Last 8 bits of address
     end
 
+//------------------------------------------------------------------
+// IF READ NO RANDOM DATA 
+//------------------------------------------------------------------
+  ////    if(pkt.rw_type == TXRX_READ  )
+  ////  begin
+  ////      pkt.data[0] = 'hA5;     // First 8 bits of address
+  ////      pkt.data[1] = 'hA5;     // Next 8 bits of address
+  ////      pkt.data[2] = 'hA5;     // Last 8 bits of address
+  ////      pkt.data[3] = 'hA5;     // Last 8 bits of address
+  ////  end
+
     // Send IDLE sequence (5B in binary: 0101 1011)
     `uvm_info(get_type_name(),  $sformatf("[IDLE was randomized [%d] times] :",pkt.times_sent_idle), UVM_DEBUG)      
     repeat(pkt.times_sent_idle)
@@ -148,16 +159,16 @@ task drive_packet(TXRX_seq_item pkt);
         if (i == 0) begin
             // Set the read/write operation based on randomized enum
             if (pkt.rw_type == TXRX_READ) begin
-                pkt.header[0][0] = 1;  // Set bit 0 for read
-                pkt.header[0][1] = 0;  // Clear bit 1 for write
+                pkt.header[0][0] = 0;  // Set bit 0 for read
+                pkt.header[0][1] = 1;  // Clear bit 1 for write
                 if(pkt.do_wr_fail)  begin
                 pkt.header[0][0] = 1;  // Set bit 0 for read
                 pkt.header[0][1] = 1;  // No clear for write
                 end
             end
              else if (pkt.rw_type == TXRX_WRITE) begin
-                pkt.header[0][0] = 0;  // Clear bit 0 for read
-                pkt.header[0][1] = 1;  // Set bit 1 for write
+                pkt.header[0][0] = 1;  // Clear bit 0 for read
+                pkt.header[0][1] = 0;  // Set bit 1 for write
                   if(pkt.do_wr_fail)  begin
                 pkt.header[0][0] = 1;  // No clear for read
                 pkt.header[0][1] = 1;  // Set bit 1 for write

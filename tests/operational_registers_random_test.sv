@@ -18,7 +18,6 @@ rand int i = 0;
     
     task run_phase (uvm_phase phase);
 
-
     	phase.raise_objection (this);
          	super.run_phase(phase);
 
@@ -56,18 +55,31 @@ end
 //------------------------------------------------------
 repeat(10)
    begin
-        i = $urandom_range(DIAG_REGISTERS.size() - 1, 0); // Generate a random index between 0 and size-1
-   
+        i = $urandom_range(OPER_REGISTERS.size() - 1, 0); // Generate a random index between 0 and size-1
+        $display ("RANDOM ADDRESS IS %x  ",  OPER_REGISTERS[i].address);
        m_oper_txrx_seq = TXRX_sequence::type_id::create($sformatf("m_oper_txrx_seq_%0d", i));
            if (!this.m_oper_txrx_seq.randomize() with { 
-          //    m_oper_txrx_seq.item.rw_type == TXRX_WRITE;     
-              m_oper_txrx_seq.item.address == DIAG_REGISTERS[i].address;    
+              m_oper_txrx_seq.item.rw_type == TXRX_WRITE;     
+              m_oper_txrx_seq.item.address == OPER_REGISTERS[i].address;    
+          //    m_oper_txrx_seq.item.address == 'h406760;    
+          //    m_oper_txrx_seq.item.wr_data == 'h900D_900D;     
                }) 
             `uvm_fatal("RUN_PHASE", "Randomization failed for m_oper_txrx_seq random registers")
            this.m_oper_txrx_seq.start(this.m_taichi_tmb_env.oper_txrx_agent.seqr);
    #1.5us;
 
-    end
+   m_oper_txrx_seq = TXRX_sequence::type_id::create($sformatf("m_oper_txrx_seq_%0d", i));
+           if (!this.m_oper_txrx_seq.randomize() with { 
+              m_oper_txrx_seq.item.rw_type == TXRX_READ;     
+              m_oper_txrx_seq.item.address == OPER_REGISTERS[i].address;    
+           //   m_oper_txrx_seq.item.address == 'h406760;    
+        //      m_oper_txrx_seq.item.wr_data == 'h900D_900D;     
+               }) 
+            `uvm_fatal("RUN_PHASE", "Randomization failed for m_oper_txrx_seq random registers")
+           this.m_oper_txrx_seq.start(this.m_taichi_tmb_env.oper_txrx_agent.seqr);
+
+ 
+     end
 
   #100us;
     	phase.drop_objection (this);

@@ -89,12 +89,14 @@ class TXRX_monitor extends uvm_monitor;
                 item.header[i][j]  = (stream_type == "TX") ? vif.tx : vif.rx;  // Correct signal reference
             end
         end
-            if (item.header[0][0] == 1 &&   item.header[0][1] == 0  && (stream_type == "TX"))
+// TODO check with Tsvika    if (item.header[0][0] == 1 &&   item.header[0][1] == 0  && (stream_type == "TX"))
+            if (item.header[0][0] == 0 &&   item.header[0][1] == 1  && (stream_type == "TX"))
              begin
               item.command = "[READ]";
               read_req_counter++;
              end
-            else if (item.header[0][0] == 0 &&   item.header[0][1] == 1 && (stream_type == "TX"))
+// TODO check with Tsvika  else if (item.header[0][0] == 0 &&   item.header[0][1] == 1 && (stream_type == "TX"))
+           else if (item.header[0][0] == 1 &&   item.header[0][1] == 0 && (stream_type == "TX"))
               item.command = "[WRITE]";
             else if(stream_type == "TX")
               item.command = "[INVALID READ/WRITE COMMAND]";
