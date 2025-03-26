@@ -29,7 +29,9 @@ bit keep_default_diag[600] =  '{default: 1};
 bit keep_default_oper[600] =  '{default: 1};
 bit oper_wr_rd_en;
 
-int counter=0;
+
+int diag_fifo_wr_count = 0;
+int oper_fifo_wr_count = 0;
 
   //----------------------------------------------------------------------------------------
    covergroup default_value_diag_reg_cg with function sample (int address);  
@@ -220,6 +222,7 @@ endfunction
 // Check if the command is a WRITE operation
  if(item.command == "[WRITE]")
  begin   
+    diag_fifo_wr_count++;
       // Loop through diagnostic registers to check if the address is writable and update expected regbank
     foreach (DIAG_REGISTERS[i]) begin
         diagnostical_read_only_registers_cg.sample(item.address);
@@ -257,6 +260,7 @@ endfunction
 // Check if the command is a WRITE operation
  if(item.command == "[WRITE]")
  begin   
+    oper_fifo_wr_count++;
       // Loop through diagnostic registers to check if the address is writable and update expected regbank
     foreach (OPER_REGISTERS[i]) begin
         operational_read_only_registers_cg.sample(item.address);
@@ -299,12 +303,26 @@ bit address_found = 0;
 // Check if the command is a WRITE operation
  if(item.command == "[READ_BACK_ACK]")
  begin   
-      // Loop through diagnostic registers to check if the address is writable
+
+        // Loop through diagnostic registers to check if the address is writable
     //-------------------------------------------
     foreach (DIAG_REGISTERS[i]) begin
     //-------------------------------------------
         if (item.address == DIAG_REGISTERS[i].address ) 
         begin
+              ///--------update module status register  ------------//
+    if ( diag_fifo_wr_count >0 )    // fifo not empty
+      begin
+        EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][21] = 1;  // Diagnostic Registers TX FIFO Not empty after send complete
+        EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][22] = 0;  // Diagnostic Registers TX FIFO Empty before end of send
+        diag_fifo_wr_count--;
+      end
+   else if( !keep_default_oper[i])
+       begin
+        EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][21] = 0;  // Diagnostic Registers TX FIFO Not empty after send complete
+        EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][22] = 1;  // Diagnostic Registers TX FIFO Empty before end of send
+       end
+
             if(keep_default_diag[i])
               default_value_diag_reg_cg.sample(i);
             address_found = 1;
@@ -341,12 +359,27 @@ endfunction
  // Check if the command is a WRITE operation
  if(item.command == "[READ_BACK_ACK]")
  begin   
+
+ 
       // Loop through diagnostic registers to check if the address is writable
     //-------------------------------------------
     foreach (OPER_REGISTERS[i]) begin
     //-------------------------------------------
         if (item.address == OPER_REGISTERS[i].address ) 
         begin
+               ///--------update module status register  ------------//
+    if ( oper_fifo_wr_count >0 )    // fifo not empty
+      begin
+        EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][19] = 1;  // Operational Registers TX FIFO Not empty after send complete
+        EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][20] = 0;  // Operational Registers TX FIFO Empty before end of send
+        oper_fifo_wr_count--;
+      end
+     else if( keep_default_oper[i])
+       begin
+        EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][19] = 0;  // Operational Registers TX FIFO Not empty after send complete
+        EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][20] = 1;  // Operational Registers TX FIFO Empty before end of send
+       end
+
             if(keep_default_oper[i])
               default_value_oper_reg_cg.sample(i);
             address_found = 1;

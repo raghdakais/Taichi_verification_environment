@@ -16,6 +16,7 @@
 parameter BASE_REG_ADDRESS   = 'h406300;
 parameter END_REG_ADDRESS    = 'h406930;
 
+
 // Define address ranges and their access types with default value for data
 typedef struct {
     logic [31:0] address;    // Base address of the register
@@ -42,6 +43,8 @@ reg_t OPER_REGISTERS [] = '{
     '{32'h406790, 1, 32'h00000001},  // Module Data Out Type selection (R/W)
     '{32'h4067E0, 1, 32'h00000001}  // Asics Data Alignment (PowerUp default=0x0, becoming 0x5 after DMS Init) (R/W)
 };
+
+
 
 // Create an array of diagnostic register ranges
 reg_t DIAG_REGISTERS [] = '{
@@ -100,4 +103,7 @@ reg_t DIAG_REGISTERS [] = '{
     '{32'h406920, 0, 32'h00000000},  // NVRAM Read Data (R)
     '{32'h406930, 0, 32'h00000002}   // NVRAM Status (R)
 };
+
+int  MODULE_STATUS_REG_IDX = (DIAG_REGISTERS[7].address - BASE_REG_ADDRESS)/4;
+
 `endif
