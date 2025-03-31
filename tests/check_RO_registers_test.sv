@@ -1,6 +1,8 @@
 // UVM test base for taichi_tmb environment
 
+//===============================================================================
 class check_RO_registers_test extends taichi_tmb_test_base;
+//===============================================================================
     // Testbench configuration and stimulus generation
        `uvm_component_utils(check_RO_registers_test)  // Register with the factory
   
@@ -16,7 +18,9 @@ class check_RO_registers_test extends taichi_tmb_test_base;
     endfunction
 
     
+//===============================================================================
     task run_phase (uvm_phase phase);
+//===============================================================================
 
     	phase.raise_objection (this);
          	super.run_phase(phase);
@@ -80,7 +84,6 @@ foreach(OPER_REGISTERS[i])
 
     end
 #1us;
-   ///////  send_valid_ip_sync (); 
              #100us;
     	phase.drop_objection (this);
 

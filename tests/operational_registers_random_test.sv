@@ -1,6 +1,8 @@
 // UVM test base for taichi_tmb environment
 
+//===============================================================================
 class operational_registers_random_test extends taichi_tmb_test_base;
+//===============================================================================
     // Testbench configuration and stimulus generation
        `uvm_component_utils(operational_registers_random_test)  // Register with the factory
   
@@ -17,12 +19,14 @@ rand int i = 0;
     endfunction
 
     
+//===============================================================================
     task run_phase (uvm_phase phase);
+//===============================================================================
 
     	phase.raise_objection (this);
          	super.run_phase(phase);
 
- #500ns;
+       #500ns;
 
 
 //------------------------------------------------------

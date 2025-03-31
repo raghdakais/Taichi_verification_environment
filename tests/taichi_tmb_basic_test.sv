@@ -21,9 +21,7 @@ class taichi_tmb_basic_test extends taichi_tmb_test_base;
    	super.run_phase(phase);
 
     	phase.raise_objection (this);
-
-       
-     
+  
 
       repeat (3)
       begin

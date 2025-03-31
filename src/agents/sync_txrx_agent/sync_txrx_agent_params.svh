@@ -5,11 +5,18 @@
 
 // Parameter definitions
    parameter int  IDLE       ='hB5;
-   parameter int  HEADER_DATA_SIZE       ='d64;
+ //  parameter int  HEADER_DATA_SIZE       ='d64;
+
+
+
 
 // Parameter definitions
 `define DATA_WIDTH 32
 `define ADDR_WIDTH 32
+
+
+
+
 //`define RESET_ACTIVE 1'b1
 
 `endif

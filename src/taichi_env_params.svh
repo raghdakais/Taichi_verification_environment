@@ -105,5 +105,7 @@ reg_t DIAG_REGISTERS [] = '{
 };
 
 int  MODULE_STATUS_REG_IDX = (DIAG_REGISTERS[7].address - BASE_REG_ADDRESS)/4;
-
+int  ASICS_DATA_CRC_ERROR_IDX = (DIAG_REGISTERS[9].address - BASE_REG_ADDRESS)/4;
+parameter Miscellaneous_REG_ADDRESS = 'h406750;
+parameter ACTIVE_MU_ADDRESS = 'h406700;
 `endif

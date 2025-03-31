@@ -18,5 +18,7 @@ package taichi_tmb_tests_package;
   `include "check_default_value_for_all_registers_test.sv"
   `include "check_RO_registers_test.sv"
   `include "operational_registers_random_test.sv"
+  `include "sending_frame_data_Mu_off_test.sv"
+  
 endpackage : taichi_tmb_tests_package
 

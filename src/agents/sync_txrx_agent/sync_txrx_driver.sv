@@ -26,13 +26,13 @@ class sync_txrx_driver extends uvm_driver #(sync_txrx_seq_item);
             send_idle();
         end 
         else begin
-           // `uvm_info(get_type_name(), $sformatf("Driving packet: %s", req.sprint()), UVM_DEBUG)
             // Drive the received packet if its IP packet
              if (req.pkt_type == SYNC_IP)
               drive_IP_packet(req);
              if (req.pkt_type == SYNC_HEADER)
               drive_HEADER_packet(req);
             // Notify sequencer that item has been processed
+////            `uvm_info(get_type_name(), $sformatf("\nSequence item is NULL in bodt: %s", req.sprint()), UVM_DEBUG)
             seq_item_port.item_done();
         end
     end
@@ -65,7 +65,7 @@ task drive_IP_packet(sync_txrx_seq_item pkt);
   //------------------------------------------------------------ 
     vif.ip_valid_crc = pkt.ip_valid_crc;
     vif.header_valid_crc = pkt.header_valid_crc;
- 
+ ////pkt.pkt_type_ = "[SYNC - IP_PACKET]";
 
       // Send Start1 (21)
         for (int i = 0 ; i <=7 ; i++) begin
@@ -95,9 +95,6 @@ task drive_IP_packet(sync_txrx_seq_item pkt);
                   @(posedge vif.clk);
                   vif.tx <= crc_calc[j];  // Transmit bits from MSB to LSB in Big Endian
               end
-
-
-
 endtask
 
 
@@ -106,14 +103,14 @@ task drive_HEADER_packet(sync_txrx_seq_item pkt);
 //----------------------------------------------------------------
     bit [15:0] crc_calc = 16'hFFFF; // Initialize CRC with 0xFFFF
     bit [7:0] serial_byte;
-
+ /// pkt.pkt_type_ = "[SYNC - HEADER_PACKET]";
   //------------------------------------------------------------ 
   //  IDLE |  START1  | START2  |  Data  |  CRC         |
   //  1byte    1byte     1byte     1byte    2byte 
   //------------------------------------------------------------ 
     vif.ip_valid_crc = pkt.ip_valid_crc;
     vif.header_valid_crc = pkt.header_valid_crc;
- 
+
       // Send Start1 (21)
         for (int i = 0 ; i <=7 ; i++) begin
               @(posedge vif.clk);
@@ -128,24 +125,37 @@ task drive_HEADER_packet(sync_txrx_seq_item pkt);
               @(posedge vif.clk);
               vif.tx <= pkt.start2_header[i];  // Send the bits of start2 in Big Endian order
           end
-          crc_calc = calculate_crc16_byte(crc_calc, pkt.start2_ip); // Start2 (43)
+          crc_calc = calculate_crc16_byte(crc_calc, pkt.start2_header); // Start2 (43)
+        // Transmit header byte in Big Endian order
 
-        // Send 64 random data words
+     for (int i = pkt.header_header.size()-1; i >= 0; i--) begin
+       for (int j = 0 ; j <=7 ; j++) begin
+            @(posedge vif.clk);
+            vif.tx <= pkt.header_header[i][j];
+           end
+            crc_calc = calculate_crc16_byte(crc_calc, pkt.header_header[i]); 
+    end
+        // Send 64 random data words 
         // Drive the ff_headers_sig signals based on the item values
-            for (int i = HEADER_DATA_SIZE -1 ; i <= 0  ; i--) begin
+           for (int i = pkt.header_data.size() -1 ; i >= 0  ; i--) begin
+        ////    for (int i = 0 ; i <= pkt.header_data.size() -1  ; i++) begin
                for (int j = 0 ; j <=7 ; j++) begin
                  @(posedge vif.clk);
                  vif.tx <= pkt.header_data[i][j];  // Send the bits of start2 in Big Endian order
-          end
+          //       vif.tx <= tmp_data[j];  // Send the bits of start2 in Big Endian order
+            end
+          crc_calc = calculate_crc16_byte(crc_calc, pkt.header_data[i]); // Start1 (21)
          end
 
-        // Send 12 random data byte
+        // Send 12 random data byte - footer
         // Drive the ff_headers_sig signals based on the item values
-            for (int i = 12 -1 ; i <= 0  ; i--) begin
+     ///       for (int i = pkt.footer.size() - 1 ; i >= 0  ; i--) begin
+            for (int i = 0 ; i <= pkt.footer.size() - 1  ; i++) begin
                for (int j = 0 ; j <=7 ; j++) begin
                  @(posedge vif.clk);
-                 vif.tx <= pkt.header_data[i][j];  // Send the bits of start2 in Big Endian order
+                 vif.tx <= pkt.footer[i][j];  // Send the bits of start2 in Big Endian order
           end
+                 crc_calc = calculate_crc16_byte(crc_calc, pkt.footer[i]); // Start1 (21)
          end
 
 

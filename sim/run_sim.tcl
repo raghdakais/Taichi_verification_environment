@@ -1,5 +1,8 @@
 transcript off
 set NumericStdNoWarnings 1
+set UVM_NO_RELNOTES 1  ;# Suppress irrelevant QuestaSim UVM release notes
+set UVM_MAX_QUIT_COUNT 10
+set UVM_REPORT_SEVERITY UVM_FATAL,UVM_ERROR,UVM_WARNING,UVM_INFO
 
 set PROJ_PATH "../"
 set LOG_PATH "log_result"
@@ -103,7 +106,7 @@ if {$enable_cov} {
     puts "Coverage collection disabled."
    set vopt_args [list ]
    #   set vsim_args "-msgmode both -displaymsgmode both -c"
-    set vsim_args [list -msgmode both   -c]
+    set vsim_args [list -msgmode wlf   -c]
 }
 
 
@@ -115,7 +118,7 @@ vopt +acc  work.taichi_tmb_tb -o taichi_tmb_optimized_sim {*}$vopt_args
 
 # Run the optimized simulation
 vsim -L unisim -L secureip -L fifo_generator_v13_2_7 -L xpm \
-     +UVM_VERBOSITY=UVM_DEBUG  -l "$LOG_FILE" \
+     +UVM_VERBOSITY=UVM_DEBUG +UVM_LOG=wlf -l "$LOG_FILE" \
      -cvgperinstance -vopt -voptargs=+acc  {*}$vsim_args  work.taichi_tmb_optimized_sim \
      +UVM_TESTNAME=$test_name -onfinish stop  -do "set StdArithNoWarnings 1 ; set NumericStdNoWarnings 1"
 

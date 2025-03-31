@@ -1,20 +1,21 @@
 onerror {resume}
+quietly virtual signal -install /taichi_tmb_tb/DUT { (context /taichi_tmb_tb/DUT )(io_inst_1/lock2aclk_stop & io_inst_1/incr_RDY_delay_cnt & io_inst_1/aclk_filter_cnt & io_inst_1/aclk_rise_detect & io_inst_1/aclk_period_saved & Diag_in_P & Diag_in_N &registers_inst_A/S_TX_IN &registers_inst_A/S_IDLY_CNT & registers_inst_A/S_EN )} Sig_2_Sync
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider <NULL>
-add wave -noupdate -color Magenta -itemcolor Magenta /taichi_tmb_tb/DUT/io_inst_1/lock2aclk_stop
-add wave -noupdate /taichi_tmb_tb/DUT/io_inst_1/incr_RDY_delay_cnt
-add wave -noupdate -radix unsigned /taichi_tmb_tb/DUT/io_inst_1/aclk_filter_cnt
-add wave -noupdate /taichi_tmb_tb/DUT/io_inst_1/aclk_rise_detect
-add wave -noupdate /taichi_tmb_tb/DUT/io_inst_1/aclk_period_saved
-add wave -noupdate /taichi_tmb_tb/DUT/Diag_in_P
-add wave -noupdate /taichi_tmb_tb/DUT/Diag_in_N
-add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/S_TX_IN
-add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/S_IDLY_CNT
-add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/S_EN
+add wave -noupdate -expand -group {Sig2 Sync} -color Magenta -itemcolor Magenta /taichi_tmb_tb/DUT/io_inst_1/lock2aclk_stop
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/incr_RDY_delay_cnt
+add wave -noupdate -expand -group {Sig2 Sync} -radix unsigned /taichi_tmb_tb/DUT/io_inst_1/aclk_filter_cnt
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_rise_detect
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_period_saved
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/Diag_in_P
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/Diag_in_N
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/registers_inst_A/S_TX_IN
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/registers_inst_A/S_IDLY_CNT
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/registers_inst_A/S_EN
 add wave -noupdate -divider <NULL>
-add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/TX_series7_COMPONENT/DATA_IN
-add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/TX_series7_COMPONENT/TX_data_byte
-add wave -noupdate -divider {IP - HEADER}
+add wave -noupdate -color Salmon -label Mu_activation /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/MU_CTRL(0)
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/MU_CTRL
+add wave -noupdate -divider <NULL>
 add wave -noupdate -expand -group {IP -->  HEADER} -color Magenta /taichi_tmb_tb/DUT/Sync_P
 add wave -noupdate -expand -group {IP -->  HEADER} -color Magenta /taichi_tmb_tb/DUT/SYNC
 add wave -noupdate -expand -group {IP -->  HEADER} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/sDataIn
@@ -23,7 +24,24 @@ add wave -noupdate -expand -group {IP -->  HEADER} /taichi_tmb_tb/DUT/IP_DATAVAL
 add wave -noupdate -expand -group {IP -->  HEADER} -color Cyan /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/S_RX_det_o
 add wave -noupdate -expand -group {IP -->  HEADER} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/S_IP_pckt_valid
 add wave -noupdate -expand -group {IP -->  HEADER} -color Cyan /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/S_good_packet_received
+add wave -noupdate -color {Indian Red} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/bad_packet_received
+add wave -noupdate /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/S_data_valid
+add wave -noupdate /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/S_FOOTER_VALID
+add wave -noupdate -color Magenta /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/RX_IP_DATAVAL_HEADER_PINS/good_packet
+add wave -noupdate /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/RX_IP_DATAVAL_HEADER_PINS/bad_packet
 add wave -noupdate -divider <NULL>
+add wave -noupdate -divider <NULL>
+add wave -noupdate /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/F_DOUT
+add wave -noupdate /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/hd_ptr_address_from_sync
+add wave -noupdate -color Khaki /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/rlt_address_from_sync
+add wave -noupdate -color Khaki /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/hd_ptr_address_from_sync
+add wave -noupdate -color Khaki /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/slice_merging_factor
+add wave -noupdate -color Khaki /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/fs_merging_factor
+add wave -noupdate -color Khaki /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/fs_sequence_counter
+add wave -noupdate -color Khaki /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/fq_stream_enable
+add wave -noupdate -color Khaki /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/temp_Num_of_Slices
+add wave -noupdate -color Khaki /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/reading_number_freerun_cnt_o
+add wave -noupdate -color Khaki /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/make_data_from_sync
 add wave -noupdate -divider <NULL>
 add wave -noupdate -divider {DIAG REG}
 add wave -noupdate -group {DIAG read - write} -color Yellow -itemcolor Firebrick /taichi_tmb_tb/DUT/registers_inst_A/S_WRITE
@@ -63,7 +81,7 @@ add wave -noupdate -group {CHANNEL OK} /taichi_tmb_tb/DUT/sig_2_packet_received_
 add wave -noupdate -group {CHANNEL OK} /taichi_tmb_tb/DUT/sig_2_good_packet
 add wave -noupdate -group {CHANNEL OK} /taichi_tmb_tb/DUT/sig_2_data_50m
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 3} {84651387 ps} 0}
+WaveRestoreCursors {{Cursor 3} {93465000 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 228
 configure wave -valuecolwidth 100
@@ -79,4 +97,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {150160500 ps}
+WaveRestoreZoom {93330191 ps} {93673141 ps}

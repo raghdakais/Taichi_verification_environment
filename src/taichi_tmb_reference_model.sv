@@ -33,6 +33,12 @@ bit oper_wr_rd_en;
 int diag_fifo_wr_count = 0;
 int oper_fifo_wr_count = 0;
 
+bit expected_Mu_activate = 1;
+bit expected_module_synth_data = 0;
+bit expected_asics_synth_data = 0;
+bit expected_data_synth = 0;
+bit expected_raw_data_mode = 0;
+bit expected_calibrated_data_mode = 0;
   //----------------------------------------------------------------------------------------
    covergroup default_value_diag_reg_cg with function sample (int address);  
   //----------------------------------------------------------------------------------------
@@ -260,12 +266,18 @@ endfunction
 // Check if the command is a WRITE operation
  if(item.command == "[WRITE]")
  begin   
+
+if ( EXPECTED_DIAG_OPER_RAM[ASICS_DATA_CRC_ERROR_IDX] !=0)
+    EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][9] = 1;
+
+
     oper_fifo_wr_count++;
       // Loop through diagnostic registers to check if the address is writable and update expected regbank
     foreach (OPER_REGISTERS[i]) begin
         operational_read_only_registers_cg.sample(item.address);
         operational_data_cg.sample(item.wr_data);
         operational_address_cg.sample(item.address);
+
         if (item.address == OPER_REGISTERS[i].address && OPER_REGISTERS[i].is_writable) 
         begin
             keep_default_oper[i] = 0;
@@ -274,7 +286,50 @@ endfunction
             else
                 EXPECTED_DIAG_OPER_RAM[(item.address - BASE_REG_ADDRESS)/4] = item.wr_data; 
             break;
-        end   
+        end  
+
+                // Data Processing Mode Selection Based on Register 0xA0X06424:
+        // If bit 0 = '0' and bit 5 = '1': 
+        //    M – Module Synthetic Data (bypasses ASICs, no Mu processing)
+        // Else if bit 0 = '0' and bit 6 = '1': 
+        //    A – ASIC Synthetic Data (no Mu processing)
+        // Else if bits [2:0] = "X11": 
+        //    C – Log2(Calibrated Data/IP) (Mu mode enabled)
+        // Else if bits [2:0] = "100": 
+        //    R – Raw Data (no Mu processing)
+        // Otherwise: 
+        //    X – Invalid Mode
+
+        if (item.address == OPER_REGISTERS[i].address == ACTIVE_MU_ADDRESS)
+        begin
+           expected_Mu_activate =  item.wr_data[0];  
+            EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][0] = expected_Mu_activate;
+        end
+        if( item.address == OPER_REGISTERS[i].address== Miscellaneous_REG_ADDRESS)
+        begin
+            expected_data_synth = item.wr_data[4];
+            EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][5] = expected_data_synth;
+        end
+        if( EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][5]==1 && EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][0]==0   )  //Module Synthetic Data 
+           begin
+                expected_module_synth_data = 1 ;  // module Synth data
+                expected_asics_synth_data  = 0 ;    
+           end
+        if( EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][6]==1 && EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][0]==0   )  //Module Synthetic Data 
+          begin
+            expected_asics_synth_data   = 1 ;  // asics Synth data
+             expected_module_synth_data = 0 ;
+          end
+        if( EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][1:0]== 'b11)
+          begin
+             expected_calibrated_data_mode   = 1 ;  // asics Synth data
+             expected_raw_data_mode = 0 ;
+          end
+        if( EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX][2:0]== 'b100)
+          begin
+             expected_calibrated_data_mode   = 0 ;  // asics Synth data
+             expected_raw_data_mode = 1 ;
+          end
      end  
 
      // Loop to check if oper interface is trying to access to diagnostical registers
@@ -326,6 +381,12 @@ bit address_found = 0;
             if(keep_default_diag[i])
               default_value_diag_reg_cg.sample(i);
             address_found = 1;
+
+//----- TODO REMOVE LATER -- THIS IS FOR DEBUG ---------------------------
+ if ( item.address == DIAG_REGISTERS[7].address)
+      EXPECTED_DIAG_OPER_RAM[MODULE_STATUS_REG_IDX] = item.rd_data; 
+//-------------------------------------------------------------------------
+
            if(item.rd_data !== EXPECTED_DIAG_OPER_RAM[(item.address - BASE_REG_ADDRESS)/4] )
               begin  
               uvm_report_error (get_type_name (), $sformatf ("[ERROR] [DIAGNOSTICAL] READ DATA IS NOT AS EXPECTED"));

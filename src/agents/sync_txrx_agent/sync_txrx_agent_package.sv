@@ -3,7 +3,7 @@
 
 
 package sync_txrx_agent_package;
-    typedef enum bit { SYNC_IP, SYNC_HEADER } packet_type_e;
+    typedef enum bit { SYNC_IP=0, SYNC_HEADER=1 } packet_sync_type_e;
 
   import uvm_pkg::*; // Import UVM base classes
   `include "uvm_macros.svh"

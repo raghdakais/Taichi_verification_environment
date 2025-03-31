@@ -36,7 +36,7 @@ class TXRX_driver extends uvm_driver#(TXRX_seq_item);
                 send_idle();
         end 
         else begin
-            `uvm_info(get_type_name(), $sformatf("Driving packet: %s", req.sprint()), UVM_DEBUG)
+        //    `uvm_info(get_type_name(), $sformatf("Driving packet: %s", req.sprint()), UVM_DEBUG)
 
             // Drive the received packet
            fork

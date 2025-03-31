@@ -37,7 +37,7 @@ class sync_txrx_sequence extends uvm_sequence #(sync_txrx_seq_item);
       // printing item fields only in UVM_DEBUG Mode
         if (uvm_top.get_report_verbosity_level() >= UVM_DEBUG)
         begin
-           $display("Driver Printing Item: ");
+           $display("SYNC TXRX Driver Printing Item: ");
            item.print();
         end
       finish_item(item);

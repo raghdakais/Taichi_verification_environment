@@ -46,38 +46,41 @@ class taichi_tmb_test_base extends uvm_test;
    endtask
 
 
-      task send_valid_ip_sync ();    
+    //=====================================================================================
+      task send_valid_sync_packet (packet_sync_type_e pkt_type);    
+    //=====================================================================================
            if (!this.m_sync_txrx_seq.randomize() with { 
+              m_sync_txrx_seq.item.pkt_type ==pkt_type;
                  }) 
               `uvm_fatal("RUN_PHASE", "Randomization failed for m_sync_txrx_seq")
              this.m_sync_txrx_seq.start(this.m_taichi_tmb_env.m_sync_txrx_agent.seqr);
   
       endtask
  
-
-////    //=====================================================================================
-////    virtual function void send_txrx_sequence(bit rw, int index, bit [31:0] data = 'h0BAD_0BAD);
-////    //=====================================================================================
-////        m_oper_txrx_seq = TXRX_sequence::type_id::create($sformatf("m_oper_txrx_seq_%0d", index));
-////        if (m_oper_txrx_seq == null)
-////            `uvm_fatal("RUN_PHASE", "Failed to create TXRX_sequence instance");
-////    
-////        if (!this.m_oper_txrx_seq.randomize() with {
-////            m_oper_txrx_seq.item.rw_type -> rw;
-////            m_oper_txrx_seq.item.address -> OPER_REGISTERS[index].address;
-////      //      if (rw == TXRX_WRITE)
-////      //           m_oper_txrx_seq.item.wr_data -> data;
-////        })
-////            `uvm_fatal("RUN_PHASE", "Randomization failed for TXRX_sequence");
-////    
-////        this.m_oper_txrx_seq.start(this.m_taichi_tmb_env.oper_txrx_agent.seqr);
-////    endfunction
+    //=====================================================================================
+    virtual task active_Mu_functional(bit on );
+    //=====================================================================================
+        m_oper_txrx_seq = TXRX_sequence::type_id::create($sformatf("m_oper_txrx_seq"));
+        if (m_oper_txrx_seq == null)
+            `uvm_fatal("RUN_PHASE", "Failed to create TXRX_sequence instance");
+    
+        if (!this.m_oper_txrx_seq.randomize() with {
+            m_oper_txrx_seq.item.rw_type == TXRX_WRITE;
+            m_oper_txrx_seq.item.address == OPER_REGISTERS[5].address;    // h406700  -- Mu ON/OFF
+            m_oper_txrx_seq.item.wr_data[0] == on;
+        })
+            `uvm_fatal("RUN_PHASE", "Randomization failed for TXRX_sequence");
+    
+        this.m_oper_txrx_seq.start(this.m_taichi_tmb_env.oper_txrx_agent.seqr);
+    endtask
 
 
 
+ //=====================================================================================
   // Function to generate values to hit coverage bins
-    function bit [31:0] get_random_writing_data();
-        case ($urandom_range(0, 6))
+       function bit [31:0] get_random_writing_data();
+//=====================================================================================
+          case ($urandom_range(0, 6))
             0: return 32'h0000_0000; // all_zeros
             1: return 32'hFFFF_FFFF; // all_ones
             2: return 32'hAAAA_AAAA; // alt_bits
