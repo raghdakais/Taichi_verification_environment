@@ -6,9 +6,25 @@
 //----------------------------------------------------------------
 interface asic_tiles_agent_if(input logic clk, input logic rst);
 //----------------------------------------------------------------
-    //[ EXAMPLE: ]
-    bit [`ADDR_WIDTH-1:0] address;  // 32-bit address signal
-    bit [`DATA_WIDTH-1:0] data;     // 32-bit data signal
-    bit valid;           // Valid signal
+   //-- outputs --//
+    bit TILES_CLK;
+    bit TILES_CLK_N;
+    bit [3:0] RESETn;
+    bit [3:0] ACLK;
+    bit [3:0] SYNC;
+    bit [3:0] D_START;
+    bit [3:0] DISCARD;
+    bit [3:0] SCLK;
+    bit [3:0] SCS1;
+    bit [3:0] SCS2;
+    bit [3:0] SDI;
+   //-- outputs --//
+    bit [3:0] SDO;
+    bit [3:0] ACO;
+    bit [3:0] ACO_N;
+    bit [3:0] DATA1;
+    bit [3:0] DATA1_N;
+    bit [3:0] DATA2;
+    bit [3:0] DATA2_N;
 endinterface
 `endif

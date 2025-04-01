@@ -20,13 +20,11 @@ class asic_tiles_driver extends uvm_driver #(asic_tiles_seq_item);
         wait_for_reset();
         forever begin
             seq_item_port.get_next_item(req);
-            vif.SDO    = req.SDO;
-            vif.ACO    = req.ACO;
-            vif.ACO_N  = req.ACO_N;
-            vif.DATA1  = req.DATA1;
-            vif.DATA1_N = req.DATA1_N;
-            vif.DATA2  = req.DATA2;
-            vif.DATA2_N = req.DATA2_N;
+
+            // Drive data to the interface
+            vif.data    <= req.data;
+            vif.address <= req.address;
+            vif.valid <= req.valid;
             @( posedge vif.clk);
             
             seq_item_port.item_done(); // Indicate completion of the transaction

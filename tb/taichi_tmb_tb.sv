@@ -40,8 +40,8 @@ end
    TXRX_agent_if                 diag_txrx_vif(.clk(txrx_clk),.rst(sig_2_rst)); 
    TXRX_agent_if                 oper_txrx_vif(.clk(txrx_clk),.rst(sig_2_rst)); 
    controllers_agent_if          controllers_vif(.clk(mclk),.rst(sig_2_rst)); 
-   asic_tiles_agent_if          asic_tiles_vif(.clk(mclk),.rst(sig_2_rst)); 
-   sync_txrx_agent_if                 sync_txrx_vif(.clk(txrx_clk),.rst(sig_2_rst)); 
+   sync_txrx_agent_if            sync_txrx_vif(.clk(txrx_clk),.rst(sig_2_rst)); 
+   asic_tiles_agent_if           asic_tiles_vif(.clk(txrx_clk),.rst(sig_2_rst)); 
   
    Taichi_TMB_top DUT  (
    //-------------------------------------------------------
@@ -51,14 +51,14 @@ end
     .MCLK_N ( {7{mclk}}),   
     .ACLK_MASTER   ( clk ),
     .ACLK_MASTER_N ( ~clk),
-    .RESET         (reset               ),
+    .RESET         (reset   ),
    //-------------------------------------------------------
     // Diagnostic TXRX
    //-------------------------------------------------------
-    .Diag_out_P           (diag_txrx_vif.rx ),  
+    .Diag_out_P           (diag_txrx_vif.rx  ),  
     .Diag_out_N           (diag_txrx_vif.rx_n),  
-    .Diag_in_P            (diag_txrx_vif.tx ),  
-    .Diag_in_N            (~diag_txrx_vif.tx),
+    .Diag_in_P            (diag_txrx_vif.tx  ),  
+    .Diag_in_N            (~diag_txrx_vif.tx ),
    //-------------------------------------------------------
     // Operational TXRX
    //-------------------------------------------------------
@@ -71,6 +71,29 @@ end
    //-------------------------------------------------------
     .Sync_P            (sync_txrx_vif.tx ),  
     .Sync_N            (~sync_txrx_vif.tx),   
+   //-------------------------------------------------------
+    // ASIC TILES
+   //-------------------------------------------------------
+    .RESETn             ( asic_tiles_vif.RESETn          ),  
+    .ACLK               ( asic_tiles_vif.ACLK            ),  
+    .SYNC               ( asic_tiles_vif.SYNC            ),  
+    .D_START            ( asic_tiles_vif.D_START         ),   
+    .DISCARD            ( asic_tiles_vif.DISCARD         ),  
+    .TILES_CLK          ( asic_tiles_vif.TILES_CLK       ),  
+    .TILES_CLK_N        ( asic_tiles_vif.TILES_CLK_N     ),  
+    .SCLK               ( asic_tiles_vif.SCLK            ),  
+    .SCS1               ( asic_tiles_vif.SCS1            ),  
+    .SCS2               ( asic_tiles_vif.SCS2            ),  
+    .SDI                ( asic_tiles_vif.SDI             ),  
+    .SDO                ( asic_tiles_vif.SDO             ),  
+    .ACO                ( asic_tiles_vif.ACO             ),  
+    .ACO_N              ( asic_tiles_vif.ACO_N           ),  
+    .DATA1              ( asic_tiles_vif.DATA1           ),  
+    .DATA1_N            ( asic_tiles_vif.DATA1_N         ),  
+    .DATA2              ( asic_tiles_vif.DATA2           ),  
+    .DATA2_N            ( asic_tiles_vif.DATA2_N         ),  
+  
+  
    //-------------------------------------------------------
    // Controllers
    //-------------------------------------------------------
@@ -109,6 +132,7 @@ end
       uvm_config_db #(virtual controllers_agent_if)::set (null, "", "vif", controllers_vif);
       uvm_config_db #(virtual asic_tiles_agent_if)::set (null, "", "vif", asic_tiles_vif);
       uvm_config_db #(virtual sync_txrx_agent_if)::set (null, "", "sync_txrx_agent_vif", sync_txrx_vif);
+      uvm_config_db #(virtual asic_tiles_agent_if)::set (null, "", "asic_tiles_agent_vif", asic_tiles_vif);
       run_test ();
    end
 

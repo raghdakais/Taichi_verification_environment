@@ -73,8 +73,7 @@ vcom -work work $PROJ_PATH/design/sources_1/imports/idan_registers/Module_TX_RX_
 vcom -2008  $PROJ_PATH/design/sources_1/new/*.vhd
 
 
-vcom  $PROJ_PATH/design/sources_1/ip/*.vhd
-vcom  $PROJ_PATH/design/sources_1/ip/*.vhdl
+vcom  $PROJ_PATH/design/sources_1/ip/*.vhd*
 
 
 

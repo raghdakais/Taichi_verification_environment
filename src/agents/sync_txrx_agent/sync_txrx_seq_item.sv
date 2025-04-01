@@ -161,15 +161,20 @@ class sync_txrx_seq_item extends uvm_sequence_item;
      // Constraint to ensure valid_crc defaults to 1 unless explicitly constrained to 0 in a test
     constraint sync_header_data_default_c {
 //        soft CT_TYPE == 'h900D;  
-         CT_TYPE == 'h900D;  
-         dms_status_i == 'hBEEF;  
-
+         CT_TYPE == 'h1020;  
+         fq_stream_enable =='h01; 
+         focal_spot_merging_factor == 'h02;
+         merging_factor == 'h01;
+         dms_status_i  ==  'h4222;
+         DFS =='h0;
+         READING_NUMBER_REG =='h0;
+      //   INTEGRATION_TIME_IN_REG== 
     }
    // Constraint to ensure valid_crc defaults to 1 unless explicitly constrained to 0 in a test
     constraint sync_header_footer_default_c {
-         slot_pointer_address == 'h12345678;
-         hd_pointer_address == 'hABCD900D;
-         fq_sequence_counter == 'hBE;
+         slot_pointer_address == 'h00000000;
+         hd_pointer_address == 'h00108800;
+         fq_sequence_counter == 'h00;
     }
 
 

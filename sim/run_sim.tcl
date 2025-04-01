@@ -106,7 +106,7 @@ if {$enable_cov} {
     puts "Coverage collection disabled."
    set vopt_args [list ]
    #   set vsim_args "-msgmode both -displaymsgmode both -c"
-    set vsim_args [list -msgmode wlf   -c]
+    set vsim_args [list -msgmode both   -c]
 }
 
 
