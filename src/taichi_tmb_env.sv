@@ -8,13 +8,17 @@ class taichi_tmb_env extends uvm_env;
      TXRX_agent buffer_txrx_agent;
      sync_txrx_agent m_sync_txrx_agent;
      controllers_agent m_controllers_agent;
-     controllers_config m_controllers_config;    
+     asic_tiles_agent m_asic_tiles_agent;
+     buffer_tx_agent m_buffer_tx_agent;
   // Configuration objects created in the environment
      TXRX_config diag_txrx_config;
      TXRX_config oper_txrx_config;
      sync_txrx_config m_sync_txrx_config;
      TXRX_config buffer_txrx_config;
-  
+     controllers_config m_controllers_config;    
+     asic_tiles_config m_asic_tiles_config;
+     buffer_tx_config m_buffer_tx_config;
+
    // diagnostic_reg_block m_diagnostic_reg_block;
     taichi_tmb_reference_model	taichi_tmb_rm; 		// Scoreboard handle
 
@@ -68,11 +72,22 @@ class taichi_tmb_env extends uvm_env;
     this.m_sync_txrx_config = sync_txrx_config::type_id::create("m_sync_txrx_config");
    // Set configurations for different TXRX agent instances
     uvm_config_db#(sync_txrx_config)::set(null, "", "cfg", m_sync_txrx_config);
-
-  ////    this.m_diagnostic_reg_block = diagnostic_reg_block::type_id::create("m_diagnostic_reg_block", this);
-  ////    m_diagnostic_reg_block.build ();
-  ////    m_diagnostic_reg_block.lock_model ();
-  ////    uvm_config_db #(diagnostic_reg_block)::set (null, "", "m_diagnostic_reg_block", m_diagnostic_reg_block);
+  //-------------------------------------------------------------------------------
+   // Creating ASIC TILES AGENT AND CONFIGURATION 
+   //-------------------------------------------------------------------------------
+    this.m_asic_tiles_agent = asic_tiles_agent::type_id::create("m_asic_tiles_agent", this );
+    this.m_asic_tiles_agent.vif_str = "asic_tiles_agent_vif";
+    this.m_asic_tiles_config = asic_tiles_config::type_id::create("m_asic_tiles_config");
+   // Set configurations for different TXRX agent instances
+    uvm_config_db#(asic_tiles_config)::set(null, "", "cfg", m_asic_tiles_config);
+  //-------------------------------------------------------------------------------
+   // Creating BUFFER TX  AGENT AND CONFIGURATION 
+   //-------------------------------------------------------------------------------
+    this.m_buffer_tx_agent = buffer_tx_agent::type_id::create("m_buffer_tx_agent", this );
+    this.m_buffer_tx_agent.vif_str = "buffer_tx_agent_vif";
+    this.m_buffer_tx_config = buffer_tx_config::type_id::create("m_buffer_tx_config");
+   // Set configurations for different TXRX agent instances
+    uvm_config_db#(buffer_tx_config)::set(null, "", "cfg", m_buffer_tx_config);
 
 
    this.taichi_tmb_rm = taichi_tmb_reference_model::type_id::create("taichi_tmb_rm", this);

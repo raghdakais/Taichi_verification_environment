@@ -1,0 +1,23 @@
+QuestaSim-64 vlog 2024.1 Compiler 2024.02 Feb  1 2024
+Start time: 11:31:36 on Jul 01,2024
+vlog -source -sv -svinputport=relaxed -work unisims_ver -f C:\PR\MODEL\VIVADO_LIBS_QUESTA_2024.1/unisims_ver/.cxl.systemverilog.unisim.unisims_ver.nt64.cmf 
+-- Compiling module HSADC
+-- Compiling module HSDAC
+-- Compiling module RFDAC
+-- Compiling module RFADC
+-- Compiling module GTM_DUAL
+-- Compiling module URAM288E5
+-- Compiling module URAM288E5_BASE
+-- Compiling module GTME5_QUAD
+
+Top level modules:
+	HSADC
+	HSDAC
+	RFDAC
+	RFADC
+	GTM_DUAL
+	URAM288E5
+	URAM288E5_BASE
+	GTME5_QUAD
+End time: 11:31:37 on Jul 01,2024, Elapsed time: 0:00:01
+Errors: 0, Warnings: 0

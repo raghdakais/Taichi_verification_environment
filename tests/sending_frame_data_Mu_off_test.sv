@@ -28,20 +28,20 @@ rand int i = 0;
     	phase.raise_objection (this);
          	super.run_phase(phase);
 
-            #500ns;
-
-
         active_Mu_functional(0);
-#3us;
         send_valid_sync_packet (SYNC_IP); 
-
-        #50us;
+        #60us;
         send_valid_sync_packet (SYNC_HEADER); 
+        
+        #400us;
 
+       if (!this.m_buffer_tx_sequence.randomize() with { 
+                 }) 
+              `uvm_fatal("RUN_PHASE", "Randomization failed for m_buffer_tx_sequence")
+             this.m_buffer_tx_sequence.start(this.m_taichi_tmb_env.m_buffer_tx_agent.seqr);
+  
 
-   
-
-#80us;
+        #100us;
 
     	phase.drop_objection (this);
    endtask

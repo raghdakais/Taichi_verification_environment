@@ -7,6 +7,8 @@ package taichi_tmb_env_package;
   import TXRX_agent_package::*; // Import agent package that includes classes
   import controllers_agent_package::*; // Import agent package that includes classes
   import sync_txrx_agent_package::*; // Import agent package that includes classes
+  import asic_tiles_agent_package::*; // Import agent package that includes classes
+  import buffer_tx_agent_package::*; // Import agent package that includes classes
    `include "uvm_macros.svh"
 
  /// `include "diagnostic_reg_block.sv"

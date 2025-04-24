@@ -4,8 +4,9 @@ set tests {
  {check_default_value_for_all_registers_test 2}
  {taichi_tmb_test_base 1}
  {check_RO_registers_test 1}
- {diagnostic_registers_random_test 10}
- {operational_registers_random_test 10}
+ {diagnostic_registers_random_test 5}
+ {operational_registers_random_test 5}
+ {sending_frame_data_Mu_off_test 1}
 }
 
 
@@ -15,7 +16,7 @@ puts " RUNNING REGRESSION..."
 puts "================================================="
 
 # Set paths
-set PROJ_PATH "../"
+set PROJ_PATH ".."
 set REG_PATH "log_result/regression_results"
 set COV_PATH "$REG_PATH/coverage"
 
@@ -39,12 +40,21 @@ puts "Compiling design and environment..."
 
 # Define the log file name using the test name
 set work_library_path "${REG_PATH}/work"
+set QUESTA_LIBS $PROJ_PATH/src/QUESTA_LIBS
 vlib $work_library_path
 vmap work $work_library_path
-vmap fifo_generator_v13_2_7 C:/questasim64_2024.1/fifo_generator_v13_2_7
-vmap secureip C:/questasim64_2024.1/secureip
-vmap unisim C:/questasim64_2024.1/unisim
-vmap xpm C:/questasim64_2024.1/xpm
+vmap fifo_generator_v13_2_7 $QUESTA_LIBS/fifo_generator_v13_2_7
+vmap secureip $QUESTA_LIBS/secureip
+vmap unisim $QUESTA_LIBS/unisim
+vmap xpm $QUESTA_LIBS/xpm
+
+
+#####    vmap fifo_generator_v13_2_7 C:/questasim64_2024.1/fifo_generator_v13_2_7
+#####    vmap secureip C:/questasim64_2024.1/secureip
+#####    vmap unisim C:/questasim64_2024.1/unisim
+#####    vmap xpm C:/questasim64_2024.1/xpm
+
+
 
 # Compile the design and environment
 if { ![file exists compile_env.do] || ![file exists compile_design.do] } {

@@ -1,0 +1,15 @@
+QuestaSim-64 vlog 2024.1 Compiler 2024.02 Feb  1 2024
+Start time: 11:36:23 on Jul 01,2024
+vlog "+incdir+C:\Users\310268386\AppData\Roaming\Xilinx\Vivado\.cxl.ip/incl" -work fifo_generator_v13_2_7 -f C:\PR\MODEL\VIVADO_LIBS_QUESTA_2024.1/fifo_generator_v13_2_7/.cxl.verilog.fifo_generator_v13_2_7.fifo_generator_v13_2_7.nt64.cmf 
+-- Compiling module fifo_generator_vlog_beh
+-- Compiling module fifo_generator_v13_2_7_CONV_VER
+-- Compiling module fifo_generator_v13_2_7_sync_stage
+-- Compiling module fifo_generator_v13_2_7_bhv_ver_as
+-- Compiling module fifo_generator_v13_2_7_beh_ver_ll_afifo
+-- Compiling module fifo_generator_v13_2_7_bhv_ver_ss
+-- Compiling module fifo_generator_v13_2_7_bhv_ver_preload0
+-- Compiling module fifo_generator_v13_2_7_axic_reg_slice
+
+Top level modules:
+End time: 11:36:23 on Jul 01,2024, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0

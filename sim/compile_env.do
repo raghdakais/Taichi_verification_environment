@@ -9,6 +9,7 @@
      vlog -sv  +incdir+../src/agents/              ../src/agents/controllers_agent/controllers_agent_if.sv
      vlog -sv  +incdir+../src/agents/              ../src/agents/asic_tiles_agent/asic_tiles_agent_if.sv
      vlog -sv  +incdir+../src/agents/              ../src/agents/sync_txrx_agent/sync_txrx_agent_if.sv
+     vlog -sv  +incdir+../src/agents/              ../src/agents/buffer_tx_agent/buffer_tx_agent_if.sv
 
 # Compiling all src(env and agents ) in the environment
      vlog -sv  +incdir+../src/agents/              ../src/agents/taichi_tmb_agent/taichi_tmb_agent_package.sv
@@ -16,6 +17,7 @@
      vlog -sv  +incdir+../src/agents/              ../src/agents/controllers_agent/controllers_agent_package.sv
      vlog -sv  +incdir+../src/agents/              ../src/agents/asic_tiles_agent/asic_tiles_agent_package.sv
      vlog -sv  +incdir+../src/agents/              ../src/agents/sync_txrx_agent/sync_txrx_agent_package.sv
+     vlog -sv  +incdir+../src/agents/              ../src/agents/buffer_tx_agent/buffer_tx_agent_package.sv
 
 # Compiling  test folder in the environment
      vlog -sv  +incdir+../src/                ../src/taichi_tmb_env_package.sv

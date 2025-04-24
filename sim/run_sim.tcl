@@ -4,7 +4,7 @@ set UVM_NO_RELNOTES 1  ;# Suppress irrelevant QuestaSim UVM release notes
 set UVM_MAX_QUIT_COUNT 10
 set UVM_REPORT_SEVERITY UVM_FATAL,UVM_ERROR,UVM_WARNING,UVM_INFO
 
-set PROJ_PATH "../"
+set PROJ_PATH ".."
 set LOG_PATH "log_result"
 set COV_PATH "log_result/coverage"
 
@@ -50,7 +50,7 @@ set current_datetime [clock format [clock seconds] -format "%Y_%m_%d_%H_%M_%S"]
 set folder_path "${LOG_PATH}/."
 ####set folder_path "${LOG_PATH}/work_${current_datetime}"
 set work_library_path "${folder_path}/work"
-
+set QUESTA_LIBS $PROJ_PATH/src/QUESTA_LIBS
 # Create the base directory inside LOG_PATH
 ## maybe no need  file mkdir $folder_path
 
@@ -61,12 +61,12 @@ vlib $work_library_path
 vmap work $work_library_path
 
 # Map secureip and unisim libraries to their paths
-vmap fifo_generator_v13_2_7 C:/questasim64_2024.1/fifo_generator_v13_2_7
-vmap secureip C:/questasim64_2024.1/secureip
-vmap unisim C:/questasim64_2024.1/unisim
-vmap xpm C:/questasim64_2024.1/xpm
+vmap fifo_generator_v13_2_7 $QUESTA_LIBS/fifo_generator_v13_2_7
+vmap secureip $QUESTA_LIBS/secureip
+vmap unisim $QUESTA_LIBS/unisim
+vmap xpm $QUESTA_LIBS/xpm
+vmap unisims_ver $QUESTA_LIBS/unisims_ver
 
- 
 puts "Log path: $LOG_PATH"
 puts "Coverage path: $COV_PATH"
 puts "Test name: $test_name"
@@ -80,10 +80,19 @@ if { ![file exists compile_env.do] || ![file exists compile_design.do] } {
     exit 1
 }
 
+
+
+
 puts "Compiling Design..."
+ ###do "C:/scripts/TAICHI_Repo/Taichi_verification_environment/design/sources_1/ip/DDR3_AXI_IF_202301/sim_scripts/questa/compile.do"
 do compile_design.do
 puts "Compiling Environment..."
 do compile_env.do
+
+
+
+
+
 
 # Verify compiled design
 vdir
@@ -106,20 +115,20 @@ if {$enable_cov} {
     puts "Coverage collection disabled."
    set vopt_args [list ]
    #   set vsim_args "-msgmode both -displaymsgmode both -c"
-    set vsim_args [list -msgmode wlf   -c]
+    set vsim_args [list -msgmode both   -c]
 }
 
 
 # Optimize the design with vopt
 # +cover=bcst  -- to enable coverage
  puts "Start Optimization.."
-vopt +acc  work.taichi_tmb_tb -o taichi_tmb_optimized_sim {*}$vopt_args
+vopt work.taichi_tmb_tb work.glbl  -L secureip -L fifo_generator_v13_2_7 -L xpm -L unisims_ver -L unisim  -o taichi_tmb_optimized_sim {*}$vopt_args
 
 
 # Run the optimized simulation
-vsim -L unisim -L secureip -L fifo_generator_v13_2_7 -L xpm \
+vsim -t 1ps -L unisim  work.taichi_tmb_optimized_sim\
      +UVM_VERBOSITY=UVM_DEBUG +UVM_LOG=wlf -l "$LOG_FILE" \
-     -cvgperinstance -vopt -voptargs=+acc  {*}$vsim_args  work.taichi_tmb_optimized_sim \
+     -cvgperinstance -vopt -voptargs=+acc  {*}$vsim_args  -msgmode wlf \
      +UVM_TESTNAME=$test_name -onfinish stop  -do "set StdArithNoWarnings 1 ; set NumericStdNoWarnings 1"
 
 

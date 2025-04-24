@@ -1,0 +1,15 @@
+QuestaSim-64 vlog 2024.1 Compiler 2024.02 Feb  1 2024
+Start time: 11:30:37 on Jul 01,2024
+vlog -source -sv -svinputport=relaxed -suppress vlog-2583 -work secureip -f C:\PR\MODEL\VIVADO_LIBS_QUESTA_2024.1/secureip/.cxl.systemverilog.secureip.secureip.nt64.cmf 
+-- Compiling module SIP_FE
+-- Compiling module SIP_HSDAC
+-- Compiling module SIP_HSADC
+-- Compiling module SIP_PCIE4CE4
+
+Top level modules:
+	SIP_FE
+	SIP_HSDAC
+	SIP_HSADC
+	SIP_PCIE4CE4
+End time: 11:30:48 on Jul 01,2024, Elapsed time: 0:00:11
+Errors: 0, Warnings: 0

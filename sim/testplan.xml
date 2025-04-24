@@ -1,5 +1,5 @@
  <!-- WorkBook Path: https://docs.philips.com/personal/partner_raghda_kais_philips_com/Documents/Documents/Verification/Module1_Taichi_testplan.xlsx -->
- <!-- Date: 1/1/0001 11:09:11 PM -->
+ <!-- Date: 1/1/0001 4:44:30 PM -->
 <Workbook>
 	<Worksheet>
 		<Table>
@@ -376,7 +376,7 @@ This interface sends a write request to the ASICs.</Cell>
 			</Row>
 			<Row>
 				<Cell>7</Cell>
-				<Cell>DATA OUT -RX</Cell>
+				<Cell>TILES ASIC</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -385,7 +385,7 @@ This interface sends a write request to the ASICs.</Cell>
 			</Row>
 			<Row>
 				<Cell>7.1</Cell>
-				<Cell>ASICs DATA generation</Cell>
+				<Cell>SPIprotocol checking</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -394,6 +394,78 @@ This interface sends a write request to the ASICs.</Cell>
 			</Row>
 			<Row>
 				<Cell>7.1.1</Cell>
+				<Cell>BusyTimeCheck</Cell>
+				<Cell></Cell>
+				<Cell>BusyTimeCheck</Cell>
+				<Cell>Assertion</Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>7.1.2</Cell>
+				<Cell>InitTimeCheck</Cell>
+				<Cell></Cell>
+				<Cell>InitTimeCheck</Cell>
+				<Cell>Assertion</Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>7.1.3</Cell>
+				<Cell>ClockFrequencyCheck</Cell>
+				<Cell></Cell>
+				<Cell>ClockFrequencyCheck</Cell>
+				<Cell>Assertion</Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>7.1.4</Cell>
+				<Cell>SDISetupTimeCheck</Cell>
+				<Cell></Cell>
+				<Cell>SDISetupTimeCheck</Cell>
+				<Cell>Assertion</Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>7.1.5</Cell>
+				<Cell>SDIHoldTimeCheck</Cell>
+				<Cell></Cell>
+				<Cell>SDIHoldTimeCheck</Cell>
+				<Cell>Assertion</Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>7.1.6</Cell>
+				<Cell>SDOTimeDelayCheck</Cell>
+				<Cell></Cell>
+				<Cell>SDOTimeDelayCheck</Cell>
+				<Cell>Assertion</Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>8</Cell>
+				<Cell>DATA OUT -RX</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>8.1</Cell>
+				<Cell>ASICs DATA generation</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>8.1.1</Cell>
 				<Cell>Send random data from each ASIC</Cell>
 				<Cell>always Check if data is received correctly and stored in the buffer</Cell>
 				<Cell></Cell>
@@ -402,7 +474,7 @@ This interface sends a write request to the ASICs.</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>7.1.2</Cell>
+				<Cell>8.1.2</Cell>
 				<Cell>Continuous High-Speed Data Stream</Cell>
 				<Cell>Ensure buffer does not overflow or lose data</Cell>
 				<Cell></Cell>
@@ -411,7 +483,7 @@ This interface sends a write request to the ASICs.</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>7.1.3</Cell>
+				<Cell>8.1.3</Cell>
 				<Cell>Synthetic Data </Cell>
 				<Cell>Send predefined synthetic data patterns instead of ASIC-generated data</Cell>
 				<Cell></Cell>
@@ -420,7 +492,7 @@ This interface sends a write request to the ASICs.</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>7.1.4</Cell>
+				<Cell>8.1.4</Cell>
 				<Cell>Mixed Synthetic &amp; ASIC Data</Cell>
 				<Cell>Inject synthetic data alongside real ASIC data
 Ensure system behavior remains consistent and correct</Cell>
@@ -430,7 +502,7 @@ Ensure system behavior remains consistent and correct</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>7.1.5</Cell>
+				<Cell>8.1.5</Cell>
 				<Cell>Synthetic Data Patterns</Cell>
 				<Cell> all 0s, all 1s, alternating bits, max/min values</Cell>
 				<Cell></Cell>
@@ -439,7 +511,7 @@ Ensure system behavior remains consistent and correct</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>7.2</Cell>
+				<Cell>8.2</Cell>
 				<Cell>Buffer Overflow Handling</Cell>
 				<Cell>Fill the buffer to maximum capacity and try writing more data
 Check if overflow conditions are handled</Cell>
@@ -449,7 +521,7 @@ Check if overflow conditions are handled</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>7.3</Cell>
+				<Cell>8.3</Cell>
 				<Cell>Buffer Underflow Handling</Cell>
 				<Cell>Read from an empty buffer and verify expected behavior</Cell>
 				<Cell></Cell>
@@ -458,170 +530,8 @@ Check if overflow conditions are handled</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>8</Cell>
-				<Cell>FLASH-SPI</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.1</Cell>
-				<Cell>Protocol checking</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.1.1</Cell>
-				<Cell>Clock Polarity and Phase</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.1.2</Cell>
-				<Cell>check cs_timing</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.1.3</Cell>
-				<Cell>Ensure that transactions only occur when CS is asserted.</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.1.4</Cell>
-				<Cell>Check setup/hold times.</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.1.5</Cell>
-				<Cell>Check clock frequency limits</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.1.6</Cell>
-				<Cell>Check response delays</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.1.7</Cell>
-				<Cell>Bit Order</Cell>
-				<Cell>Validate MSB-first and LSB-first data transmission</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.2</Cell>
-				<Cell>functional checking</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.2.1</Cell>
-				<Cell>Command Sequence Verification</Cell>
-				<Cell>Validate that only valid command sequences are executed</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.2.1.1</Cell>
-				<Cell>Single Read Operation</Cell>
-				<Cell>Verify reading from a valid address</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.2.1.2</Cell>
-				<Cell>Single Write Operation</Cell>
-				<Cell>Verify writing to a valid address</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.2.1.3</Cell>
-				<Cell>Erase Operation</Cell>
-				<Cell>Check erase functionality (sector, block, and full erase)</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.2.2</Cell>
-				<Cell>Out-of-Bounds Read/Write</Cell>
-				<Cell>verify response to accessing invalid addresses</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.2.3</Cell>
-				<Cell>Corrupt Data Handling</Cell>
-				<Cell>Inject errors into data and verify detection mechanisms</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.2.4</Cell>
-				<Cell>Unsupported Commands</Cell>
-				<Cell>Send invalid commands</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.2.5</Cell>
-				<Cell>Burst Read/Write</Cell>
-				<Cell>Verify continuous read/write operations</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
 				<Cell>9</Cell>
-				<Cell>TEMP - I2C</Cell>
+				<Cell>FLASH-SPI</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -639,7 +549,7 @@ Check if overflow conditions are handled</Cell>
 			</Row>
 			<Row>
 				<Cell>9.1.1</Cell>
-				<Cell>START/STOP conditions, ACK/NACK detection</Cell>
+				<Cell>Clock Polarity and Phase</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -648,6 +558,168 @@ Check if overflow conditions are handled</Cell>
 			</Row>
 			<Row>
 				<Cell>9.1.2</Cell>
+				<Cell>check cs_timing</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>9.1.3</Cell>
+				<Cell>Ensure that transactions only occur when CS is asserted.</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>9.1.4</Cell>
+				<Cell>Check setup/hold times.</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>9.1.5</Cell>
+				<Cell>Check clock frequency limits</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>9.1.6</Cell>
+				<Cell>Check response delays</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>9.1.7</Cell>
+				<Cell>Bit Order</Cell>
+				<Cell>Validate MSB-first and LSB-first data transmission</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>9.2</Cell>
+				<Cell>functional checking</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>9.2.1</Cell>
+				<Cell>Command Sequence Verification</Cell>
+				<Cell>Validate that only valid command sequences are executed</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>9.2.1.1</Cell>
+				<Cell>Single Read Operation</Cell>
+				<Cell>Verify reading from a valid address</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>9.2.1.2</Cell>
+				<Cell>Single Write Operation</Cell>
+				<Cell>Verify writing to a valid address</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>9.2.1.3</Cell>
+				<Cell>Erase Operation</Cell>
+				<Cell>Check erase functionality (sector, block, and full erase)</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>9.2.2</Cell>
+				<Cell>Out-of-Bounds Read/Write</Cell>
+				<Cell>verify response to accessing invalid addresses</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>9.2.3</Cell>
+				<Cell>Corrupt Data Handling</Cell>
+				<Cell>Inject errors into data and verify detection mechanisms</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>9.2.4</Cell>
+				<Cell>Unsupported Commands</Cell>
+				<Cell>Send invalid commands</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>9.2.5</Cell>
+				<Cell>Burst Read/Write</Cell>
+				<Cell>Verify continuous read/write operations</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>10</Cell>
+				<Cell>TEMP - I2C</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>10.1</Cell>
+				<Cell>Protocol checking</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>10.1.1</Cell>
+				<Cell>START/STOP conditions, ACK/NACK detection</Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell></Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>10.1.2</Cell>
 				<Cell>Register Access Coverage</Cell>
 				<Cell>Ensure all readable/writable registers are accessed</Cell>
 				<Cell></Cell>
@@ -656,7 +728,7 @@ Check if overflow conditions are handled</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>9.1.3</Cell>
+				<Cell>10.1.3</Cell>
 				<Cell>Temperature Range Coverage</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -665,7 +737,7 @@ Check if overflow conditions are handled</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>9.2</Cell>
+				<Cell>10.2</Cell>
 				<Cell>I2C Read Temperature Register</Cell>
 				<Cell>Read temperature values from the sensor at different times</Cell>
 				<Cell></Cell>
@@ -674,7 +746,7 @@ Check if overflow conditions are handled</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>9.3</Cell>
+				<Cell>10.3</Cell>
 				<Cell>I2C Write Configuration Register</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -683,7 +755,7 @@ Check if overflow conditions are handled</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>9.4</Cell>
+				<Cell>10.4</Cell>
 				<Cell>Power-On Default Values</Cell>
 				<Cell>Read registers after reset/power-on</Cell>
 				<Cell></Cell>
@@ -692,7 +764,7 @@ Check if overflow conditions are handled</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>9.5</Cell>
+				<Cell>10.5</Cell>
 				<Cell>Temperature Out-of-Range Alerts</Cell>
 				<Cell>Configure high/low temperature limits
 Verify interrupt generation when limits are exceeded</Cell>
@@ -702,7 +774,7 @@ Verify interrupt generation when limits are exceeded</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>10</Cell>
+				<Cell>11</Cell>
 				<Cell>NVRAM - I2C</Cell>
 				<Cell>Non-Volatile RAM</Cell>
 				<Cell></Cell>
@@ -711,7 +783,7 @@ Verify interrupt generation when limits are exceeded</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>10.1</Cell>
+				<Cell>11.1</Cell>
 				<Cell>Basic Read and Write Operations</Cell>
 				<Cell>Write data to NVRAM and read it back
 </Cell>
@@ -721,7 +793,7 @@ Verify interrupt generation when limits are exceeded</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>10.2</Cell>
+				<Cell>11.2</Cell>
 				<Cell>Random Address Access</Cell>
 				<Cell>Perform read/write operations at random memory locations</Cell>
 				<Cell></Cell>
@@ -730,7 +802,7 @@ Verify interrupt generation when limits are exceeded</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>10.3</Cell>
+				<Cell>11.3</Cell>
 				<Cell>Burst Read and Write</Cell>
 				<Cell>Test multi-byte and burst transfers to ensure correct sequencing</Cell>
 				<Cell></Cell>
@@ -739,7 +811,7 @@ Verify interrupt generation when limits are exceeded</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>10.4</Cell>
+				<Cell>11.4</Cell>
 				<Cell>Read After Write Without Delay</Cell>
 				<Cell>Ensure immediate read after write returns the correct data</Cell>
 				<Cell></Cell>
@@ -748,7 +820,7 @@ Verify interrupt generation when limits are exceeded</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>10.5</Cell>
+				<Cell>11.5</Cell>
 				<Cell>Maximum Capacity Utilization</Cell>
 				<Cell>Fill the entire NVRAM with data and validate retrieval</Cell>
 				<Cell></Cell>
@@ -757,7 +829,7 @@ Verify interrupt generation when limits are exceeded</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>10.6</Cell>
+				<Cell>11.6</Cell>
 				<Cell>Endurance Testing</Cell>
 				<Cell>Write/erase the same location multiple times to check wear leveling</Cell>
 				<Cell></Cell>
@@ -766,7 +838,7 @@ Verify interrupt generation when limits are exceeded</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>10.7</Cell>
+				<Cell>11.7</Cell>
 				<Cell> Out-of-Bounds Access Handling</Cell>
 				<Cell>Attempt to read/write beyond NVRAM size and check for error response</Cell>
 				<Cell></Cell>
@@ -775,7 +847,7 @@ Verify interrupt generation when limits are exceeded</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>11</Cell>
+				<Cell>12</Cell>
 				<Cell>CONTROLLERS</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -784,7 +856,7 @@ Verify interrupt generation when limits are exceeded</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>11.1</Cell>
+				<Cell>12.1</Cell>
 				<Cell>HW_REV</Cell>
 				<Cell>random - not connected</Cell>
 				<Cell></Cell>
@@ -793,7 +865,7 @@ Verify interrupt generation when limits are exceeded</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>11.2</Cell>
+				<Cell>12.2</Cell>
 				<Cell>PGOOD&#39;s</Cell>
 				<Cell>Inputs are driven to registers
 read register address [0x406350] – bit [30] </Cell>
@@ -803,7 +875,7 @@ read register address [0x406350] – bit [30] </Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>11.3</Cell>
+				<Cell>12.3</Cell>
 				<Cell>DISABLE_CLK0n       </Cell>
 				<Cell>affected by writing to register</Cell>
 				<Cell></Cell>
@@ -812,7 +884,7 @@ read register address [0x406350] – bit [30] </Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>11.4</Cell>
+				<Cell>12.4</Cell>
 				<Cell>DISABLE_CLK1n</Cell>
 				<Cell>affected by writing to register</Cell>
 				<Cell></Cell>
@@ -821,7 +893,7 @@ read register address [0x406350] – bit [30] </Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>11.5</Cell>
+				<Cell>12.5</Cell>
 				<Cell>DISABLE_SLAVEn</Cell>
 				<Cell>affected by writing to register</Cell>
 				<Cell></Cell>
@@ -830,7 +902,7 @@ read register address [0x406350] – bit [30] </Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>11.6</Cell>
+				<Cell>12.6</Cell>
 				<Cell>DISABLE_APOSn</Cell>
 				<Cell>affected by writing to register and power up</Cell>
 				<Cell></Cell>
@@ -839,7 +911,7 @@ read register address [0x406350] – bit [30] </Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>11.7</Cell>
+				<Cell>12.7</Cell>
 				<Cell>DISABLE_ANEGn         </Cell>
 				<Cell>affected by writing to register and power up</Cell>
 				<Cell></Cell>
@@ -848,7 +920,7 @@ read register address [0x406350] – bit [30] </Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>11.8</Cell>
+				<Cell>12.8</Cell>
 				<Cell>HEATER_1 </Cell>
 				<Cell>Environment always checks the output if it&#39;s as expected.
 Register: Heater Control- address  0x406530
@@ -859,7 +931,7 @@ Module&#39;s Heaters may be shut off, manually set to value between 0x00-0xFF (0
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>11.9</Cell>
+				<Cell>12.9</Cell>
 				<Cell>HEATER_2</Cell>
 				<Cell>Environment always checks the output if it&#39;s as expected.
 Register: Heater Control- address  0x406530
@@ -870,7 +942,7 @@ Module&#39;s Heaters may be shut off, manually set to value between 0x00-0xFF (0
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>12</Cell>
+				<Cell>13</Cell>
 				<Cell>ASIC TILES</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -879,7 +951,7 @@ Module&#39;s Heaters may be shut off, manually set to value between 0x00-0xFF (0
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>13</Cell>
+				<Cell>14</Cell>
 				<Cell>ASIC_SPI</Cell>
 				<Cell></Cell>
 				<Cell></Cell>

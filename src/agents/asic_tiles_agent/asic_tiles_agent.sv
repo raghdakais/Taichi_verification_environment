@@ -10,7 +10,7 @@ class asic_tiles_agent extends uvm_agent;
     asic_tiles_sequencer seqr;
     asic_tiles_monitor mon;
     asic_tiles_config cfg;            // Configuration object
-
+    string vif_str="USER DID NOT SET YET";
     function new(string name="m_asic_tiles_agent", uvm_component parent=null);
         super.new(name, parent);
     endfunction
@@ -20,7 +20,7 @@ class asic_tiles_agent extends uvm_agent;
 //----------------------------------------------------------------
         super.build_phase(phase);
 
-        if (!uvm_config_db#(virtual asic_tiles_agent_if)::get(this, "", "vif", vif)) begin
+        if (!uvm_config_db#(virtual asic_tiles_agent_if)::get(this, "", vif_str, vif)) begin
             uvm_report_fatal (get_type_name (), $sformatf ("[FATAL] Virtual asic_tiles_agent_vif interface not found for asic_tiles agent"));
         end
      // Get configuration from config_db
