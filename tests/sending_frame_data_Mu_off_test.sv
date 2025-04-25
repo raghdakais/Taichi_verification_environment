@@ -41,7 +41,7 @@ rand int i = 0;
              this.m_buffer_tx_sequence.start(this.m_taichi_tmb_env.m_buffer_tx_agent.seqr);
   
 
-        #100us;
+        #220us;
 
     	phase.drop_objection (this);
    endtask

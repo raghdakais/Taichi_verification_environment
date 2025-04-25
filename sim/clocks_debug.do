@@ -1,18 +1,18 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider <NULL>
-add wave -noupdate -expand -group {Sig2 Sync} -color Magenta -itemcolor Magenta /taichi_tmb_tb/DUT/io_inst_1/lock2aclk_stop
-add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/CLK50
-add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/incr_RDY_delay_cnt
-add wave -noupdate -expand -group {Sig2 Sync} -radix unsigned /taichi_tmb_tb/DUT/io_inst_1/aclk_filter_cnt
-add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_rise_detect
-add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_master_i_int
-add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_50m_rr
-add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_period_saved
-add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/Diag_in_P
-add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/Diag_in_N
-add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/registers_inst_A/S_IDLY_CNT
-add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/registers_inst_A/S_EN
+add wave -noupdate -group {Sig2 Sync} -color Magenta -itemcolor Magenta /taichi_tmb_tb/DUT/io_inst_1/lock2aclk_stop
+add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/CLK50
+add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/incr_RDY_delay_cnt
+add wave -noupdate -group {Sig2 Sync} -radix unsigned /taichi_tmb_tb/DUT/io_inst_1/aclk_filter_cnt
+add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_rise_detect
+add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_master_i_int
+add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_50m_rr
+add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_period_saved
+add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/Diag_in_P
+add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/Diag_in_N
+add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/registers_inst_A/S_IDLY_CNT
+add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/registers_inst_A/S_EN
 add wave -noupdate -divider <NULL>
 add wave -noupdate -color Salmon -label Mu_activation /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/MU_CTRL(0)
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/MU_CTRL
@@ -64,11 +64,22 @@ add wave -noupdate -group ASIC_TILES /taichi_tmb_tb/DUT/DATA1_N
 add wave -noupdate -group ASIC_TILES /taichi_tmb_tb/DUT/DATA2
 add wave -noupdate -group ASIC_TILES /taichi_tmb_tb/DUT/DATA2_N
 add wave -noupdate -divider <NULL>
-add wave -noupdate -expand -group {BUFFER REQ } /taichi_tmb_tb/DUT/io_inst_1/RX_series7_1/pDataIn
-add wave -noupdate -expand -group {BUFFER REQ } /taichi_tmb_tb/DUT/Buffer_N
-add wave -noupdate -expand -group {BUFFER REQ } /taichi_tmb_tb/DUT/Buffer_P
-add wave -noupdate -color {Violet Red} -itemcolor {Violet Red} /taichi_tmb_tb/DUT/DATA_OUT
-add wave -noupdate -color Turquoise /taichi_tmb_tb/DUT/TX_series7_1/TX_data_byte
+add wave -noupdate -group {BUFFER REQ } /taichi_tmb_tb/DUT/io_inst_1/RX_series7_1/pDataIn
+add wave -noupdate -group {BUFFER REQ } /taichi_tmb_tb/DUT/Buffer_N
+add wave -noupdate -group {BUFFER REQ } /taichi_tmb_tb/DUT/Buffer_P
+add wave -noupdate -group {DATA OUT } -color {Violet Red} -itemcolor {Violet Red} -subitemconfig {/taichi_tmb_tb/DUT/DATA_OUT(1) {-color {Violet Red} -itemcolor {Violet Red}} /taichi_tmb_tb/DUT/DATA_OUT(0) {-color {Violet Red} -itemcolor {Violet Red}}} /taichi_tmb_tb/DUT/DATA_OUT
+add wave -noupdate -group {DATA OUT } -color Turquoise /taichi_tmb_tb/DUT/TX_series7_1/TX_data_byte
+add wave -noupdate -group {DATA OUT } /taichi_tmb_tb/DUT/TX_series7_1/TX_det_byte
+add wave -noupdate -group {DATA OUT } /taichi_tmb_tb/DUT/TX_series7_1/DATA_IN
+add wave -noupdate -group {DATA OUT } /taichi_tmb_tb/DUT/TX_series7_1/TX_ERRs
+add wave -noupdate -group {DATA OUT } /taichi_tmb_tb/DUT/TX_series7_1/totalnumbytes_cnt
+add wave -noupdate -group {DATA OUT } /taichi_tmb_tb/DUT/TX_series7_1/TotalNumBytes
+add wave -noupdate -group {DATA OUT } /taichi_tmb_tb/DUT/TX_series7_1/Stream_type1
+add wave -noupdate -group {DATA OUT } /taichi_tmb_tb/DUT/TX_series7_1/Stream_type2
+add wave -noupdate -group {DATA OUT } /taichi_tmb_tb/DUT/TX_series7_1/StartWord
+add wave -noupdate -group {DATA OUT } /taichi_tmb_tb/DUT/TX_series7_1/RD_REQ
+add wave -noupdate -group {DATA OUT } /taichi_tmb_tb/DUT/TX_series7_1/IP
+add wave -noupdate -group {DATA OUT } /taichi_tmb_tb/DUT/TX_series7_1/IP_word
 add wave -noupdate -divider <NULL>
 add wave -noupdate /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/F_DOUT
 add wave -noupdate -color Khaki /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/rlt_address_from_sync
@@ -124,7 +135,7 @@ add wave -noupdate -expand -group {CHANNEL OK} /taichi_tmb_tb/DUT/sig_2_packet_r
 add wave -noupdate -expand -group {CHANNEL OK} /taichi_tmb_tb/DUT/sig_2_good_packet
 add wave -noupdate -expand -group {CHANNEL OK} /taichi_tmb_tb/DUT/sig_2_data_50m
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 2} {952701750 ps} 0} {{Cursor 2} {13290062500 ps} 0}
+WaveRestoreCursors {{Cursor 2} {1581216525 ps} 0} {{Cursor 2} {6734811125 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 228
 configure wave -valuecolwidth 100
@@ -140,4 +151,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {5047092750 ps}
+WaveRestoreZoom {0 ps} {23718247875 ps}
