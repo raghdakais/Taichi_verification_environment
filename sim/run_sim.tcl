@@ -119,17 +119,46 @@ if {$enable_cov} {
 }
 
 
+#-------------------------------
 # Optimize the design with vopt
-# +cover=bcst  -- to enable coverage
- puts "Start Optimization.."
-vopt work.taichi_tmb_tb work.glbl  -L secureip -L fifo_generator_v13_2_7 -L xpm -L unisims_ver -L unisim  -o taichi_tmb_optimized_sim {*}$vopt_args
+#-------------------------------
+## for debug   puts "Start Optimization.."
+## for debug  vopt work.taichi_tmb_tb work.glbl  -L secureip -L fifo_generator_v13_2_7 -L xpm -L unisims_ver -L unisim  -o taichi_tmb_optimized_sim {*}$vopt_args
+puts "Start Optimization.."
+vopt work.taichi_tmb_tb work.glbl \
+    -L secureip -L fifo_generator_v13_2_7 -L xpm -L unisims_ver -L unisim \
+    -o taichi_tmb_optimized_sim \
+    +acc \
+    {*}$vopt_args
 
+##----------------------
+##  NOVOPT
+##----------------------
+# Skipping vopt for -novopt mode
+##puts "Skipping vopt: running simulation with -novopt..."
 
-# Run the optimized simulation
-vsim -t 1ps -L unisim  work.taichi_tmb_optimized_sim\
+##----------------------
+## Run the optimized simulation
+##----------------------
+###     vsim -t 1ps   -novopt work.taichi_tmb_tb\
+###          +UVM_VERBOSITY=UVM_DEBUG +UVM_LOG=wlf -l "$LOG_FILE" \
+###          -cvgperinstance -vopt -voptargs=+acc  {*}$vsim_args  -msgmode both \
+###          +UVM_TESTNAME=$test_name -onfinish stop  -do "set StdArithNoWarnings 1 ; set NumericStdNoWarnings 1"
+vsim -t 1ps +model_data+ddr_tmp work.taichi_tmb_optimized_sim \
      +UVM_VERBOSITY=UVM_DEBUG +UVM_LOG=wlf -l "$LOG_FILE" \
-     -cvgperinstance -vopt -voptargs=+acc  {*}$vsim_args  -msgmode wlf \
-     +UVM_TESTNAME=$test_name -onfinish stop  -do "set StdArithNoWarnings 1 ; set NumericStdNoWarnings 1"
+     +UVM_TESTNAME=$test_name -onfinish stop \
+     {*}$vsim_args \
+     -do "set StdArithNoWarnings 1 ; set NumericStdNoWarnings 1"
+##----------------------
+##  NOVOPT
+##----------------------
+# Run the simulation without optimization
+#####    vsim -novopt -t 1ps work.taichi_tmb_tb \
+#####         +UVM_VERBOSITY=UVM_DEBUG +UVM_LOG=wlf -l "$LOG_FILE" \
+#####         +UVM_TESTNAME=$test_name -onfinish stop \
+#####         {*}$vsim_args \
+#####         -do "set StdArithNoWarnings 1 ; set NumericStdNoWarnings 1"
+
 
 
 puts "Running simulation..."

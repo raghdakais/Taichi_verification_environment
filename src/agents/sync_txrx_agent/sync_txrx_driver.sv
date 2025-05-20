@@ -137,8 +137,8 @@ task drive_HEADER_packet(sync_txrx_seq_item pkt);
     end
         // Send 64 random data words 
         // Drive the ff_headers_sig signals based on the item values
-           for (int i = pkt.header_data.size() -1 ; i >= 0  ; i--) begin
-        ////    for (int i = 0 ; i <= pkt.header_data.size() -1  ; i++) begin
+       // TODO BUG-   for (int i = pkt.header_data.size() -1 ; i >= 0  ; i--) begin
+            for (int i = 0 ; i <= pkt.header_data.size() -1  ; i++) begin
                for (int j = 0 ; j <=7 ; j++) begin
                  @(posedge vif.clk);
                  vif.tx <= pkt.header_data[i][j];  // Send the bits of start2 in Big Endian order

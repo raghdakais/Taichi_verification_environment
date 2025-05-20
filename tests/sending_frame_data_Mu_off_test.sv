@@ -29,19 +29,31 @@ rand int i = 0;
          	super.run_phase(phase);
 
         active_Mu_functional(0);
+        active_synth_data(1);
+   
+   
+   repeat (2)
+   begin
         send_valid_sync_packet (SYNC_IP); 
-        #60us;
+        #50us;
         send_valid_sync_packet (SYNC_HEADER); 
-        
-        #400us;
+        #80us;
+   end
+   
+        #300us;
 
+repeat(2)
+begin
        if (!this.m_buffer_tx_sequence.randomize() with { 
                  }) 
               `uvm_fatal("RUN_PHASE", "Randomization failed for m_buffer_tx_sequence")
              this.m_buffer_tx_sequence.start(this.m_taichi_tmb_env.m_buffer_tx_agent.seqr);
-  
 
-        #220us;
+        #60us;
+
+end
+
+        #100us;
 
     	phase.drop_objection (this);
    endtask

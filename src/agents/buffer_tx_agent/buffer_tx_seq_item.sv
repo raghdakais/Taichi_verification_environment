@@ -30,7 +30,7 @@ class buffer_tx_seq_item extends uvm_sequence_item;
 
   // Constants
   const bit [15:0] fixed_header = 16'hba5e;
-  const bit [15:0] fixed_footer = 16'hbeef;
+  const bit [15:0] fixed_footer = 16'hBEEF;
 
   // UVM Registration
   `uvm_object_utils_begin(buffer_tx_seq_item)
@@ -57,8 +57,8 @@ class buffer_tx_seq_item extends uvm_sequence_item;
 
   // Constraints
   constraint fixed_values_c {
-    header[1] == fixed_header[7:0];
-    header[0] == fixed_header[15:8];
+    header[0] == fixed_header[7:0];
+    header[1] == fixed_header[15:8];
 
     footer[1] == fixed_footer[7:0];
     footer[0] == fixed_footer[15:8];
@@ -66,10 +66,10 @@ class buffer_tx_seq_item extends uvm_sequence_item;
 
 
    constraint sync_header_data_default_c {
-        buf_ptr_address_sig == 'h0;  
-         ev_stream =='h0; 
-         hd_stream == 'h0;
-         uid_reg== 'hBEEF; 
+      soft  buf_ptr_address_sig == 'h06D7B500;  // +4
+      soft   ev_stream =='h0; 
+      soft   hd_stream == 'h1;
+      soft   uid_reg== 'h0000; 
     }
 
   // Build stream_ctrl from individual bits
@@ -77,14 +77,15 @@ class buffer_tx_seq_item extends uvm_sequence_item;
     super.post_randomize();
     // Build stream control byte: [spare(6)][hd_stream][ev_stream]
     stream_ctrl = {spare_bits, hd_stream, ev_stream};
-    data[0]  = buf_ptr_address_sig[15:8];
-    data[1]  = buf_ptr_address_sig[7:0];
-    data[2]  = buf_ptr_address_sig[31:24];
-    data[3]  = buf_ptr_address_sig[23:16];
+  //  stream_ctrl = 'h02;
+    data[0]  = buf_ptr_address_sig[7:0];
+    data[1]  = buf_ptr_address_sig[15:8];
+    data[2]  = buf_ptr_address_sig[23:16];
+    data[3]  = buf_ptr_address_sig[31:24];
     data[4]  = uid_reg[7:0];
     data[5]  = uid_reg[15:8];
-    data[6]  = 8'h00;
-    data[7]  = stream_ctrl;
+    data[6]  = stream_ctrl;
+    data[7]  = 8'h00;
   endfunction
 
 endclass : buffer_tx_seq_item

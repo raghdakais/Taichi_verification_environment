@@ -58,7 +58,7 @@ vcom  $PROJ_PATH/design/sources_1/ip/*.vhdl
 ## Compiling DDR3 
 ##------------------------------------------
   
-vlog -work work  -incr -mfcu  -L unisims_ver -L xpm  -L fifo_generator_v13_2_7 \
+vlog -work work  -incr -mfcu  -L secureip  -L unisims_ver -L xpm  -L fifo_generator_v13_2_7 \
 "$PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF/DDR3_AXI_IF/user_design/rtl/axi/mig_7series_v4_2_axi_ctrl_addr_decode.v" \
 "$PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF/DDR3_AXI_IF/user_design/rtl/axi/mig_7series_v4_2_axi_ctrl_read.v" \
 "$PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF/DDR3_AXI_IF/user_design/rtl/axi/mig_7series_v4_2_axi_ctrl_reg.v" \
@@ -161,28 +161,16 @@ vlog -work work  -incr -mfcu  -L unisims_ver -L xpm  -L fifo_generator_v13_2_7 \
 "$PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF/DDR3_AXI_IF/user_design/rtl/DDR3_AXI_IF_mig_sim.v" \
 "$PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF/DDR3_AXI_IF/user_design/rtl/DDR3_AXI_IF.v" \
 
+vlog  -sv -work work +define+MAX_MEM +define+x4Gb +define+sg107E +define+x8 $PROJ_PATH/src/ddr3_model.sv
+vlog  -work work $PROJ_PATH/design/sources_1/ip/dcfifo_512x32.v
+vcom -work work -2008  $PROJ_PATH/design/sources_1/imports/ddr_driver/evolving_ddr3_wr.vhd
+vcom -work work -2008   $PROJ_PATH/design/sources_1/ip/axi4_master_vhdl_0_1/axi4_master_vhdl_0_1/sim/axi4_master_vhdl_0.vhd
+vcom -work work -2008   $PROJ_PATH/design/sources_1/ip/axi4_master_vhdl_0_1/axi4_master_vhdl_0_1/hdl/axi4_master_vhdl_v1_0.vhd
+vcom -work work -2008  $PROJ_PATH/design/sources_1/imports/ddr_driver/data_sort_ddr3_wr.vhd   
+vcom -work work -2008  $PROJ_PATH/design/sources_1/imports/ddr_driver/read_ddr3_rd.vhd
+vcom -work work -2008  $PROJ_PATH/design/sources_1/ip/axi4_master_vhdl_0_1/axi4_master_vhdl_0_1/hdl/axi4_master_vhdl_v1_0_M00_AXI.vhd
 
-     ####        vcom -work work -2008  $PROJ_PATH/design/sources_1/imports/ddr_driver/read_ddr3_rd.vhd
-     ####        vcom -work work -2008  $PROJ_PATH/design/sources_1/imports/ddr_driver/evolving_ddr3_wr.vhd
-     ####        vcom -work work -2008 $PROJ_PATH/design/sources_1/ip/axi4_master_vhdl_0_1/axi4_master_vhdl_0_1/sim/axi4_master_vhdl_0.vhd
-     ####        
-     ####        
-     ####        vlog -sv -work work -incr -mfcu -L unisim $PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF_2/DDR3_AXI_IF/user_design/rtl/clocking/mig_7series_v4_1_iodelay_ctrl.v
-     ####        vlog -sv -work work -incr -mfcu  $PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF_2/DDR3_AXI_IF/user_design/rtl/clocking/mig_7series_v4_1_clk_ibuf.v
-     ####        vlog -sv -work work -incr -mfcu  $PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF_2/DDR3_AXI_IF/user_design/rtl/clocking/mig_7series_v4_1_infrastructure.v
-     ####        vlog -sv -work work -incr -mfcu  $PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF_2/DDR3_AXI_IF/user_design/rtl/clocking/mig_7series_v4_1_tempmon.v
-     ####        
-     ####        vlog -sv -work work -incr -mfcu  $PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF_2/DDR3_AXI_IF/user_design/rtl/ip_top/mig_7series_v4_1_mem_intfc.v
-     ####        vlog -sv -work work -incr -mfcu  $PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF_2/DDR3_AXI_IF/user_design/rtl/ip_top/mig_7series_v4_1_memc_ui_top_axi.v
-     ####        
-     ####        
-     ####        
-     ####        vlog -sv -work work $PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF_2/DDR3_AXI_IF/user_design/rtl/DDR3_AXI_IF_mig.v
-     ####        vlog -sv -work work $PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF_2/DDR3_AXI_IF/user_design/rtl/DDR3_AXI_IF.v
-            vlog  -work work $PROJ_PATH/design/sources_1/ip/dcfifo_512x32.v
-            vcom -work work -2008   $PROJ_PATH/design/sources_1/imports/ddr_driver/ddr_driver.vhd
-            
-            
-  
+
+vcom -work work -2008   $PROJ_PATH/design/sources_1/imports/ddr_driver/ddr_driver.vhd   
 
 vcom -work work  -2008  $PROJ_PATH/design/sources_1/new/Taichi_TMB_top.vhd

@@ -12,7 +12,7 @@ class sync_txrx_seq_item extends uvm_sequence_item;
      bit [7:0] start2_header = 'h43 ;
     rand bit [7:0]  ip_data;
     rand bit [7:0] header_header[$];
-    rand bit [7:0] header_data[$];
+    bit [7:0] header_data[$];
     rand bit [7:0] footer[$];
 
     bit [15:0] crc;
@@ -36,7 +36,7 @@ class sync_txrx_seq_item extends uvm_sequence_item;
     rand bit [15:0] REFERENCE_DETECTOR;
     rand bit [15:0] READING_NUMBER_REG;
     rand bit [3:0] DFS; // Single-bit value at position 3
-    rand bit [15:0] TIME_STAMP_LOW;
+    rand bit [31:0] TIME_STAMP_LOW;
     string pkt_type_= "SYNC -  NO TYPE";
 
     // New Footer Fields
@@ -46,7 +46,7 @@ class sync_txrx_seq_item extends uvm_sequence_item;
     rand bit [7:0] focal_spot_merging_factor;
     rand bit [7:0] stream_type;            // Byte 6 (Bits 49 - HD, 48 - RLT)
     rand bit fq_stream_enable;
-    rand bit [7:0] fq_sequence_counter;            // Byte 6 (Bits 49 - HD, 48 - RLT)
+    rand bit [7:0] fs_sequence_counter;            // Byte 6 (Bits 49 - HD, 48 - RLT)
 
 
 `uvm_object_utils_begin(sync_txrx_seq_item)
@@ -108,7 +108,9 @@ class sync_txrx_seq_item extends uvm_sequence_item;
         footer[8]  = merging_factor;
         footer[9]  = focal_spot_merging_factor;
         footer[10][0]  = fq_stream_enable;
-        footer[9]  =  fq_sequence_counter;
+        footer[11][0]  =  fq_stream_enable;
+
+        // TODO REMOVE LATER footer[11]  =  fs_sequence_counter;
 
 //        footer[6] = stream_type;  // Stream type field
 
@@ -119,16 +121,24 @@ class sync_txrx_seq_item extends uvm_sequence_item;
         // Storing 16-bit values as two bytes each
         store_word(0,  CT_TYPE);
         store_word(2,  dms_status_i);
+        store_word(4,  0);  // TODO - add dms error
         store_word(6,  INTEGRATION_TIME_IN_REG);
         store_word(8,  REFERENCE_DETECTOR);
-        store_word(16, READING_NUMBER_REG);
+        store_word(16, READING_NUMBER_REG);  
         store_word(40, {5'b00000, DFS}); // Bit [3] set to DFS
         store_word(48, 16'hBEEF); // UID
-        store_word(56, TIME_STAMP_LOW);
-        store_word(58, 16'h0000); // Time Stamp High
+        store_word(56, TIME_STAMP_LOW[31:16]);
+        store_word(58, TIME_STAMP_LOW[15:0]);
         store_word(60, 16'h04A0); // Number of Detectors
         store_word(74, 16'h0302); // DMS Type
+        //    for (int i = 76; i <112 ; i=i+2 )
+        //        store_word(i,  'h0);
         store_word(112, READING_NUMBER_REG);
+          //          for (int i = 114; i <124 ; i=i+2 )
+          //      store_word(i,  'h0);
+        store_word(122, 16'h06d7); 
+        store_word(123, 16'hb500); 
+
         store_word(126, 16'hFACE); // Final Stamp
 
         // Fill uninitialized slots with zero
@@ -139,9 +149,9 @@ class sync_txrx_seq_item extends uvm_sequence_item;
 
     // Helper function to store 16-bit words as two 8-bit values
     function void store_word(int index, bit [15:0] value);
-        if (index < HEADER_DATA_SIZE - 1) begin
-            header_data[index+1]     = value[7:0];   // Low byte
-            header_data[index] = value[15:8];  // High byte
+        if (index <= HEADER_DATA_SIZE - 1) begin
+            header_data[index]     = value[7:0];   // Low byte
+            header_data[index+1] = value[15:8];  // High byte
         end
     endfunction
 
@@ -160,21 +170,25 @@ class sync_txrx_seq_item extends uvm_sequence_item;
 
      // Constraint to ensure valid_crc defaults to 1 unless explicitly constrained to 0 in a test
     constraint sync_header_data_default_c {
-//        soft CT_TYPE == 'h900D;  
-         CT_TYPE == 'h1020;  
-         fq_stream_enable =='h01; 
-         focal_spot_merging_factor == 'h02;
-         merging_factor == 'h01;
-         dms_status_i  ==  'h4222;
-         DFS =='h0;
-         READING_NUMBER_REG =='h0;
-      //   INTEGRATION_TIME_IN_REG== 
+     soft    CT_TYPE == 'h1020;  //[7-0]:   Number of Slices   |  [15-8]: 0x10 (Taichi DMS)
+     soft    header_header[1] == 'hBA;
+     soft    header_header[0] == 'h5E;
+     soft    fq_stream_enable ==1'b1; 
+     soft    focal_spot_merging_factor == 'h0;
+     soft    merging_factor == 'h02;
+     soft    dms_status_i  ==  'h4200;
+     soft    DFS =='h0;
+     soft    READING_NUMBER_REG =='h0;
+     ip_data == 'h01; // TODO - remove later should be random
+     soft    INTEGRATION_TIME_IN_REG== 'h0410; 
+     soft    REFERENCE_DETECTOR == 'hFBAD;
+     soft TIME_STAMP_LOW == 'h00010000;
     }
    // Constraint to ensure valid_crc defaults to 1 unless explicitly constrained to 0 in a test
     constraint sync_header_footer_default_c {
-         slot_pointer_address == 'h00000000;
-         hd_pointer_address == 'h00108800;
-         fq_sequence_counter == 'h00;
+       soft  slot_pointer_address == 'h00001080;
+       soft  hd_pointer_address == 'h06D7B500;
+       soft  fs_sequence_counter == 'h00;
     }
 
 

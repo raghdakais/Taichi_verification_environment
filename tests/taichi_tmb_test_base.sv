@@ -47,7 +47,7 @@ class taichi_tmb_test_base extends uvm_test;
 
 
 config_asic();
-
+#150us;
    endtask
 
 
@@ -84,7 +84,22 @@ config_asic();
         this.m_oper_txrx_seq.start(this.m_taichi_tmb_env.oper_txrx_agent.seqr);
     endtask
 
-
+    //=====================================================================================
+    virtual task active_synth_data(bit on );
+    //=====================================================================================
+        m_oper_txrx_seq = TXRX_sequence::type_id::create($sformatf("m_oper_txrx_seq"));
+        if (m_oper_txrx_seq == null)
+            `uvm_fatal("RUN_PHASE", "Failed to create TXRX_sequence instance");
+    
+        if (!this.m_oper_txrx_seq.randomize() with {
+            m_oper_txrx_seq.item.rw_type == TXRX_WRITE;
+            m_oper_txrx_seq.item.address == OPER_REGISTERS[9].address;    // h406700  -- Mu ON/OFF
+            m_oper_txrx_seq.item.wr_data == 'h1C;
+        })
+            `uvm_fatal("RUN_PHASE", "Randomization failed for TXRX_sequence");
+    
+        this.m_oper_txrx_seq.start(this.m_taichi_tmb_env.oper_txrx_agent.seqr);
+    endtask
 
  //=====================================================================================
   // Function to generate values to hit coverage bins
