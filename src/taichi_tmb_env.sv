@@ -10,6 +10,7 @@ class taichi_tmb_env extends uvm_env;
      controllers_agent m_controllers_agent;
      asic_tiles_agent m_asic_tiles_agent;
      buffer_tx_agent m_buffer_tx_agent;
+     data_out_agent m_data_out_agent;
   // Configuration objects created in the environment
      TXRX_config diag_txrx_config;
      TXRX_config oper_txrx_config;
@@ -18,6 +19,7 @@ class taichi_tmb_env extends uvm_env;
      controllers_config m_controllers_config;    
      asic_tiles_config m_asic_tiles_config;
      buffer_tx_config m_buffer_tx_config;
+     data_out_config m_data_out_config;
 
    // diagnostic_reg_block m_diagnostic_reg_block;
     taichi_tmb_reference_model	taichi_tmb_rm; 		// Scoreboard handle
@@ -88,6 +90,14 @@ class taichi_tmb_env extends uvm_env;
     this.m_buffer_tx_config = buffer_tx_config::type_id::create("m_buffer_tx_config");
    // Set configurations for different TXRX agent instances
     uvm_config_db#(buffer_tx_config)::set(null, "", "cfg", m_buffer_tx_config);
+ //-------------------------------------------------------------------------------
+   // Creating DATA OUT  TX  AGENT AND CONFIGURATION 
+   //-------------------------------------------------------------------------------
+    this.m_data_out_agent = data_out_agent::type_id::create("m_data_out_agent", this );
+    this.m_data_out_agent.vif_str = "data_out_agent_vif";
+    this.m_data_out_config = data_out_config::type_id::create("m_data_out_config");
+   // Set configurations for different TXRX agent instances
+    uvm_config_db#(data_out_config)::set(null, "", "cfg", m_data_out_config);
 
 
    this.taichi_tmb_rm = taichi_tmb_reference_model::type_id::create("taichi_tmb_rm", this);
@@ -100,6 +110,8 @@ class taichi_tmb_env extends uvm_env;
       this.diag_txrx_agent.mon.rx_analysis_port.connect(this.taichi_tmb_rm.diag_rx_imp);
       this.oper_txrx_agent.mon.tx_analysis_port.connect(this.taichi_tmb_rm.oper_tx_imp);
       this.oper_txrx_agent.mon.rx_analysis_port.connect(this.taichi_tmb_rm.oper_rx_imp);
+      this.m_sync_txrx_agent.mon.analysis_port.connect(this.taichi_tmb_rm.sync_tx_imp);
+      this.m_data_out_agent.mon.analysis_port.connect(this.taichi_tmb_rm.data_out_rx_imp);
 
   endfunction
 endclass

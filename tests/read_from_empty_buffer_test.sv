@@ -1,15 +1,15 @@
 // UVM test base for taichi_tmb environment
 
 //===============================================================================
-class sending_frame_data_Mu_off_test extends taichi_tmb_test_base;
+class read_from_empty_buffer_test extends taichi_tmb_test_base;
 //===============================================================================
     // Testbench configuration and stimulus generation
-       `uvm_component_utils(sending_frame_data_Mu_off_test)  // Register with the factory
+       `uvm_component_utils(read_from_empty_buffer_test)  // Register with the factory
   
 rand int i = 0;
  bit [31:0] wr_data ;
         // This is standard code for all components
-    function new (string name = "sending_frame_data_Mu_off_test", uvm_component parent = null);
+    function new (string name = "read_from_empty_buffer_test", uvm_component parent = null);
       super.new (name, parent);
     endfunction
 
@@ -24,7 +24,7 @@ rand int i = 0;
 //===============================================================================
     task run_phase (uvm_phase phase);
 //===============================================================================
-int hd_pointer_address = 'h06D7B500;
+
     	phase.raise_objection (this);
          	super.run_phase(phase);
 
@@ -32,15 +32,8 @@ int hd_pointer_address = 'h06D7B500;
         active_synth_data(1);
    
 
-   repeat (2)
-   begin
-        send_valid_sync_packet (SYNC_IP); 
-        #50us;
-        send_valid_sync_packet (SYNC_HEADER);  // TODO : need to update incremental address (hd and rlt)
-        #80us;
-   end
    
-        #100us;
+        #600us;
 
 repeat(2)
 begin

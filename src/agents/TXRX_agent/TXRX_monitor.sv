@@ -45,9 +45,7 @@ class TXRX_monitor extends uvm_monitor;
   
     forever
      begin
-//         @(negedge vif.clk);
          byte_collected = 0;
-  //         while (vif.active_package)  
          begin  
             for (int i = 0 ; i <=7 ; i++) begin
                   @(negedge vif.clk);

@@ -27,7 +27,8 @@ class sync_txrx_seq_item extends uvm_sequence_item;
     int HEADER_DATA_SIZE   = 128;
     int FOOTER_SIZE = 12; 
 
-
+    byte  header_buffer[$];
+    int item_id=0;
 
 // Making HEADER key values random for control in driver
     rand bit [15:0] CT_TYPE;

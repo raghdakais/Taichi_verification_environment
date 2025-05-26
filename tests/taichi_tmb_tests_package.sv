@@ -21,6 +21,10 @@ package taichi_tmb_tests_package;
   `include "check_RO_registers_test.sv"
   `include "operational_registers_random_test.sv"
   `include "sending_frame_data_Mu_off_test.sv"
+  `include "read_from_empty_buffer_test.sv"
+  `include "random_data_path_test.sv"
   
+
+
 endpackage : taichi_tmb_tests_package
 

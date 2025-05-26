@@ -9,6 +9,8 @@ import uvm_pkg::*; // Import UVM base classes
 `uvm_analysis_imp_decl(_diag_rx)    
 `uvm_analysis_imp_decl(_oper_tx)    
 `uvm_analysis_imp_decl(_oper_rx)    
+`uvm_analysis_imp_decl(_sync_tx)    
+`uvm_analysis_imp_decl(_data_out_rx)    
 
 //---------------------------------------------------------------------------
 class taichi_tmb_reference_model extends uvm_component;
@@ -22,6 +24,8 @@ class taichi_tmb_reference_model extends uvm_component;
     uvm_analysis_imp_diag_rx #(TXRX_seq_item, taichi_tmb_reference_model) diag_rx_imp;
     uvm_analysis_imp_oper_tx #(TXRX_seq_item, taichi_tmb_reference_model) oper_tx_imp;
     uvm_analysis_imp_oper_rx #(TXRX_seq_item, taichi_tmb_reference_model) oper_rx_imp;
+    uvm_analysis_imp_sync_tx #(sync_txrx_seq_item, taichi_tmb_reference_model) sync_tx_imp;
+    uvm_analysis_imp_data_out_rx #(data_out_seq_item, taichi_tmb_reference_model) data_out_rx_imp;
 
 // Memory storage (70 registers, each 32-bit)
 bit [31:0]  EXPECTED_DIAG_OPER_RAM[600];
@@ -39,6 +43,9 @@ bit expected_asics_synth_data = 0;
 bit expected_data_synth = 0;
 bit expected_raw_data_mode = 0;
 bit expected_calibrated_data_mode = 0;
+byte  expected_sync_header_buffer[$];
+byte  actual_sync_header_buffer[$];
+sync_txrx_seq_item sync_tx_items_fifo[$];
   //----------------------------------------------------------------------------------------
    covergroup default_value_diag_reg_cg with function sample (int address);  
   //----------------------------------------------------------------------------------------
@@ -202,6 +209,8 @@ endgroup
         diag_rx_imp = new("diag_rx_imp", this);
         oper_tx_imp = new("oper_tx_imp", this);
         oper_rx_imp = new("oper_rx_imp", this);
+        sync_tx_imp = new("sync_tx_imp", this);
+        data_out_rx_imp = new("data_out_rx_imp", this);
     
 
 
@@ -218,7 +227,74 @@ foreach (OPER_REGISTERS[j]) begin
     EXPECTED_DIAG_OPER_RAM[ram_index] = OPER_REGISTERS[j].default_value;
 end
 endfunction
-    
+
+//---------------------------------------------------------------------------
+    // Function to write data_out rx transactions to the reference model
+//---------------------------------------------------------------------------
+    function void write_data_out_rx(data_out_seq_item item); 
+//---------------------------------------------------------------------------
+byte actual_sync_header_byte;
+byte  expected_sync_header_byte;
+byte expected_header_fifo[$];
+int data_out_packet_size;
+sync_txrx_seq_item sync_tx_items;
+
+actual_sync_header_buffer = item.header_buffer; 
+data_out_packet_size = item.data_out_packet_size;
+
+if (sync_tx_items_fifo.size() == 0) begin
+  `uvm_error(get_type_name(), "sync_tx_items_fifo is empty! Cannot pop.")
+  return;
+end
+sync_tx_items = sync_tx_items_fifo.pop_front();
+
+if (sync_tx_items == null) begin
+  `uvm_error(get_type_name(), "sync_tx_items is null after pop_front()!")
+  return;
+end
+
+// Safe to access now
+expected_header_fifo = sync_tx_items.header_buffer;
+//while( sync_tx_items_fifo.size>0  )
+while( data_out_packet_size>0  )
+begin
+  data_out_packet_size--;
+  expected_sync_header_byte =  expected_header_fifo.pop_front() ;
+  actual_sync_header_byte   = actual_sync_header_buffer.pop_front();
+if(expected_sync_header_byte != actual_sync_header_byte )
+begin
+   uvm_report_error (get_type_name (), $sformatf ("[ERROR] [DATA OUT - SYNC HEADER]  DATA IS NOT AS EXPECTED"));
+   $display("[EXPECTED] -  0x%h", expected_sync_header_byte );
+   $display("[ ACTUAL ] -  0x%h", actual_sync_header_byte );
+   $display("[ SYNC_ITEM_ID ] -  0x%d", sync_tx_items.item_id );
+  end
+end
+
+////   else
+////    begin
+////      uvm_report_error (get_type_name (), $sformatf ("[ERROR] [DATA OUT] Recieved without sync request"));
+////    end
+endfunction
+
+
+
+   
+//---------------------------------------------------------------------------
+    // Function to write sync tx transactions to the reference model
+//---------------------------------------------------------------------------
+    function void write_sync_tx(sync_txrx_seq_item item); 
+//---------------------------------------------------------------------------
+  // Sanity check: ensure item is not null
+    if (item == null) begin
+        `uvm_error(get_type_name(), "Null item received in write_sync_tx. Ignoring push.")
+        return;
+    end
+////   expected_sync_header_buffer = item.header_buffer; 
+sync_tx_items_fifo.push_back(item );
+endfunction
+
+
+
 //---------------------------------------------------------------------------
     // Function to write diag_tx transactions to the reference model
 //---------------------------------------------------------------------------

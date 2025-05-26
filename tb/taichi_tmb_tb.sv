@@ -67,6 +67,7 @@ end
    sync_txrx_agent_if            sync_txrx_vif(.clk(txrx_clk),.rst(sig_2_rst)); 
    asic_tiles_agent_if           asic_tiles_vif(.clk(asic_tiles_vif.TILES_CLK),.rst(sig_2_rst)); 
    buffer_tx_agent_if           buffer_tx_vif(.clk(txrx_clk),.rst(sig_2_rst)); 
+   data_out_agent_if           data_out_tx_vif(.clk(txrx_clk),.rst(sig_2_rst)); 
   
    Taichi_TMB_top DUT  (
    //-------------------------------------------------------
@@ -97,10 +98,16 @@ end
     .Sync_P            (sync_txrx_vif.tx ),  
     .Sync_N            (~sync_txrx_vif.tx),   
    //-------------------------------------------------------
-    // SYNC TXRX
+    // BUFFER TXRX
    //-------------------------------------------------------
     .Buffer_P            (buffer_tx_vif.tx ),  
     .Buffer_N            (~buffer_tx_vif.tx),   
+   //-------------------------------------------------------
+    // DATAOUT TXRX
+   //-------------------------------------------------------
+    .DATA_OUT            (data_out_tx_vif.rx ),  
+    .DATA_OUT_N            (),   
+ 
    //-------------------------------------------------------
     // ASIC TILES
    //-------------------------------------------------------
@@ -275,6 +282,7 @@ end
       uvm_config_db #(virtual sync_txrx_agent_if)::set (null, "", "sync_txrx_agent_vif", sync_txrx_vif);
       uvm_config_db #(virtual asic_tiles_agent_if)::set (null, "", "asic_tiles_agent_vif", asic_tiles_vif);
       uvm_config_db #(virtual buffer_tx_agent_if)::set (null, "", "vif", buffer_tx_vif);
+      uvm_config_db #(virtual data_out_agent_if)::set (null, "", "vif", data_out_tx_vif);
       run_test ();
    end
 
