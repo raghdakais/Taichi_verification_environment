@@ -23,7 +23,7 @@ package taichi_tmb_tests_package;
   `include "sending_frame_data_Mu_off_test.sv"
   `include "read_from_empty_buffer_test.sv"
   `include "random_data_path_test.sv"
-  
+  `include "send_syncs_for_buffer_full_test.sv"
 
 
 endpackage : taichi_tmb_tests_package

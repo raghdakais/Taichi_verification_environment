@@ -24,34 +24,62 @@ rand int i = 0;
 //===============================================================================
     task run_phase (uvm_phase phase);
 //===============================================================================
-int hd_pointer_address = 'h06D7B500;
+int write_hd_pointer_address = 'h06D7B500;
+int read_hd_pointer_address = 'h06D7B500;
+
     	phase.raise_objection (this);
          	super.run_phase(phase);
 
         active_Mu_functional(0);
         active_synth_data(1);
    
+    #1.5us;
+    ////  0xB00X6790	Module Data Out Type selection
+    send_operation_transaction(TXRX_WRITE, 'h406790, 'h0); 
+    ////  0xB00X6750	Miscellaneous
+    send_operation_transaction(TXRX_WRITE, 'h406750, 'h00004); 
+
+    ////  0xB00X6790	Module Data Out Type selection
+    send_operation_transaction(TXRX_READ, 'h06424, 'h0); 
+
+   ////  0xB00X6790	Module Data Out Type selection
+    send_operation_transaction(TXRX_READ, 'h06424, 'h0); 
+
 
    repeat (2)
    begin
         send_valid_sync_packet (SYNC_IP); 
         #50us;
-        send_valid_sync_packet (SYNC_HEADER);  // TODO : need to update incremental address (hd and rlt)
-        #80us;
+      
+        if (!this.m_sync_txrx_seq.randomize() with { 
+              m_sync_txrx_seq.item.pkt_type ==SYNC_HEADER;
+              m_sync_txrx_seq.item.slices_num =='h2;
+              m_sync_txrx_seq.item.hd_pointer_address ==write_hd_pointer_address;
+
+                 }) 
+              `uvm_fatal("RUN_PHASE", "Randomization failed for m_sync_txrx_seq")
+             this.m_sync_txrx_seq.start(this.m_taichi_tmb_env.m_sync_txrx_agent.seqr);
+        write_hd_pointer_address = write_hd_pointer_address +4;
+        #50us;
+        
    end
    
         #100us;
-
+ 
 repeat(2)
 begin
        if (!this.m_buffer_tx_sequence.randomize() with { 
+        m_buffer_tx_sequence.item.buf_ptr_address_sig == read_hd_pointer_address;
                  }) 
               `uvm_fatal("RUN_PHASE", "Randomization failed for m_buffer_tx_sequence")
              this.m_buffer_tx_sequence.start(this.m_taichi_tmb_env.m_buffer_tx_agent.seqr);
-
+//read_hd_pointer_address = read_hd_pointer_address+4;
         #60us;
 
 end
+
+
+
 
         #100us;
 

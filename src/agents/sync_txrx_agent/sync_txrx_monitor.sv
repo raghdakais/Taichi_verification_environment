@@ -66,7 +66,7 @@ class sync_txrx_monitor extends uvm_monitor;
            else   if (ip_start2_found & start_ip_found)
             begin
                  `uvm_info("MON", "Detected IP DATA", UVM_LOW)
-                 $display(" data is %x", byte_collected );
+                 
                     ip_bytes_count++;  // DATA 1 byte + 2 bytes crc
                     if(ip_bytes_count==3) 
                     ip_package_found=1;
@@ -114,12 +114,23 @@ class sync_txrx_monitor extends uvm_monitor;
         else   if (header_start2_found & start_header_found && base_found)
             begin
              data_bytes_count++;
-                 if (data_bytes_count <= 144)
-                    buffer.push_back(byte_collected);      
+             if(data_bytes_count%2==0)
+                item.expected_data_out[15:8] = byte_collected;
+             else   
+                item.expected_data_out[7 :0] = byte_collected;
+                if( data_bytes_count%2==0)  begin
+//$display(" expected_data_out is %x", item.expected_data_out );
+     item.expected_data_out_fifo.push_back(item.expected_data_out);  
+               
+     end       
+                 if (data_bytes_count <= 72) begin   // data+footer
+                  //  buffer.push_back(byte_collected);  
+                  //  item.expected_data_out_fifo.push_back(item.expected_data_out);  
+                 end  
                  else
                  begin
                     header_package_found=1;
-                     analysis_port.write(item);
+                    
                     header_package_count++;
                     ip_package_found=0;
                     data_bytes_count=0;
@@ -133,6 +144,7 @@ class sync_txrx_monitor extends uvm_monitor;
                     bit_index=1;
                     header='h0;
                      header_package_found=0;
+                      analysis_port.write(item);
                 end
 
             end 

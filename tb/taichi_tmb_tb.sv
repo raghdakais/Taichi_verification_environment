@@ -275,6 +275,7 @@ end
    // run_test () accepts the test name as argument. In this case, base_test will
    // be run for simulation
    initial begin
+      $dumpvars(0, taichi_tmb_tb);
       uvm_config_db #(virtual taichi_tmb_agent_if)::set (null, "", "vif", taichi_tmb_vif);
       uvm_config_db #(virtual TXRX_agent_if)::set (null, "", "diag_txrx_agent_vif", diag_txrx_vif);
       uvm_config_db #(virtual TXRX_agent_if)::set (null, "", "oper_txrx_agent_vif", oper_txrx_vif);
@@ -284,6 +285,7 @@ end
       uvm_config_db #(virtual buffer_tx_agent_if)::set (null, "", "vif", buffer_tx_vif);
       uvm_config_db #(virtual data_out_agent_if)::set (null, "", "vif", data_out_tx_vif);
       run_test ();
+      
    end
 
 

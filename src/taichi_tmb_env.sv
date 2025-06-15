@@ -112,6 +112,7 @@ class taichi_tmb_env extends uvm_env;
       this.oper_txrx_agent.mon.rx_analysis_port.connect(this.taichi_tmb_rm.oper_rx_imp);
       this.m_sync_txrx_agent.mon.analysis_port.connect(this.taichi_tmb_rm.sync_tx_imp);
       this.m_data_out_agent.mon.analysis_port.connect(this.taichi_tmb_rm.data_out_rx_imp);
+      this.m_buffer_tx_agent.mon.analysis_port.connect(this.taichi_tmb_rm.buffer_tx_imp);
 
   endfunction
 endclass

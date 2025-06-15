@@ -978,7 +978,8 @@ begin
           fifo_wr_cnt <= fifo_wr_cnt + 1;
         end if;
       else
-        if (wrreq_a = '1') then
+-- raghda's changes        if (wrreq_a = '1') then
+        if (wrreq_a = '1' and fifo_wr_cnt<2047 ) then
           fifo_wr_cnt <= fifo_wr_cnt + 1;
         end if;
       end if;

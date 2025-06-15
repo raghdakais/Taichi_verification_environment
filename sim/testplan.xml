@@ -1,5 +1,5 @@
  <!-- WorkBook Path: https://docs.philips.com/personal/partner_raghda_kais_philips_com/Documents/Documents/Verification/Module1_Taichi_testplan.xlsx -->
- <!-- Date: 1/1/0001 4:44:30 PM -->
+ <!-- Date: 1/1/0001 3:43:29 PM -->
 <Workbook>
 	<Worksheet>
 		<Table>
@@ -268,24 +268,6 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>5.1.1</Cell>
-				<Cell>New Section 6.1.1</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>5.1.2</Cell>
-				<Cell>New Section 6.1.2</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
 				<Cell>5.2</Cell>
 				<Cell>sending sanity request for reading data</Cell>
 				<Cell></Cell>
@@ -307,8 +289,8 @@ random data</Cell>
 				<Cell>5.4</Cell>
 				<Cell>send request when buffer is empty</Cell>
 				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>read_buffer_req_while_fifo_is_empty:rd_req_while_buffer_empty</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>

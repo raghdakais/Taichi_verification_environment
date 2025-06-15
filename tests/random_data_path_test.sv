@@ -33,16 +33,42 @@ int hd_pointer_address = 'h06D7B500;
         active_Mu_functional(0);
         active_synth_data(1);
    
+  send_valid_sync_packet (0); 
+        #50us;
+        send_valid_sync_packet (1); 
+ #50us;
+//---------------------------------------------------------------------
+// SEND IP DATA 'B5' VALUE SAME AS IDLE
+//---------------------------------------------------------------------
+  if (!this.m_sync_txrx_seq.randomize() with { 
+              m_sync_txrx_seq.item.pkt_type ==SYNC_IP;
+              m_sync_txrx_seq.item.ip_data == 'hB5;
+                 }) 
+              `uvm_fatal("RUN_PHASE", "Randomization failed for m_sync_txrx_seq")
+             this.m_sync_txrx_seq.start(this.m_taichi_tmb_env.m_sync_txrx_agent.seqr);
+    #50us;
+  if (!this.m_sync_txrx_seq.randomize() with { 
+              m_sync_txrx_seq.item.pkt_type ==SYNC_HEADER;
+                 }) 
+              `uvm_fatal("RUN_PHASE", "Randomization failed for m_sync_txrx_seq")
+             this.m_sync_txrx_seq.start(this.m_taichi_tmb_env.m_sync_txrx_agent.seqr);
+    #50us;
+//---------------------------------------------------------------------
 
-   repeat (10)
+
+   repeat (2)
    begin
     random_package = $random;
-        send_valid_sync_packet (random_package); 
+        send_valid_sync_packet (0); 
+        #50us;
+        send_valid_sync_packet (1); 
+        #50us;
+        send_valid_sync_packet (1); 
         #50us;
    end
 
-#100us;
-   repeat(2)
+#600us;
+   repeat(5)
    begin
   if (!this.m_buffer_tx_sequence.randomize() with { 
                  }) 

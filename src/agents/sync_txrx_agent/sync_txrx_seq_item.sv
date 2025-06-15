@@ -29,9 +29,11 @@ class sync_txrx_seq_item extends uvm_sequence_item;
 
     byte  header_buffer[$];
     int item_id=0;
-
+    bit [15:0] expected_data_out_fifo[$];
+    bit [15:0] expected_data_out;
 // Making HEADER key values random for control in driver
     rand bit [15:0] CT_TYPE;
+    rand bit [7:0] slices_num;
     rand bit [15:0] dms_status_i;
     rand bit [15:0] INTEGRATION_TIME_IN_REG;
     rand bit [15:0] REFERENCE_DETECTOR;
@@ -171,7 +173,9 @@ class sync_txrx_seq_item extends uvm_sequence_item;
 
      // Constraint to ensure valid_crc defaults to 1 unless explicitly constrained to 0 in a test
     constraint sync_header_data_default_c {
-     soft    CT_TYPE == 'h1020;  //[7-0]:   Number of Slices   |  [15-8]: 0x10 (Taichi DMS)
+     soft    slices_num == 'h2;   
+     soft    CT_TYPE[7:0] == slices_num;  //[7-0]:   Number of Slices   |  [15-8]: 0x10 (Taichi DMS)
+     soft    CT_TYPE[15:8] == 'h10;  //[7-0]:   Number of Slices   |  [15-8]: 0x10 (Taichi DMS)
      soft    header_header[1] == 'hBA;
      soft    header_header[0] == 'h5E;
      soft    fq_stream_enable ==1'b1; 
@@ -180,7 +184,6 @@ class sync_txrx_seq_item extends uvm_sequence_item;
      soft    dms_status_i  ==  'h4200;
      soft    DFS =='h0;
      soft    READING_NUMBER_REG =='h0;
-     ip_data == 'h01; // TODO - remove later should be random
      soft    INTEGRATION_TIME_IN_REG== 'h0410; 
      soft    REFERENCE_DETECTOR == 'hFBAD;
      soft TIME_STAMP_LOW == 'h00010000;

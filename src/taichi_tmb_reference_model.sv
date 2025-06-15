@@ -11,6 +11,7 @@ import uvm_pkg::*; // Import UVM base classes
 `uvm_analysis_imp_decl(_oper_rx)    
 `uvm_analysis_imp_decl(_sync_tx)    
 `uvm_analysis_imp_decl(_data_out_rx)    
+`uvm_analysis_imp_decl(_buffer_tx)    
 
 //---------------------------------------------------------------------------
 class taichi_tmb_reference_model extends uvm_component;
@@ -26,13 +27,18 @@ class taichi_tmb_reference_model extends uvm_component;
     uvm_analysis_imp_oper_rx #(TXRX_seq_item, taichi_tmb_reference_model) oper_rx_imp;
     uvm_analysis_imp_sync_tx #(sync_txrx_seq_item, taichi_tmb_reference_model) sync_tx_imp;
     uvm_analysis_imp_data_out_rx #(data_out_seq_item, taichi_tmb_reference_model) data_out_rx_imp;
+    uvm_analysis_imp_buffer_tx #(buffer_tx_seq_item, taichi_tmb_reference_model) buffer_tx_imp;
+
+int  MAX_CAPACITY = 20;
+
+
 
 // Memory storage (70 registers, each 32-bit)
 bit [31:0]  EXPECTED_DIAG_OPER_RAM[600];
 bit keep_default_diag[600] =  '{default: 1};
 bit keep_default_oper[600] =  '{default: 1};
 bit oper_wr_rd_en;
-
+ virtual taichi_tmb_agent_if vif;
 
 int diag_fifo_wr_count = 0;
 int oper_fifo_wr_count = 0;
@@ -44,8 +50,11 @@ bit expected_data_synth = 0;
 bit expected_raw_data_mode = 0;
 bit expected_calibrated_data_mode = 0;
 byte  expected_sync_header_buffer[$];
-byte  actual_sync_header_buffer[$];
+bit[15:0] actual_sync_header_buffer[$];
 sync_txrx_seq_item sync_tx_items_fifo[$];
+bit read_buffer_req = 0;
+bit buffer_empty = 0;
+bit buffer_full = 0;
   //----------------------------------------------------------------------------------------
    covergroup default_value_diag_reg_cg with function sample (int address);  
   //----------------------------------------------------------------------------------------
@@ -179,6 +188,17 @@ endgroup
     bins D_READ    = {0};  // Last register (adjust range as needed)
   }
 endgroup
+
+  //----------------------------------------------------------------------------------------
+   covergroup read_buffer_req_cg with function sample ();  
+  //----------------------------------------------------------------------------------------
+    rd_req_while_buffer_empty: coverpoint ( read_buffer_req  &&  buffer_empty);
+    no_rd_req_cause_buffer_full: coverpoint ( !read_buffer_req  &&  buffer_full);
+  endgroup
+
+
+
+
 // Constructor for the reference model
 //----------------------------------------------------------------------------------------
       function new(string name = "taichi_tmb_reference_model", uvm_component parent = null);
@@ -194,6 +214,7 @@ endgroup
         operational_data_cg = new();
         operational_address_cg = new();
         default_value_oper_reg_cg = new();
+        read_buffer_req_cg = new();
     endfunction
 
 //---------------------------------------------------------------------------
@@ -211,8 +232,12 @@ endgroup
         oper_rx_imp = new("oper_rx_imp", this);
         sync_tx_imp = new("sync_tx_imp", this);
         data_out_rx_imp = new("data_out_rx_imp", this);
+        buffer_tx_imp = new("buffer_tx_imp", this);
     
 
+  if (!uvm_config_db#(virtual taichi_tmb_agent_if)::get(this, "", "vif", vif)) begin
+            uvm_report_fatal (get_type_name (), $sformatf ("[FATAL] Virtual taichi_tmb_agent_vif interface not found for taichi_tmb agent"));
+        end
 
 
 // Update EXPECTED_DIAG_OPER_RAM with default values from DIAG_REGISTERS
@@ -228,14 +253,63 @@ foreach (OPER_REGISTERS[j]) begin
 end
 endfunction
 
+
+
+   task run_phase(uvm_phase phase);
+   
+
+fork
+begin
+    forever
+      begin
+        @(posedge read_buffer_req );
+        @ (posedge vif.clk);
+        read_buffer_req = 0;
+      end
+end
+
+begin
+       forever
+           begin
+            @ (posedge vif.clk);
+             if (sync_tx_items_fifo.size() == 0)
+               buffer_empty = 1;
+             else
+               buffer_empty = 0;
+           end
+end
+join_none
+   endtask
+
+
+
+
+
+
+
+//---------------------------------------------------------------------------
+    // Function to write data_out rx transactions to the reference model
+//---------------------------------------------------------------------------
+function void write_buffer_tx(buffer_tx_seq_item item); 
+//---------------------------------------------------------------------------
+
+$display(" buffer read requested");
+$display(" address :  [0x%h]", item.buf_ptr_address_sig  );
+
+read_buffer_req = 1;
+read_buffer_req_cg.sample();
+
+endfunction
+
+
 //---------------------------------------------------------------------------
     // Function to write data_out rx transactions to the reference model
 //---------------------------------------------------------------------------
     function void write_data_out_rx(data_out_seq_item item); 
 //---------------------------------------------------------------------------
-byte actual_sync_header_byte;
-byte  expected_sync_header_byte;
-byte expected_header_fifo[$];
+byte actual_sync_header_word;
+byte  expected_sync_header_word;
+bit[15:0] expected_header_fifo[$];
 int data_out_packet_size;
 sync_txrx_seq_item sync_tx_items;
 
@@ -254,18 +328,18 @@ if (sync_tx_items == null) begin
 end
 
 // Safe to access now
-expected_header_fifo = sync_tx_items.header_buffer;
+expected_header_fifo = sync_tx_items.expected_data_out_fifo;
 //while( sync_tx_items_fifo.size>0  )
 while( data_out_packet_size>0  )
 begin
   data_out_packet_size--;
-  expected_sync_header_byte =  expected_header_fifo.pop_front() ;
-  actual_sync_header_byte   = actual_sync_header_buffer.pop_front();
-if(expected_sync_header_byte != actual_sync_header_byte )
+  expected_sync_header_word =  expected_header_fifo.pop_front() ;
+  actual_sync_header_word   = actual_sync_header_buffer.pop_front();
+if(expected_sync_header_word != actual_sync_header_word )
 begin
    uvm_report_error (get_type_name (), $sformatf ("[ERROR] [DATA OUT - SYNC HEADER]  DATA IS NOT AS EXPECTED"));
-   $display("[EXPECTED] -  0x%h", expected_sync_header_byte );
-   $display("[ ACTUAL ] -  0x%h", actual_sync_header_byte );
+   $display("[EXPECTED] -  0x%h", expected_sync_header_word );
+   $display("[ ACTUAL ] -  0x%h", actual_sync_header_word );
    $display("[ SYNC_ITEM_ID ] -  0x%d", sync_tx_items.item_id );
   end
 end
@@ -291,6 +365,8 @@ endfunction
     end
 ////   expected_sync_header_buffer = item.header_buffer; 
 sync_tx_items_fifo.push_back(item );
+if (sync_tx_items_fifo.size() == MAX_CAPACITY)
+buffer_full = 1;
 endfunction
 
 

@@ -5,13 +5,18 @@
 class data_out_seq_item extends uvm_sequence_item;
 //----------------------------------------------------------------
 
-byte   header_buffer[$];
+bit [15:0]   header_buffer[$];
+byte   data_buffer[$];
+byte   footer_buffer[$];
 int data_out_packet_size;
+bit [15:0] actual_header_sync;
+
+
   // Each variable has to be registered with a macro corresponding to its data
   // type. For example, "int" types use `uvm_field int, "enum" types use
   // `uvm_field_enum, and "string" use `uvm_field_string
 `uvm_object_utils_begin(data_out_seq_item)
-/// 	`uvm_field_int (header_buffer,					UVM_DEFAULT)
+ 	`uvm_field_int (data_out_packet_size,					UVM_DEFAULT)
 `uvm_object_utils_end
 
 

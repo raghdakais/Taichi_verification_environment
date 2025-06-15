@@ -1,4 +1,5 @@
 # Define the list of tests with repeat counts
+# command:   vsim -c -do run_regression.tcl
 set tests {
    
  {check_default_value_for_all_registers_test 2}
@@ -7,6 +8,9 @@ set tests {
  {diagnostic_registers_random_test 5}
  {operational_registers_random_test 5}
  {sending_frame_data_Mu_off_test 1}
+ {send_syncs_for_buffer_full_test}
+ {random_data_path_test}
+ {read_from_empty_buffer_test}
 }
 
 

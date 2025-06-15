@@ -23,10 +23,6 @@ class buffer_tx_seq_item extends uvm_sequence_item;
   bit [7:0] stream_ctrl;            // full control byte, built manually
 
     string item_name = "[BUFFER REQUEST]";
-    int HEADER_SIZE = 2;
-    int DATA_SIZE   = 8;
-    int FOOTER_SIZE = 2; 
-
 
   // Constants
   const bit [15:0] fixed_header = 16'hba5e;
@@ -50,9 +46,9 @@ class buffer_tx_seq_item extends uvm_sequence_item;
 
   function new(string name = "buffer_tx_seq_item");
     super.new(name);
-     header = new[HEADER_SIZE];
-      data = new[DATA_SIZE];
-      footer = new[FOOTER_SIZE];
+     header = new[`BUFFER_HEADER_SIZE];
+      data = new[`BUFFER_DATA_SIZE];
+      footer = new[`BUFFER_FOOTER_SIZE];
   endfunction
 
   // Constraints

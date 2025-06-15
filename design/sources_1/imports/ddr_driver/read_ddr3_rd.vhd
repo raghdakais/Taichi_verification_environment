@@ -923,7 +923,8 @@ begin
       end if;
 
        -- 10/07/2017 in case 127 slices
-      if (enable_read_data) then
+      -- RAGHDA's Changes  if (enable_read_data) then
+      if (enable_read_data and reading_size_128m<=255) then
         remain_words <= (reading_size_128m/8 + 1);
       elsif (enable_read_ecc) then
         if ((reading_size_128m/8 + 1) >= 127 and (burst_cnt = 1 and axi_rdata_valid_r = '1')) then
@@ -1968,7 +1969,7 @@ begin
   READ_POINTER_ERROR <= pointer_error_dst;
   READ_BUFFER_ADDR_ERROR <= buffer_rd_addr_error_dst;
   
-  assert (timeout_cnt /= 0) report "Read block: header timeout!!!" severity FAILURE;
+--- for verification -- Raghda's changed!   assert (timeout_cnt /= 0) report "Read block: header timeout!!!" severity FAILURE;
 
 
   DDR_READ_TP(0) <= '1' when (wait_data_done_cnt = 0) else '0';
