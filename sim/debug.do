@@ -19,28 +19,28 @@ add wave -noupdate -color Salmon -label Mu_activation /taichi_tmb_tb/DUT/registe
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/MU_CTRL
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Operational_DIAGNSOTICS
 add wave -noupdate -divider <NULL>
-add wave -noupdate -group {IP --> HEADER} -color Magenta /taichi_tmb_tb/DUT/Sync_P
-add wave -noupdate -group {IP --> HEADER} -color Magenta /taichi_tmb_tb/DUT/SYNC
-add wave -noupdate -group {IP --> HEADER} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/sDataIn
-add wave -noupdate -group {IP --> HEADER} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/IP_DATA_OUT
-add wave -noupdate -group {IP --> HEADER} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/HEADER_DATA_OUT
-add wave -noupdate -group {IP --> HEADER} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/S_IP_pckt_valid
-add wave -noupdate -group {IP --> HEADER} -color Magenta /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/RX_IP_DATAVAL_HEADER_PINS/good_packet
+add wave -noupdate -expand -group {IP --> HEADER} -color Magenta /taichi_tmb_tb/DUT/Sync_P
+add wave -noupdate -expand -group {IP --> HEADER} -color Magenta /taichi_tmb_tb/DUT/SYNC
+add wave -noupdate -expand -group {IP --> HEADER} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/sDataIn
+add wave -noupdate -expand -group {IP --> HEADER} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/IP_DATA_OUT
+add wave -noupdate -expand -group {IP --> HEADER} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/HEADER_DATA_OUT
+add wave -noupdate -expand -group {IP --> HEADER} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/S_IP_pckt_valid
+add wave -noupdate -expand -group {IP --> HEADER} -color Magenta /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/RX_IP_DATAVAL_HEADER_PINS/good_packet
 add wave -noupdate /taichi_tmb_tb/DUT/memory_buffer_if_1/params_ready
 add wave -noupdate -color {Spring Green} /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_header_ready
 add wave -noupdate -color {Spring Green} /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_stream_enable
-add wave -noupdate -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/HEADER_DATA_OUT
-add wave -noupdate -group SYNC_HEADER -color Cyan /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/S_RX_det_o
-add wave -noupdate -group SYNC_HEADER -color {Orange Red} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/F_ADDRA_R
-add wave -noupdate -group SYNC_HEADER -color {Orange Red} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/F_DOUT
-add wave -noupdate -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/fq_stream_enable
-add wave -noupdate -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/fs_merging_factor
-add wave -noupdate -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/fs_sequence_counter
-add wave -noupdate -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/GOOD_PACKET_RECEIVED
-add wave -noupdate -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/hd_ptr_address_from_sync
-add wave -noupdate -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/rlt_address_from_sync
-add wave -noupdate -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/slice_merging_factor
-add wave -noupdate -group SYNC_HEADER -color Khaki -radix hexadecimal /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/temp_Num_of_Slices
+add wave -noupdate -expand -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/HEADER_DATA_OUT
+add wave -noupdate -expand -group SYNC_HEADER -color Cyan /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/S_RX_det_o
+add wave -noupdate -expand -group SYNC_HEADER -color {Orange Red} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/F_ADDRA_R
+add wave -noupdate -expand -group SYNC_HEADER -color {Orange Red} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/F_DOUT
+add wave -noupdate -expand -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/fq_stream_enable
+add wave -noupdate -expand -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/fs_merging_factor
+add wave -noupdate -expand -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/fs_sequence_counter
+add wave -noupdate -expand -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/GOOD_PACKET_RECEIVED
+add wave -noupdate -expand -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/hd_ptr_address_from_sync
+add wave -noupdate -expand -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/rlt_address_from_sync
+add wave -noupdate -expand -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/slice_merging_factor
+add wave -noupdate -expand -group SYNC_HEADER -color Khaki -radix hexadecimal /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/temp_Num_of_Slices
 add wave -noupdate /taichi_tmb_tb/DUT/taichi_slice_builder_1/reading_type
 add wave -noupdate -divider <NULL>
 add wave -noupdate /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/temp_num_from_ct_type
@@ -268,6 +268,7 @@ add wave -noupdate -color Magenta /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1
 add wave -noupdate /taichi_tmb_tb/DUT/memory_buffer_if_1/params_ready
 add wave -noupdate -color Yellow /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_header_ready
 add wave -noupdate -color Yellow /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_stream_enable
+add wave -noupdate /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_data_seq_ps
 add wave -noupdate -color {Spring Green} /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_header_ready
 add wave -noupdate -color {Spring Green} /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_stream_enable
 add wave -noupdate /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_data_seq_ps
@@ -320,10 +321,10 @@ add wave -noupdate -group {CHANNEL OK} /taichi_tmb_tb/DUT/sig_2_packet_received_
 add wave -noupdate -group {CHANNEL OK} /taichi_tmb_tb/DUT/sig_2_good_packet
 add wave -noupdate -group {CHANNEL OK} /taichi_tmb_tb/DUT/sig_2_data_50m
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 2} {627959175 ps} 0} {{Cursor 2} {13088959013 ps} 0}
+WaveRestoreCursors {{Cursor 2} {982956627 ps} 0} {{Cursor 2} {13088959013 ps} 0}
 quietly wave cursor active 1
-configure wave -namecolwidth 232
-configure wave -valuecolwidth 100
+configure wave -namecolwidth 187
+configure wave -valuecolwidth 93
 configure wave -justifyvalue left
 configure wave -signalnamewidth 1
 configure wave -snapdistance 10
@@ -336,4 +337,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {1104901875 ps}
+WaveRestoreZoom {0 ps} {1114225875 ps}

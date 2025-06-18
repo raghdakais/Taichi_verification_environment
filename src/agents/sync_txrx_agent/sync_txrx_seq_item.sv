@@ -178,7 +178,7 @@ class sync_txrx_seq_item extends uvm_sequence_item;
      soft    CT_TYPE[15:8] == 'h10;  //[7-0]:   Number of Slices   |  [15-8]: 0x10 (Taichi DMS)
      soft    header_header[1] == 'hBA;
      soft    header_header[0] == 'h5E;
-     soft    fq_stream_enable ==1'b1; 
+     soft    fq_stream_enable ==1'b0; 
      soft    focal_spot_merging_factor == 'h0;
      soft    merging_factor == 'h02;
      soft    dms_status_i  ==  'h4200;
