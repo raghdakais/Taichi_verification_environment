@@ -1,19 +1,21 @@
+puts "================================================="
+puts " RUNNING REGRESSION..."
+puts "================================================="
+# Record regression start time
+set regression_start_time [clock seconds]
 # Define the list of tests with repeat counts
 # command:   vsim -c -do run_regression.tcl
+  ##  {send_syncs_for_buffer_full_test}
 set tests {
-   
- {check_default_value_for_all_registers_test 2}
- {taichi_tmb_test_base 1}
- {check_RO_registers_test 1}
- {diagnostic_registers_random_test 5}
- {operational_registers_random_test 5}
- {sending_frame_data_Mu_off_test 1}
- {send_syncs_for_buffer_full_test}
- {random_data_path_test}
- {read_from_empty_buffer_test}
+    {sig2_sync_test}
+    {check_default_value_for_all_registers_test 2}
+    {check_RO_registers_test 1}
+    {diagnostic_registers_random_test 5}
+    {operational_registers_random_test 5}
+    {sending_frame_data_Mu_off_test 1}
+    {random_data_path_test}
+    {read_from_empty_buffer_test}
 }
-
-
 
 puts "================================================="
 puts " RUNNING REGRESSION..."
@@ -24,7 +26,7 @@ set PROJ_PATH ".."
 set REG_PATH "log_result/regression_results"
 set COV_PATH "$REG_PATH/coverage"
 
-# Create lREG_PATH and coverage directories if they don’t exist
+# Create REG_PATH and coverage directories if they don’t exist
 if {![file exists $REG_PATH]} { file mkdir $REG_PATH }
 if {![file exists $COV_PATH]} { file mkdir $COV_PATH }
 xml2ucdb -format Excel testplan.xml -ucdbfilename ${COV_PATH}/testplan.ucdb
@@ -42,7 +44,6 @@ array set test_results {}
 # ==============================================
 puts "Compiling design and environment..."
 
-# Define the log file name using the test name
 set work_library_path "${REG_PATH}/work"
 set QUESTA_LIBS $PROJ_PATH/src/QUESTA_LIBS
 vlib $work_library_path
@@ -51,14 +52,6 @@ vmap fifo_generator_v13_2_7 $QUESTA_LIBS/fifo_generator_v13_2_7
 vmap secureip $QUESTA_LIBS/secureip
 vmap unisim $QUESTA_LIBS/unisim
 vmap xpm $QUESTA_LIBS/xpm
-
-
-#####    vmap fifo_generator_v13_2_7 C:/questasim64_2024.1/fifo_generator_v13_2_7
-#####    vmap secureip C:/questasim64_2024.1/secureip
-#####    vmap unisim C:/questasim64_2024.1/unisim
-#####    vmap xpm C:/questasim64_2024.1/xpm
-
-
 
 # Compile the design and environment
 if { ![file exists compile_env.do] || ![file exists compile_design.do] } {
@@ -74,22 +67,33 @@ do compile_env.do
 vdir
 puts "Design and environment compiled."
 
-set vopt_args "+cover=bcesft"
+set vopt_args "+cover=bsft"
 set vsim_args "-coverage"
-vopt +acc  work.taichi_tmb_tb -o taichi_tmb_optimized_sim $vopt_args
+
+#-------------------------------
+# Optimize the design with vopt
+#-------------------------------
+puts "Start Optimization.."
+vopt work.taichi_tmb_tb work.glbl \
+    -L secureip -L fifo_generator_v13_2_7 -L xpm -L unisims_ver -L unisim \
+    -o taichi_tmb_optimized_sim \
+    +acc \
+    {*}$vopt_args
 
 if {![file exists "${work_library_path}/taichi_tmb_optimized_sim"]} {
     puts "Error: Design not found in work library!"
     exit 1
 }
+puts "Optimization Done!.."
 
- puts "Optimization Done!.."
+set total_pass  0
+set total_fail  0
+set total_unknow 0
+set summary_report ""
 
+# List to hold all UCDB coverage files
+set all_ucdb_files {}
 
-    set total_pass  0
-    set total_fail  0
-    set total_unknow 0
-    set summary_report ""
 # ==============================================
 # Run tests for each specified case
 # ==============================================
@@ -97,20 +101,24 @@ foreach test_info $tests {
     set test_name [lindex $test_info 0]
     set repeat_count [lindex $test_info 1]
 
+    # Handle default repeat count of 1
+    if {$repeat_count eq ""} {
+        set repeat_count 1
+    }
+
     for {set i 1} {$i <= $repeat_count} {incr i} {
         puts "Running test: $test_name $i of $repeat_count"
-        
-        # Default status is FAILED (use plain text for tracking)
-        set test_status  "\033\[31mFAILED\033\[0m"  ; # 31 is for red color
 
-        # Define the log file name using the test name and instance number
+        set test_status "\033\[31mFAILED\033\[0m"
+
         set LOG_FILE "${REG_PATH}/${test_name}_${i}_transcript.log"
-        # Run vsim command per test with the exact command from run_sim.tcl
-        set error_code [catch { vsim -L unisim -L secureip -L fifo_generator_v13_2_7 -L xpm  \
-        +UVM_VERBOSITY=UVM_LOW -c -l "$LOG_FILE"  \
-         -cvgperinstance -vopt -voptargs=+acc -coverage -sva -c work.taichi_tmb_optimized_sim  \
-          +UVM_TESTNAME=$test_name -onfinish stop \
-           -do "set StdArithNoWarnings 1 ; set NumericStdNoWarnings 1"} vsim_output]
+        set error_code [catch {
+            vsim -t 1ps +model_data+ddr_tmp work.taichi_tmb_optimized_sim \
+                +UVM_VERBOSITY=UVM_LOW +UVM_LOG=wlf -l "$LOG_FILE" \
+                +UVM_TESTNAME=$test_name -onfinish stop \
+                {*}$vsim_args \
+                -do "set StdArithNoWarnings 1 ; set NumericStdNoWarnings 1"
+        } vsim_output]
 
         if {$error_code != 0} {
             puts "⚠️ ERROR: Simulation failed for $test_name ($i)"
@@ -119,17 +127,15 @@ foreach test_info $tests {
         }
 
         puts "Running simulation for $test_name..."
-        # Run simulation for a fixed time (e.g., 10,000 time units)
         if {[catch {run -all} err]} {
             puts "Error: $err"
         }
 
-        # Create a unique log file for each repetition
-        if { [file exists $LOG_FILE] } {
+        if {[file exists $LOG_FILE]} {
             set log_data [open $LOG_FILE r]
             while {[gets $log_data line] >= 0} {
                 if {[string match -nocase "*TEST PASSED*" $line]} {
-                    set test_status "\033\[32mPASSED\033\[0m"  ; # 32 is for green color
+                    set test_status "\033\[32mPASSED\033\[0m"
                     break
                 }
             }
@@ -139,45 +145,71 @@ foreach test_info $tests {
             set test_status "NO_LOG"
         }
 
-        # Store result in log file
-        # Store result in log file
         if { $test_status == "\033\[32mPASSED\033\[0m" } {
-            append  summary_report "✅ $test_name $i : $test_status\n"
+            append summary_report "✅ $test_name $i : $test_status\n"
             incr total_pass
         } elseif { $test_status == "\033\[31mFAILED\033\[0m" } {
-            append  summary_report "❌ $test_name $i : $test_status\n"
+            append summary_report "❌ $test_name $i : $test_status\n"
             incr total_fail
         } else {
-            append  summary_report "⚠️ $test_name: Check Log\n"
+            append summary_report "⚠️ $test_name: Check Log\n"
             incr total_unknow
         }
 
-        # Store result in log file
         puts $output "$test_name ($i): $test_status"
         puts "  → $test_name ($i): $test_status"
-        # Store in test results array
         set test_results($test_name,$i) $test_status
- 
-      puts "Collecting and Merging Coverage"
-      set COVERAGE_DB "${COV_PATH}/functional_coverage_result_${test_name}_${i}.ucdb"
-      coverage save $COVERAGE_DB
-      vcover merge final_testplan.ucdb final_testplan.ucdb ${COV_PATH}/testplan.ucdb $COVERAGE_DB  
+
+        puts "Collecting and Merging Coverage"
+        set COVERAGE_DB "${COV_PATH}/functional_coverage_result_${test_name}_${i}.ucdb"
+        coverage save $COVERAGE_DB
+        vcover merge ${COV_PATH}/final_testplan.ucdb ${COV_PATH}/final_testplan.ucdb ${COV_PATH}/testplan.ucdb $COVERAGE_DB
+        puts "All coverage merged into ${COV_PATH}/final_testplan.ucdb"
+        lappend all_ucdb_files $COVERAGE_DB
     }
 }
-      close $output
-      puts "================================================="
-      puts " REGRESSION COMPLETED! SUMMARY BELOW: "
-      puts "================================================="
-      puts "$summary_report"
-      
-      puts "------------------------"
-      puts "Total Tests Run: [expr {$total_pass + $total_fail + $total_unknow}]"
-      puts "✅ Passed: $total_pass"
-      puts "❌ Failed: $total_fail"
-      puts "⚠️ No Logs: $total_unknow"
-      puts "-------------------------------------------------"
-      puts " Check regression_results.log for details."
-      puts "-------------------------------------------------"
- 
+
+
+puts "================================================="
+puts " REGRESSION COMPLETED! SUMMARY BELOW: "
+puts "================================================="
+puts "$summary_report"
+
+puts "------------------------"
+puts "Total Tests Run: [expr {$total_pass + $total_fail + $total_unknow}]"
+puts "✅ Passed: $total_pass"
+puts "❌ Failed: $total_fail"
+puts "⚠️ No Logs: $total_unknow"
+puts "-------------------------------------------------"
+puts " Check regression_results.log for details."
+puts "-------------------------------------------------"
+
+
+
+# Record regression end time
+set regression_end_time [clock seconds]
+
+# Compute elapsed time in seconds
+set elapsed_time [expr {$regression_end_time - $regression_start_time}]
+
+# Convert to hh:mm:ss format
+set hours   [expr {$elapsed_time / 3600}]
+set minutes [expr {($elapsed_time % 3600) / 60}]
+set seconds [expr {$elapsed_time % 60}]
+
+puts "-------------------------------------------------"
+puts " Total Regression Time: ${hours}h ${minutes}m ${seconds}s"
+puts "-------------------------------------------------"
+puts $output "Total Regression Time: ${hours}h ${minutes}m ${seconds}s"
+
+
+close $output
+
+
+puts "Generating HTML report for code coverage..."
+vcover report ${COV_PATH}/final_testplan.ucdb -html -details -output ${COV_PATH}/html_report
+vcover report -html -htmldir HTML_COVERAGE_REPORTS ${COV_PATH}/final_testplan.ucdb  -details -testhitdata
+puts "HTML coverage report generated at ${COV_PATH}/html_report/index.html"
+vsim -viewcov ${COV_PATH}/final_testplan.ucdb
 # Quit simulation
 quit -force

@@ -1,3 +1,4 @@
+
 transcript off
 set NumericStdNoWarnings 1
 set UVM_NO_RELNOTES 1  ;# Suppress irrelevant QuestaSim UVM release notes
@@ -13,16 +14,7 @@ if {![info exists enable_cov]} {
     set enable_cov 0
 }
 
-#### maybe later  # Get test name from command line argument
-#### maybe later  if { $argc < 1 } {
-#### maybe later      puts "Error: No test name provided!"
-#### maybe later      exit 1
-#### maybe later  }
-#### maybe later  
-#### maybe later  set test_name [lindex $argv 0]
-#### maybe later  puts "Running test: $test_name"
-
-# Ensure that the test_name is set
+# Ensure that the test_name is setcd
 if {![info exists test_name]} {
     puts "Error: No test name provided!"
     exit 1

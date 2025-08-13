@@ -8,8 +8,15 @@ class sync_txrx_driver extends uvm_driver #(sync_txrx_seq_item);
     virtual sync_txrx_agent_if vif;
    sync_txrx_config cfg;            // Configuration object
 
+
+
+
+
+
+
     function new(string name = "m_sync_txrx_driver", uvm_component parent);
         super.new(name, parent);
+
     endfunction
 
 //----------------------------------------------------------------
@@ -26,6 +33,7 @@ class sync_txrx_driver extends uvm_driver #(sync_txrx_seq_item);
             send_idle();
         end 
         else begin
+
             // Drive the received packet if its IP packet
              if (req.pkt_type == SYNC_IP)
               drive_IP_packet(req);

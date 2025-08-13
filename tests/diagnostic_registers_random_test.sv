@@ -35,7 +35,7 @@ rand int i = 0;
 //------------------------------------------------------
 // WRITE and READ in parallel - TO Diagnostical REGISTER 
 //------------------------------------------------------
-repeat(0)
+repeat(2)
  begin
           int i = $urandom_range(DIAG_REGISTERS.size() - 1, 0); // Generate a random index between 0 and size-1
         m_diag_txrx_seq = TXRX_sequence::type_id::create($sformatf("m_diag_txrx_seq%0d", i));
@@ -50,11 +50,30 @@ repeat(0)
  #500ns;
  end
 
+//------------------------------------------------------
+// WRITE to invalid address 
+//------------------------------------------------------
+repeat(2)
+ begin
+          int i = $urandom_range(DIAG_REGISTERS.size() - 1, 0); // Generate a random index between 0 and size-1
+        m_diag_txrx_seq = TXRX_sequence::type_id::create($sformatf("m_diag_txrx_seq%0d", i));
+           if (!this.m_diag_txrx_seq.randomize() with { 
+            //  m_diag_txrx_seq.item.rw_type == TXRX_WRITE;     
+              m_diag_txrx_seq.item.wr_data == 'h900D_900D;  
+              m_diag_txrx_seq.item.address >= 'h00FF;    
+              m_diag_txrx_seq.item.address <= 'h0FFF;    
+               }) 
+            `uvm_fatal("RUN_PHASE", "Randomization failed for m_diag_txrx_seq write operational")
+           this.m_diag_txrx_seq.start(this.m_taichi_tmb_env.diag_txrx_agent.seqr);
+ #500ns;
+ end
+
+
 
 //------------------------------------------------
 // Try to write to operational  addresses
 //------------------------------------------------
-repeat(0)
+repeat(3)
 begin
         // ----   WRITE  -----//
        int i = $urandom_range(OPER_REGISTERS.size() - 1, 0); // Generate a random index between 0 and size-1

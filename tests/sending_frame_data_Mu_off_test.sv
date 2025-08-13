@@ -8,9 +8,49 @@ class sending_frame_data_Mu_off_test extends taichi_tmb_test_base;
   
 rand int i = 0;
  bit [31:0] wr_data ;
+
+int ip_to_header_delay;
+int pkt_type;
+
+covergroup cg_sync_packet_time with function sample ();  
+
+
+  // Coverpoint for timing between IP and HEADER
+  coverpoint ip_to_header_delay {
+    bins less_than_50us  = {[0:49]};
+    bins more_than_100us = {[101:$]};
+  }
+
+endgroup
+
+covergroup cg_packet_flow  with function sample ();  
+
+  // Coverpoint for basic packet types
+  coverpoint pkt_type {
+    bins sanity_ip_header = {1} ;             // IP followed by HEADER (sanity)
+    bins ip_ip_header     = {2}; // IP -> IP -> HEADER
+    bins ip_ip_header_header  = {3}; // IP -> IP -> HEADER
+  }
+
+endgroup
+
+covergroup buffer_tx_sanity_cg  with function sample (bit i);  
+
+  // Coverpoint for basic packet types
+  coverpoint i {
+    bins sanity_read_req = {1} ;             // IP followed by HEADER (sanity)
+    bins invalid_read_req    = {0}; // IP -> IP -> HEADER
+  }
+
+endgroup
+
+
         // This is standard code for all components
     function new (string name = "sending_frame_data_Mu_off_test", uvm_component parent = null);
       super.new (name, parent);
+      cg_sync_packet_time = new();
+        cg_packet_flow = new();
+        buffer_tx_sanity_cg = new();
     endfunction
 
 
@@ -46,7 +86,48 @@ int read_hd_pointer_address = 'h06D7B500;
     send_operation_transaction(TXRX_READ, 'h06424, 'h0); 
 
 
-   repeat (2)
+  repeat (1)
+   begin
+        send_valid_sync_packet (SYNC_IP); 
+        #30us;
+      ip_to_header_delay = 30;
+      cg_sync_packet_time.sample();
+        if (!this.m_sync_txrx_seq.randomize() with { 
+              m_sync_txrx_seq.item.pkt_type ==SYNC_HEADER;
+              m_sync_txrx_seq.item.slices_num =='h2;
+              m_sync_txrx_seq.item.hd_pointer_address ==write_hd_pointer_address;
+
+                 }) 
+              `uvm_fatal("RUN_PHASE", "Randomization failed for m_sync_txrx_seq")
+             this.m_sync_txrx_seq.start(this.m_taichi_tmb_env.m_sync_txrx_agent.seqr);
+        write_hd_pointer_address = write_hd_pointer_address +4;
+        #50us;
+        
+   end
+
+
+  repeat (1)
+   begin
+        send_valid_sync_packet (SYNC_IP); 
+        #100us;
+      ip_to_header_delay = 101;
+            cg_sync_packet_time.sample();
+
+        if (!this.m_sync_txrx_seq.randomize() with { 
+              m_sync_txrx_seq.item.pkt_type ==SYNC_HEADER;
+              m_sync_txrx_seq.item.slices_num =='h2;
+              m_sync_txrx_seq.item.hd_pointer_address ==write_hd_pointer_address;
+
+                 }) 
+              `uvm_fatal("RUN_PHASE", "Randomization failed for m_sync_txrx_seq")
+             this.m_sync_txrx_seq.start(this.m_taichi_tmb_env.m_sync_txrx_agent.seqr);
+        write_hd_pointer_address = write_hd_pointer_address +4;
+        #50us;
+        
+   end 
+   pkt_type = 1;
+   cg_packet_flow.sample();
+   repeat (20)
    begin
         send_valid_sync_packet (SYNC_IP); 
         #50us;
@@ -63,21 +144,24 @@ int read_hd_pointer_address = 'h06D7B500;
         #50us;
         
    end
-   
+      pkt_type = 2;
+   cg_packet_flow.sample();
         #100us;
  
-repeat(2)
+repeat(20)
 begin
        if (!this.m_buffer_tx_sequence.randomize() with { 
         m_buffer_tx_sequence.item.buf_ptr_address_sig == read_hd_pointer_address;
                  }) 
               `uvm_fatal("RUN_PHASE", "Randomization failed for m_buffer_tx_sequence")
              this.m_buffer_tx_sequence.start(this.m_taichi_tmb_env.m_buffer_tx_agent.seqr);
-//read_hd_pointer_address = read_hd_pointer_address+4;
+read_hd_pointer_address = read_hd_pointer_address+4;
         #60us;
-
+buffer_tx_sanity_cg.sample(1);
+buffer_tx_sanity_cg.sample(0);
 end
-
+   pkt_type = 3;
+   cg_packet_flow.sample();
 
 
 

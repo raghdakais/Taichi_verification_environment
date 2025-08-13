@@ -31,7 +31,9 @@ interface controllers_agent_if(input logic clk, input logic rst);
    bit       DISABLE_ANEGn ; 
    bit       HEATER_1      ; 
    bit       HEATER_2      ; 
-
+   bit       SO_FLASH      ;
+   bit       SI_FLASH      ;
+   bit       CS_FLASH      ;
 bit start_sig2;
 bit sig2_clk = 1;
 endinterface

@@ -24,7 +24,7 @@ package taichi_tmb_tests_package;
   `include "read_from_empty_buffer_test.sv"
   `include "random_data_path_test.sv"
   `include "send_syncs_for_buffer_full_test.sv"
-
+  `include "sig2_sync_test.sv"
 
 endpackage : taichi_tmb_tests_package
 

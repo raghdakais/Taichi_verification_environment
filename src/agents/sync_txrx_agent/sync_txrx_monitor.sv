@@ -10,6 +10,11 @@ class sync_txrx_monitor extends uvm_monitor;
     sync_txrx_seq_item item;
     uvm_analysis_port #(sync_txrx_seq_item) analysis_port;
 
+
+
+
+
+
     function new(string name="m_sync_txrx_monitor", uvm_component parent);
         super.new(name, parent);
         analysis_port = new("sync_txrx_analysis_port", this);

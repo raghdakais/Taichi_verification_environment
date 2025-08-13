@@ -3,62 +3,62 @@
  
 
 
-vcom -2008 -work work $PROJ_PATH/design/sources_1/imports/ams_tiles_rx/Phoebe_files/*.vhd
-vcom -2008 -work work $PROJ_PATH/design/sources_1/imports/ams_tiles_rx/AMS_Mu/*.vhd
-vcom -2008 -work work $PROJ_PATH/design/sources_1/imports/ams_tiles_rx/f_2020/Asic_data_comp_a1.vhd
-vcom -2008 -work work $PROJ_PATH/design/sources_1/imports/ams_tiles_rx/f_2020/slices_sorter.vhd
-vcom -2008 -work work $PROJ_PATH/design/sources_1/imports/ams_tiles_rx/f_2020/Tiles_managment.vhd
+vcom -cover bcts  -2008 -work work $PROJ_PATH/design/sources_1/imports/ams_tiles_rx/Phoebe_files/*.vhd
+vcom -cover bcts  -2008 -work work $PROJ_PATH/design/sources_1/imports/ams_tiles_rx/AMS_Mu/*.vhd
+vcom -cover bcts  -2008 -work work $PROJ_PATH/design/sources_1/imports/ams_tiles_rx/f_2020/Asic_data_comp_a1.vhd
+vcom -cover bcts  -2008 -work work $PROJ_PATH/design/sources_1/imports/ams_tiles_rx/f_2020/slices_sorter.vhd
+vcom -cover bcts  -2008 -work work $PROJ_PATH/design/sources_1/imports/ams_tiles_rx/f_2020/Tiles_managment.vhd
 
-vcom -work work $PROJ_PATH/design/sources_1/imports/ams_tiles_rx/Liron_tiles_align/*.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/ams_tiles_rx/Liron_tiles_align/*.vhd
 
-vcom -2008 -work work $PROJ_PATH/design/sources_1/imports/ddr_driver/ddr3_model_pack.vhd
-vcom -2008 -work work $PROJ_PATH/design/sources_1/imports/ddr_driver/tbuf_pack.vhd
+vcom -cover bcts  -2008 -work work $PROJ_PATH/design/sources_1/imports/ddr_driver/ddr3_model_pack.vhd
+vcom -cover bcts  -2008 -work work $PROJ_PATH/design/sources_1/imports/ddr_driver/tbuf_pack.vhd
 
-vcom -work work $PROJ_PATH/design/sources_1/imports/DALIT_PID/*.vhd
-vcom -work work $PROJ_PATH/design/sources_1/imports/Tzvika_NVRAM/*.vhd
-vcom -work work $PROJ_PATH/design/sources_1/imports/TMP112/*.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/DALIT_PID/*.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/Tzvika_NVRAM/*.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/TMP112/*.vhd
 
-vcom -2008 -work work $PROJ_PATH/design/sources_1/imports/taichi_lite_src/fs_merge_pack.vhd
-vcom -2008 -work work $PROJ_PATH/design/sources_1/imports/taichi_lite_src/evolving_calc_ams.vhd
-vcom -2008 -work work $PROJ_PATH/design/sources_1/imports/taichi_lite_src/memory_buffer_if_tmp.vhd
-vcom -2008 -work work $PROJ_PATH/design/sources_1/imports/taichi_lite_src/taichi_slice_builder.vhd
-vcom -2008 -work work $PROJ_PATH/design/sources_1/imports/taichi_lite_src/tmb_reg2spictl.vhd
+vcom -cover bcts  -2008 -work work $PROJ_PATH/design/sources_1/imports/taichi_lite_src/fs_merge_pack.vhd
+vcom -cover bcts  -2008 -work work $PROJ_PATH/design/sources_1/imports/taichi_lite_src/evolving_calc_ams.vhd
+vcom -cover bcts  -2008 -work work $PROJ_PATH/design/sources_1/imports/taichi_lite_src/memory_buffer_if_tmp.vhd
+vcom -cover bcts  -2008 -work work $PROJ_PATH/design/sources_1/imports/taichi_lite_src/taichi_slice_builder.vhd
+vcom -cover bcts  -2008 -work work $PROJ_PATH/design/sources_1/imports/taichi_lite_src/tmb_reg2spictl.vhd
 
-vcom -2008 -work work $PROJ_PATH/design/sources_1/imports/taichi_lite_src/bin2bcd.vhd
-vcom -2008 -work work $PROJ_PATH/design/sources_1/imports/taichi_lite_src/date_in_bcd.vhd
-
-
+vcom -cover bcts  -2008 -work work $PROJ_PATH/design/sources_1/imports/taichi_lite_src/bin2bcd.vhd
+vcom -cover bcts  -2008 -work work $PROJ_PATH/design/sources_1/imports/taichi_lite_src/date_in_bcd.vhd
 
 
 
-vcom -2008 -work work $PROJ_PATH/design/sources_1/imports/taichi_lite_src/xpm_hand_simple.vhd
-vlog -work work $PROJ_PATH/design/sources_1/ip/axi4_master_vhdl/glbl.v
 
-vcom -work work $PROJ_PATH/design/sources_1/imports/remote_config/*.vhd
-vcom -work work $PROJ_PATH/design/sources_1/imports/liron_sig_2/*.vhd
-vcom -2008 -work work $PROJ_PATH/design/sources_1/imports/IP_DATAVAL_HEADER/*.vhd
-vcom -work work $PROJ_PATH/design/sources_1/imports/buffer_calculator/*.vhd
-vcom -work work $PROJ_PATH/design/sources_1/imports/liron_txrx/channel_pack.vhd
-vcom -work work $PROJ_PATH/design/sources_1/imports/liron_txrx/RX_series7.vhd
-vcom -work work $PROJ_PATH/design/sources_1/imports/liron_txrx/TX_series7.vhd
 
-vcom -work work $PROJ_PATH/design/sources_1/imports/idan_registers/REGISTER_ENCODER.vhd
-vcom -work work $PROJ_PATH/design/sources_1/imports/idan_registers/Register_Decoder.vhd
-vcom -work work $PROJ_PATH/design/sources_1/imports/idan_registers/REGISTER_CTRL.vhd
-vcom -work work $PROJ_PATH/design/sources_1/imports/idan_registers/Registers_A_pack.vhd
-vcom -work work $PROJ_PATH/design/sources_1/imports/idan_registers/Registers_B_pack.vhd
-vcom -work work $PROJ_PATH/design/sources_1/imports/idan_registers/REGISTER_BANK_A.vhd
-vcom -work work $PROJ_PATH/design/sources_1/imports/idan_registers/REGISTER_BANK_B.vhd
-vcom -work work $PROJ_PATH/design/sources_1/imports/idan_registers/Module_TX_RX_diag_A.vhd
-vcom -work work $PROJ_PATH/design/sources_1/imports/idan_registers/Module_TX_RX_Operational_B.vhd
-vcom  -work work -2008 $PROJ_PATH/design/sources_1/new/*.vhd
-vcom  $PROJ_PATH/design/sources_1/ip/*.vhdl
+vcom -cover bcts  -2008 -work work $PROJ_PATH/design/sources_1/imports/taichi_lite_src/xpm_hand_simple.vhd
+vlog -cover bcst -sv -work work $PROJ_PATH/design/sources_1/ip/axi4_master_vhdl/glbl.v
+
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/remote_config/*.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/liron_sig_2/*.vhd
+vcom -cover bcts  -2008 -work work $PROJ_PATH/design/sources_1/imports/IP_DATAVAL_HEADER/*.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/buffer_calculator/*.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/liron_txrx/channel_pack.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/liron_txrx/RX_series7.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/liron_txrx/TX_series7.vhd
+
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/idan_registers/REGISTER_ENCODER.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/idan_registers/Register_Decoder.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/idan_registers/REGISTER_CTRL.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/idan_registers/Registers_A_pack.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/idan_registers/Registers_B_pack.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/idan_registers/REGISTER_BANK_A.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/idan_registers/REGISTER_BANK_B.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/idan_registers/Module_TX_RX_diag_A.vhd
+vcom -cover bcts  -work work $PROJ_PATH/design/sources_1/imports/idan_registers/Module_TX_RX_Operational_B.vhd
+vcom -cover bcts   -work work -2008 $PROJ_PATH/design/sources_1/new/*.vhd
+vcom -cover bcts   $PROJ_PATH/design/sources_1/ip/*.vhdl
 
 ##------------------------------------------
 ## Compiling DDR3 
 ##------------------------------------------
   
-vlog -work work  -incr -mfcu  -L secureip  -L unisims_ver -L xpm  -L fifo_generator_v13_2_7 \
+vlog  -sv -work work  -incr -mfcu  -L secureip  -L unisims_ver -L xpm  -L fifo_generator_v13_2_7 \
 "$PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF/DDR3_AXI_IF/user_design/rtl/axi/mig_7series_v4_2_axi_ctrl_addr_decode.v" \
 "$PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF/DDR3_AXI_IF/user_design/rtl/axi/mig_7series_v4_2_axi_ctrl_read.v" \
 "$PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF/DDR3_AXI_IF/user_design/rtl/axi/mig_7series_v4_2_axi_ctrl_reg.v" \
@@ -161,16 +161,16 @@ vlog -work work  -incr -mfcu  -L secureip  -L unisims_ver -L xpm  -L fifo_genera
 "$PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF/DDR3_AXI_IF/user_design/rtl/DDR3_AXI_IF_mig_sim.v" \
 "$PROJ_PATH/design/sources_1/ip/DDR3_AXI_IF/DDR3_AXI_IF/user_design/rtl/DDR3_AXI_IF.v" \
 
-vlog  -sv -work work +define+MAX_MEM +define+x4Gb +define+sg107E +define+x8 $PROJ_PATH/src/ddr3_model.sv
-vlog  -work work $PROJ_PATH/design/sources_1/ip/dcfifo_512x32.v
-vcom -work work -2008  $PROJ_PATH/design/sources_1/imports/ddr_driver/evolving_ddr3_wr.vhd
-vcom -work work -2008   $PROJ_PATH/design/sources_1/ip/axi4_master_vhdl_0_1/axi4_master_vhdl_0_1/sim/axi4_master_vhdl_0.vhd
-vcom -work work -2008   $PROJ_PATH/design/sources_1/ip/axi4_master_vhdl_0_1/axi4_master_vhdl_0_1/hdl/axi4_master_vhdl_v1_0.vhd
-vcom -work work -2008  $PROJ_PATH/design/sources_1/imports/ddr_driver/data_sort_ddr3_wr.vhd   
-vcom -work work -2008  $PROJ_PATH/design/sources_1/imports/ddr_driver/read_ddr3_rd.vhd
-vcom -work work -2008  $PROJ_PATH/design/sources_1/ip/axi4_master_vhdl_0_1/axi4_master_vhdl_0_1/hdl/axi4_master_vhdl_v1_0_M00_AXI.vhd
+vlog -cover bcst -sv -sv -work work +define+MAX_MEM +define+x4Gb +define+sg107E +define+x8 $PROJ_PATH/src/ddr3_model.sv
+vlog -cover bcst -sv -work work $PROJ_PATH/design/sources_1/ip/dcfifo_512x32.v
+vcom -cover bcts  -work work -2008  $PROJ_PATH/design/sources_1/imports/ddr_driver/evolving_ddr3_wr.vhd
+vcom -cover bcts  -work work -2008   $PROJ_PATH/design/sources_1/ip/axi4_master_vhdl_0_1/axi4_master_vhdl_0_1/sim/axi4_master_vhdl_0.vhd
+vcom -cover bcts  -work work -2008   $PROJ_PATH/design/sources_1/ip/axi4_master_vhdl_0_1/axi4_master_vhdl_0_1/hdl/axi4_master_vhdl_v1_0.vhd
+vcom -cover bcts  -work work -2008  $PROJ_PATH/design/sources_1/imports/ddr_driver/data_sort_ddr3_wr.vhd   
+vcom -cover bcts  -work work -2008  $PROJ_PATH/design/sources_1/imports/ddr_driver/read_ddr3_rd.vhd
+vcom -cover bcts  -work work -2008  $PROJ_PATH/design/sources_1/ip/axi4_master_vhdl_0_1/axi4_master_vhdl_0_1/hdl/axi4_master_vhdl_v1_0_M00_AXI.vhd
 
 
-vcom -work work -2008   $PROJ_PATH/design/sources_1/imports/ddr_driver/ddr_driver.vhd   
+vcom -cover bcts  -work work -2008   $PROJ_PATH/design/sources_1/imports/ddr_driver/ddr_driver.vhd   
 
-vcom -work work  -2008  $PROJ_PATH/design/sources_1/new/Taichi_TMB_top.vhd
+vcom -cover bcts  -work work  -2008  $PROJ_PATH/design/sources_1/new/Taichi_TMB_top.vhd

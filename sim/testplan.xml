@@ -1,13 +1,17 @@
  <!-- WorkBook Path: https://docs.philips.com/personal/partner_raghda_kais_philips_com/Documents/Documents/Verification/Module1_Taichi_testplan.xlsx -->
- <!-- Date: 1/1/0001 3:43:29 PM -->
+ <!-- Date: 1/1/0001 1:27:58 AM -->
 <Workbook>
 	<Worksheet>
 		<Table>
 			 <!-- Testplan -->
 			<Row>
 				<Cell>1</Cell>  <!-- Section -->
-				<Cell>Clock and reset</Cell>  <!-- Title -->
-				<Cell>checking design performance with several clock domains</Cell>  <!-- Description -->
+				<Cell>synchronization</Cell>  <!-- Title -->
+				<Cell>synchronization is performed via the sig_2 signal, which is a serial byte.
+Bit       [0]: channel_RDY – Indicates if the channel is ready.
+Bits [3:1]: Not defined— random
+Bits [7:4]: 0xC – Optional soft reset command.
+</Cell>  <!-- Description -->
 				<Cell></Cell>  <!-- Link -->
 				<Cell></Cell>  <!-- Type -->
 				<Cell>1</Cell>  <!-- Weight -->
@@ -15,100 +19,42 @@
 			</Row>
 			<Row>
 				<Cell>1.1</Cell>
-				<Cell>Sanity ACLK_MASTER =666Khrz     MCLK=200Mhrz</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>Send sig_2 = 0x00 (All bits low)</Cell>
+				<Cell>No action occurs, channel is not ready.</Cell>
+				<Cell>cg_protocol:random_data</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
 				<Cell>1.2</Cell>
-				<Cell>Sanity ACLK_MASTER =TBD     MCLK=TBD</Cell>
+				<Cell>channel_RDY  (Bit 0 = 1)</Cell>
+				<Cell>Channel should indicate readiness.</Cell>
+				<Cell>cg_protocol:sig2_ch_rdy</Cell>
+				<Cell>CoverPoint</Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>1.3</Cell>
+				<Cell>soft reset = 0xC in Bits [7:4]</Cell>
 				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>cg_protocol:soft_reset</Cell>
+				<Cell>CoverPoint</Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>1.4</Cell>
+				<Cell>syncronization events </Cell>
+				<Cell>should be ignored</Cell>
+				<Cell>cg_protocol:sync_event</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
 				<Cell>2</Cell>
-				<Cell>synchronization</Cell>
-				<Cell>synchronization is performed via the sig_2 signal, which is a serial byte.
-Bit       [0]: channel_RDY – Indicates if the channel is ready.
-Bits [3:1]: Not defined— random
-Bits [7:4]: 0xC – Optional soft reset command.
-</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>2.1</Cell>
-				<Cell>Send sig_2 = 0x00 (All bits low)</Cell>
-				<Cell>No action occurs, channel is not ready.</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>2.2</Cell>
-				<Cell>Send sig_2 with channel_RDY = 1 (Bit 0 = 1)</Cell>
-				<Cell>Channel should indicate readiness.</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>2.3</Cell>
-				<Cell>Send sig_2 with soft reset = 0xC in Bits [7:4]</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>2.4</Cell>
-				<Cell>Send sig_2 with random values in Bits [3:1]</Cell>
-				<Cell>Reserved bits should not affect behavior</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>2.5</Cell>
-				<Cell>send random sequences before syncronization</Cell>
-				<Cell>should be ignored</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>2.6</Cell>
-				<Cell>send invalid syncronization and then send valid syncronization</Cell>
-				<Cell>should be ignored</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>2.7</Cell>
-				<Cell>send valid syncronization then disable channel_rdy </Cell>
-				<Cell>resyncronize</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>3</Cell>
 				<Cell>Diagnostic_RXTX</Cell>
 				<Cell>address range: 
 BASE_ADDRESS : 0x581600
@@ -119,7 +65,7 @@ END_ADDRESS: 0x581700</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>3.1</Cell>
+				<Cell>2.1</Cell>
 				<Cell>write random data</Cell>
 				<Cell>[one bit hit] x32
 [&#39;hFFFF_FFFF] 
@@ -132,7 +78,7 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>3.2</Cell>
+				<Cell>2.2</Cell>
 				<Cell>write to random address</Cell>
 				<Cell>[base address] - Write to the lowest valid register address
 [0 - 50]
@@ -145,7 +91,7 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>3.3</Cell>
+				<Cell>2.3</Cell>
 				<Cell>write to RO registers </Cell>
 				<Cell>Confirm that read-only and write-only registers behave as expected</Cell>
 				<Cell>diagnostical_read_only_registers_cg:address</Cell>
@@ -154,7 +100,7 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>3.4</Cell>
+				<Cell>2.4</Cell>
 				<Cell>check default values</Cell>
 				<Cell></Cell>
 				<Cell>default_value_diag_reg_cg</Cell>
@@ -163,16 +109,7 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>3.5</Cell>
-				<Cell>[Stress] Perform continuous read/write operations for an extended period</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>3.6</Cell>
+				<Cell>2.5</Cell>
 				<Cell>write and read  to operational register</Cell>
 				<Cell></Cell>
 				<Cell>operational_write_read_to_diag_addr_cg:wr</Cell>
@@ -181,7 +118,7 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>4</Cell>
+				<Cell>3</Cell>
 				<Cell>Operational_RXTX</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -190,7 +127,7 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>4.1</Cell>
+				<Cell>3.1</Cell>
 				<Cell>write random data</Cell>
 				<Cell>[one bit hit] x32
 [&#39;hFFFF_FFFF] 
@@ -202,7 +139,7 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>4.2</Cell>
+				<Cell>3.2</Cell>
 				<Cell>write to random address</Cell>
 				<Cell>[base address] - Write to the lowest valid register address
 [0 - 50]
@@ -214,7 +151,7 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>4.3</Cell>
+				<Cell>3.3</Cell>
 				<Cell>write to RO registers </Cell>
 				<Cell>Confirm that read-only and write-only registers behave as expected</Cell>
 				<Cell>operational_read_only_registers_cg:address</Cell>
@@ -223,7 +160,7 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>4.4</Cell>
+				<Cell>3.4</Cell>
 				<Cell>check default values</Cell>
 				<Cell></Cell>
 				<Cell>default_value_oper_reg_cg</Cell>
@@ -232,16 +169,7 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>4.5</Cell>
-				<Cell>[Stress] Perform continuous read/write operations for an extended period</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>4.6</Cell>
+				<Cell>3.5</Cell>
 				<Cell>write and read  to diagnostic register</Cell>
 				<Cell></Cell>
 				<Cell>operational_write_read_to_oper_addr_cg:wr</Cell>
@@ -250,7 +178,7 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>5</Cell>
+				<Cell>4</Cell>
 				<Cell>BUFFER_REQ_TXRX</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -259,7 +187,7 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>5.1</Cell>
+				<Cell>4.1</Cell>
 				<Cell>Package Structure</Cell>
 				<Cell></Cell>
 				<Cell>diagnostic_read_only_registers_cg:address</Cell>
@@ -268,34 +196,34 @@ random data</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>5.2</Cell>
+				<Cell>4.2</Cell>
 				<Cell>sending sanity request for reading data</Cell>
 				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>5.3</Cell>
-				<Cell>do not sending request until buffer is full</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>5.4</Cell>
-				<Cell>send request when buffer is empty</Cell>
-				<Cell></Cell>
-				<Cell>read_buffer_req_while_fifo_is_empty:rd_req_while_buffer_empty</Cell>
+				<Cell>buffer_tx_sanity_cg:i</Cell>
 				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>6</Cell>
+				<Cell>4.3</Cell>
+				<Cell>do not sending request until buffer is full</Cell>
+				<Cell></Cell>
+				<Cell>read_buffer_req:no_rd_req_cause_buffer_full</Cell>
+				<Cell>CoverPoint</Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>4.4</Cell>
+				<Cell>send request when buffer is empty</Cell>
+				<Cell></Cell>
+				<Cell>read_buffer_req:rd_req_while_buffer_empty</Cell>
+				<Cell>CoverPoint</Cell>
+				<Cell>1</Cell>
+				<Cell>100</Cell>
+			</Row>
+			<Row>
+				<Cell>5</Cell>
 				<Cell>SYNC_TXRX</Cell>
 				<Cell>The system uses two types of packets:
 Sequence = [IP -&gt; HEADER]
@@ -312,52 +240,25 @@ This interface sends a write request to the ASICs.</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>6.1</Cell>
-				<Cell>send sanity packge [IP + HEADER]</Cell>
+				<Cell>5.1</Cell>
+				<Cell>SYNC Pachages flow </Cell>
 				<Cell>accepted</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>cg_packet_flow:pkt_type</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>6.2</Cell>
-				<Cell>send invalid IP package</Cell>
+				<Cell>5.2</Cell>
+				<Cell>SYNC Pachages Timing </Cell>
 				<Cell>not accepted (wait for valid IP)</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>cg_sync_packet_time:ip_to_header_delay</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>6.3</Cell>
-				<Cell>send [IP -&gt; ( waiting time &lt;50us) -&gt; HEADER</Cell>
-				<Cell>incorrect data writing</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>6.4</Cell>
-				<Cell>send [IP -&gt; ( waiting time &gt;100us) -&gt; HEADER</Cell>
-				<Cell>accepted</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>6.5</Cell>
-				<Cell>send [IP -&gt;  IP  -&gt; HEADER]</Cell>
-				<Cell>error</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>7</Cell>
+				<Cell>6</Cell>
 				<Cell>TILES ASIC</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -366,7 +267,7 @@ This interface sends a write request to the ASICs.</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>7.1</Cell>
+				<Cell>6.1</Cell>
 				<Cell>SPIprotocol checking</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -375,7 +276,7 @@ This interface sends a write request to the ASICs.</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>7.1.1</Cell>
+				<Cell>6.1.1</Cell>
 				<Cell>BusyTimeCheck</Cell>
 				<Cell></Cell>
 				<Cell>BusyTimeCheck</Cell>
@@ -384,7 +285,7 @@ This interface sends a write request to the ASICs.</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>7.1.2</Cell>
+				<Cell>6.1.2</Cell>
 				<Cell>InitTimeCheck</Cell>
 				<Cell></Cell>
 				<Cell>InitTimeCheck</Cell>
@@ -393,7 +294,7 @@ This interface sends a write request to the ASICs.</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>7.1.3</Cell>
+				<Cell>6.1.3</Cell>
 				<Cell>ClockFrequencyCheck</Cell>
 				<Cell></Cell>
 				<Cell>ClockFrequencyCheck</Cell>
@@ -402,7 +303,7 @@ This interface sends a write request to the ASICs.</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>7.1.4</Cell>
+				<Cell>6.1.4</Cell>
 				<Cell>SDISetupTimeCheck</Cell>
 				<Cell></Cell>
 				<Cell>SDISetupTimeCheck</Cell>
@@ -411,7 +312,7 @@ This interface sends a write request to the ASICs.</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>7.1.5</Cell>
+				<Cell>6.1.5</Cell>
 				<Cell>SDIHoldTimeCheck</Cell>
 				<Cell></Cell>
 				<Cell>SDIHoldTimeCheck</Cell>
@@ -420,7 +321,7 @@ This interface sends a write request to the ASICs.</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>7.1.6</Cell>
+				<Cell>6.1.6</Cell>
 				<Cell>SDOTimeDelayCheck</Cell>
 				<Cell></Cell>
 				<Cell>SDOTimeDelayCheck</Cell>
@@ -429,7 +330,7 @@ This interface sends a write request to the ASICs.</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>8</Cell>
+				<Cell>7</Cell>
 				<Cell>DATA OUT -RX</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -438,7 +339,7 @@ This interface sends a write request to the ASICs.</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>8.1</Cell>
+				<Cell>7.1</Cell>
 				<Cell>ASICs DATA generation</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -447,25 +348,7 @@ This interface sends a write request to the ASICs.</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>8.1.1</Cell>
-				<Cell>Send random data from each ASIC</Cell>
-				<Cell>always Check if data is received correctly and stored in the buffer</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.1.2</Cell>
-				<Cell>Continuous High-Speed Data Stream</Cell>
-				<Cell>Ensure buffer does not overflow or lose data</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.1.3</Cell>
+				<Cell>7.1.1</Cell>
 				<Cell>Synthetic Data </Cell>
 				<Cell>Send predefined synthetic data patterns instead of ASIC-generated data</Cell>
 				<Cell></Cell>
@@ -474,362 +357,7 @@ This interface sends a write request to the ASICs.</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>8.1.4</Cell>
-				<Cell>Mixed Synthetic &amp; ASIC Data</Cell>
-				<Cell>Inject synthetic data alongside real ASIC data
-Ensure system behavior remains consistent and correct</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.1.5</Cell>
-				<Cell>Synthetic Data Patterns</Cell>
-				<Cell> all 0s, all 1s, alternating bits, max/min values</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.2</Cell>
-				<Cell>Buffer Overflow Handling</Cell>
-				<Cell>Fill the buffer to maximum capacity and try writing more data
-Check if overflow conditions are handled</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>8.3</Cell>
-				<Cell>Buffer Underflow Handling</Cell>
-				<Cell>Read from an empty buffer and verify expected behavior</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9</Cell>
-				<Cell>FLASH-SPI</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.1</Cell>
-				<Cell>Protocol checking</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.1.1</Cell>
-				<Cell>Clock Polarity and Phase</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.1.2</Cell>
-				<Cell>check cs_timing</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.1.3</Cell>
-				<Cell>Ensure that transactions only occur when CS is asserted.</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.1.4</Cell>
-				<Cell>Check setup/hold times.</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.1.5</Cell>
-				<Cell>Check clock frequency limits</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.1.6</Cell>
-				<Cell>Check response delays</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.1.7</Cell>
-				<Cell>Bit Order</Cell>
-				<Cell>Validate MSB-first and LSB-first data transmission</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.2</Cell>
-				<Cell>functional checking</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.2.1</Cell>
-				<Cell>Command Sequence Verification</Cell>
-				<Cell>Validate that only valid command sequences are executed</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.2.1.1</Cell>
-				<Cell>Single Read Operation</Cell>
-				<Cell>Verify reading from a valid address</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.2.1.2</Cell>
-				<Cell>Single Write Operation</Cell>
-				<Cell>Verify writing to a valid address</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.2.1.3</Cell>
-				<Cell>Erase Operation</Cell>
-				<Cell>Check erase functionality (sector, block, and full erase)</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.2.2</Cell>
-				<Cell>Out-of-Bounds Read/Write</Cell>
-				<Cell>verify response to accessing invalid addresses</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.2.3</Cell>
-				<Cell>Corrupt Data Handling</Cell>
-				<Cell>Inject errors into data and verify detection mechanisms</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.2.4</Cell>
-				<Cell>Unsupported Commands</Cell>
-				<Cell>Send invalid commands</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>9.2.5</Cell>
-				<Cell>Burst Read/Write</Cell>
-				<Cell>Verify continuous read/write operations</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>10</Cell>
-				<Cell>TEMP - I2C</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>10.1</Cell>
-				<Cell>Protocol checking</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>10.1.1</Cell>
-				<Cell>START/STOP conditions, ACK/NACK detection</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>10.1.2</Cell>
-				<Cell>Register Access Coverage</Cell>
-				<Cell>Ensure all readable/writable registers are accessed</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>10.1.3</Cell>
-				<Cell>Temperature Range Coverage</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>10.2</Cell>
-				<Cell>I2C Read Temperature Register</Cell>
-				<Cell>Read temperature values from the sensor at different times</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>10.3</Cell>
-				<Cell>I2C Write Configuration Register</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>10.4</Cell>
-				<Cell>Power-On Default Values</Cell>
-				<Cell>Read registers after reset/power-on</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>10.5</Cell>
-				<Cell>Temperature Out-of-Range Alerts</Cell>
-				<Cell>Configure high/low temperature limits
-Verify interrupt generation when limits are exceeded</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>11</Cell>
-				<Cell>NVRAM - I2C</Cell>
-				<Cell>Non-Volatile RAM</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>11.1</Cell>
-				<Cell>Basic Read and Write Operations</Cell>
-				<Cell>Write data to NVRAM and read it back
-</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>11.2</Cell>
-				<Cell>Random Address Access</Cell>
-				<Cell>Perform read/write operations at random memory locations</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>11.3</Cell>
-				<Cell>Burst Read and Write</Cell>
-				<Cell>Test multi-byte and burst transfers to ensure correct sequencing</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>11.4</Cell>
-				<Cell>Read After Write Without Delay</Cell>
-				<Cell>Ensure immediate read after write returns the correct data</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>11.5</Cell>
-				<Cell>Maximum Capacity Utilization</Cell>
-				<Cell>Fill the entire NVRAM with data and validate retrieval</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>11.6</Cell>
-				<Cell>Endurance Testing</Cell>
-				<Cell>Write/erase the same location multiple times to check wear leveling</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>11.7</Cell>
-				<Cell> Out-of-Bounds Access Handling</Cell>
-				<Cell>Attempt to read/write beyond NVRAM size and check for error response</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>12</Cell>
+				<Cell>8</Cell>
 				<Cell>CONTROLLERS</Cell>
 				<Cell></Cell>
 				<Cell></Cell>
@@ -838,106 +366,88 @@ Verify interrupt generation when limits are exceeded</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>12.1</Cell>
+				<Cell>8.1</Cell>
 				<Cell>HW_REV</Cell>
 				<Cell>random - not connected</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>signal_toggles:HW_REV</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>12.2</Cell>
+				<Cell>8.2</Cell>
 				<Cell>PGOOD&#39;s</Cell>
 				<Cell>Inputs are driven to registers
 read register address [0x406350] – bit [30] </Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>signal_toggles:PGOOD_0_75V</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>12.3</Cell>
+				<Cell>8.3</Cell>
 				<Cell>DISABLE_CLK0n       </Cell>
 				<Cell>affected by writing to register</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>signal_toggles:DISABLE_CLK0n</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>12.4</Cell>
+				<Cell>8.4</Cell>
 				<Cell>DISABLE_CLK1n</Cell>
 				<Cell>affected by writing to register</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>signal_toggles:DISABLE_CLK1n</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>12.5</Cell>
+				<Cell>8.5</Cell>
 				<Cell>DISABLE_SLAVEn</Cell>
 				<Cell>affected by writing to register</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>signal_toggles:DISABLE_SLAVEn</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>12.6</Cell>
+				<Cell>8.6</Cell>
 				<Cell>DISABLE_APOSn</Cell>
 				<Cell>affected by writing to register and power up</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>signal_toggles:DISABLE_APOSn</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>12.7</Cell>
+				<Cell>8.7</Cell>
 				<Cell>DISABLE_ANEGn         </Cell>
 				<Cell>affected by writing to register and power up</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>signal_toggles:DISABLE_ANEGn</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>12.8</Cell>
+				<Cell>8.8</Cell>
 				<Cell>HEATER_1 </Cell>
 				<Cell>Environment always checks the output if it&#39;s as expected.
 Register: Heater Control- address  0x406530
 Module&#39;s Heaters may be shut off, manually set to value between 0x00-0xFF (0-100%) or controlled by PID formula implemented in each module individually.</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>signal_toggles:HEATER_1</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>
 			<Row>
-				<Cell>12.9</Cell>
+				<Cell>8.9</Cell>
 				<Cell>HEATER_2</Cell>
 				<Cell>Environment always checks the output if it&#39;s as expected.
 Register: Heater Control- address  0x406530
 Module&#39;s Heaters may be shut off, manually set to value between 0x00-0xFF (0-100%) or controlled by PID formula implemented in each module individually.</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>13</Cell>
-				<Cell>ASIC TILES</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell>1</Cell>
-				<Cell>100</Cell>
-			</Row>
-			<Row>
-				<Cell>14</Cell>
-				<Cell>ASIC_SPI</Cell>
-				<Cell></Cell>
-				<Cell></Cell>
-				<Cell></Cell>
+				<Cell>signal_toggles:HEATER_2</Cell>
+				<Cell>CoverPoint</Cell>
 				<Cell>1</Cell>
 				<Cell>100</Cell>
 			</Row>

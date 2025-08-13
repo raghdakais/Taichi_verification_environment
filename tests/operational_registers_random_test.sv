@@ -30,6 +30,28 @@ rand int i = 0;
 
 
 //------------------------------------------------------
+// WRITE to invalid address 
+//------------------------------------------------------
+repeat(2)
+ begin
+          int i = $urandom_range(DIAG_REGISTERS.size() - 1, 0); // Generate a random index between 0 and size-1
+        m_oper_txrx_seq = TXRX_sequence::type_id::create($sformatf("m_oper_txrx_seq%0d", i));
+           if (!this.m_oper_txrx_seq.randomize() with { 
+            //  m_oper_txrx_seq.item.rw_type == TXRX_WRITE;     
+              m_oper_txrx_seq.item.wr_data == 'h900D_900D;  
+              m_oper_txrx_seq.item.address >= 'h00FF;    
+              m_oper_txrx_seq.item.address <= 'h0FFF;    
+               }) 
+            `uvm_fatal("RUN_PHASE", "Randomization failed for m_oper_txrx_seq write operational")
+           this.m_oper_txrx_seq.start(this.m_taichi_tmb_env.oper_txrx_agent.seqr);
+ #500ns;
+ end
+
+
+
+
+
+//------------------------------------------------------
 // WRITE and READ in parallel - TO OPERATIONAL REGISTER 
 //------------------------------------------------------
 repeat(10)

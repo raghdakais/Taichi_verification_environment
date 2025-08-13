@@ -8,8 +8,58 @@ class controllers_driver extends uvm_driver #(controllers_seq_item);
     virtual controllers_agent_if vif;
    controllers_config cfg;            // Configuration object
 controllers_seq_item req;
+  
+
+  bit [3:0] HW_REV;
+  bit       PGOOD_0_75V; 
+  bit       PGOOD_1_0V;
+  bit       PGOOD_1_5V;
+  bit       PGOOD_1_8V;
+  bit       PGOOD_P1_5V;
+  bit       PGOOD_2_5V;
+
+  bit [7:0] DEBUG_TP;
+  bit [1:0] STATUS_LEDS;
+  bit       DISABLE_CLK0n;
+  bit       DISABLE_CLK1n;
+  bit       DISABLE_SLAVEn;
+  bit       DISABLE_APOSn;
+  bit       DISABLE_ANEGn;
+  bit       HEATER_1;
+  bit       HEATER_2;
+
+  // Covergroup declaration
+  covergroup signal_toggles;
+    coverpoint HW_REV { bins all_vals[] = {[0:15]}; }
+
+    coverpoint PGOOD_0_75V { bins toggle[] = {0,1}; }
+    coverpoint PGOOD_1_0V  { bins toggle[] = {0,1}; }
+    coverpoint PGOOD_1_5V  { bins toggle[] = {0,1}; }
+    coverpoint PGOOD_1_8V  { bins toggle[] = {0,1}; }
+    coverpoint PGOOD_P1_5V { bins toggle[] = {0,1}; }
+    coverpoint PGOOD_2_5V  { bins toggle[] = {0,1}; }
+
+    coverpoint DEBUG_TP    { bins all_vals[] = {[0:255]}; }
+    coverpoint STATUS_LEDS { bins all_vals[] = {[0:3]}; }
+
+    coverpoint DISABLE_CLK0n { bins toggle[] = {0,1}; }
+    coverpoint DISABLE_CLK1n { bins toggle[] = {0,1}; }
+    coverpoint DISABLE_SLAVEn{ bins toggle[] = {0,1}; }
+    coverpoint DISABLE_APOSn { bins toggle[] = {0,1}; }
+    coverpoint DISABLE_ANEGn { bins toggle[] = {0,1}; }
+
+    coverpoint HEATER_1 { bins toggle[] = {0,1}; }
+    coverpoint HEATER_2 { bins toggle[] = {0,1}; }
+  endgroup
+  
+  
+  
+  
+  
     function new(string name = "m_controllers_driver", uvm_component parent);
         super.new(name, parent);
+
+        signal_toggles = new();
     endfunction
 
 //----------------------------------------------------------------
@@ -18,16 +68,57 @@ controllers_seq_item req;
      super.run_phase(phase);
         // Wait for reset to be deasserted
         wait_for_reset();
+      fork
+        begin
         forever begin
           
             seq_item_port.get_next_item(req);
             drive_sig_2( req);    
-      
             // Drive data to the interface
-            @( posedge vif.clk);
-          
+            @(posedge vif.sig2_clk); // Wait for clock edge
+
+vif.HW_REV               =   req.HW_REV                    ;
+vif.PGOOD_0_75V          =   req.PGOOD_0_75V               ;
+vif.PGOOD_1_0V           =   req.PGOOD_1_0V                ;
+vif.PGOOD_1_5V           =   req.PGOOD_1_5V                ;
+vif.PGOOD_1_8V           =   req.PGOOD_1_8V                ;
+vif.PGOOD_P1_5V          =   req.PGOOD_P1_5V               ;
+vif.PGOOD_2_5V           =   req.PGOOD_2_5V                ;
+
+
+  HW_REV        =      vif.HW_REV;
+  PGOOD_0_75V        =      vif.PGOOD_0_75V; 
+  PGOOD_1_0V        =      vif.PGOOD_1_0V;
+  PGOOD_1_5V        =      vif.PGOOD_1_5V;
+  PGOOD_1_8V        =      vif.PGOOD_1_8V;
+  PGOOD_P1_5V        =      vif.PGOOD_P1_5V;
+  PGOOD_2_5V        =      vif.PGOOD_2_5V;
+  DEBUG_TP        =      vif.DEBUG_TP;
+  STATUS_LEDS        =      vif.STATUS_LEDS;
+  DISABLE_CLK0n        =      vif.DISABLE_CLK0n;
+  DISABLE_CLK1n        =      vif.DISABLE_CLK1n;
+  DISABLE_SLAVEn        =      vif.DISABLE_SLAVEn;
+  DISABLE_APOSn        =      vif.DISABLE_APOSn;
+  DISABLE_ANEGn        =      vif.DISABLE_ANEGn;
+  HEATER_1        =      vif.HEATER_1;
+  HEATER_2        =      vif.HEATER_2;
+
+
+
+    signal_toggles.sample();
+ 
+
+
+
+
+
+
             seq_item_port.item_done(); // Indicate completion of the transaction
         end
+       end
+
+
+      join_none
     endtask
 
 //----------------------------------------------------------------
@@ -41,10 +132,10 @@ controllers_seq_item req;
       data[31:24] = $urandom; // Byte 3
       data[23:16] = $urandom; // Byte 2
       data[15:8]  = $urandom; // Byte 1
-      data[31:30] = 'b01; // Byte 3
-      data[29:24] = 'h00; // Byte 3
-      data[23:16] = 'h00; // Byte 2
-      data[15:8]  = 'h00; // Byte 1
+  ////     data[31:30] = 'b01; // Byte 3
+  ////     data[29:24] = 'h00; // Byte 3
+  ////     data[23:16] = 'h00; // Byte 2
+  ////     data[15:8]  = 'h00; // Byte 1
       // Generate Byte 0 (Important Control Byte)
       data[7:4]   = (req.sig2_soft_reset==1) ? 4'hC : 0;
       data[3:1]   =  $urandom;
@@ -144,6 +235,7 @@ vif.start_sig2 = 0;
     disable fork; // Ensure the other process stops execution
   
   fork
+    begin
   forever
   begin
   repeat(4)
@@ -151,6 +243,8 @@ vif.start_sig2 = 0;
    if(reset_deasserted)
     vif.sig2_clk = ~vif.sig2_clk;
   end
+    end
+
   join_none
   
    #10us;

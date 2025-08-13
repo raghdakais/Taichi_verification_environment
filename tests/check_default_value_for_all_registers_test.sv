@@ -41,7 +41,7 @@ class check_default_value_for_all_registers_test extends taichi_tmb_test_base;
              this.m_diag_txrx_seq.start(this.m_taichi_tmb_env.diag_txrx_agent.seqr);
      #1.5us;
       end
-  
+  #10us;
     //------------------------------------------------------
     // Check Default Value for OPERATIONAL
     //------------------------------------------------------

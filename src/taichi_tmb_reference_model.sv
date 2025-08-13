@@ -53,6 +53,7 @@ byte  expected_sync_header_buffer[$];
 bit[15:0] actual_sync_header_buffer[$];
 sync_txrx_seq_item sync_tx_items_fifo[$];
 bit read_buffer_req = 0;
+bit  write_buffer_req = 0;
 bit buffer_empty = 0;
 bit buffer_full = 0;
   //----------------------------------------------------------------------------------------
@@ -168,7 +169,7 @@ endgroup
     bins first_addr   = {32'h406300};  // First register
     bins last_addr    = {32'h4067E0};  // Last register (adjust range as needed)
     bins middle_addr  = {[32'h406300 : 32'h4067E0]}; // Middle registers
-    bins invalid_addr = {32'h0000_00FF, 32'h0000_0FFF}; // Example reserved addresses
+    bins invalid_addr = {[32'h0000_00FF: 32'h0000_0FFF]}; // Example reserved addresses
   }
 endgroup
  //----------------------------------------------------------------------------------------
@@ -193,7 +194,7 @@ endgroup
    covergroup read_buffer_req_cg with function sample ();  
   //----------------------------------------------------------------------------------------
     rd_req_while_buffer_empty: coverpoint ( read_buffer_req  &&  buffer_empty);
-    no_rd_req_cause_buffer_full: coverpoint ( !read_buffer_req  &&  buffer_full);
+    no_wr_req_cause_buffer_full: coverpoint ( write_buffer_req  &&  buffer_full);
   endgroup
 
 
@@ -263,6 +264,7 @@ begin
     forever
       begin
         @(posedge read_buffer_req );
+        repeat(10)
         @ (posedge vif.clk);
         read_buffer_req = 0;
       end
@@ -358,6 +360,7 @@ endfunction
 //---------------------------------------------------------------------------
     function void write_sync_tx(sync_txrx_seq_item item); 
 //---------------------------------------------------------------------------
+  write_buffer_req = 1;
   // Sanity check: ensure item is not null
     if (item == null) begin
         `uvm_error(get_type_name(), "Null item received in write_sync_tx. Ignoring push.")
