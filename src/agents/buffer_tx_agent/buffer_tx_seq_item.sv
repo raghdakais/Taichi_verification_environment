@@ -21,7 +21,10 @@ class buffer_tx_seq_item extends uvm_sequence_item;
   rand bit hd_stream;               // bit 1
   rand bit [5:0] spare_bits;        // bits 7:2
   bit [7:0] stream_ctrl;            // full control byte, built manually
-
+   static logic [31:0] slot_addr_tracker = 'h0;
+   rand logic [31:0] slot_addr_random = 'h0;
+rand bit   random_slot_address;
+rand bit valid_crc =1;
     string item_name = "[BUFFER REQUEST]";
 
   // Constants
@@ -62,17 +65,28 @@ class buffer_tx_seq_item extends uvm_sequence_item;
 
 
    constraint sync_header_data_default_c {
-      soft  buf_ptr_address_sig == 'h06D7B500;  // +4
-      soft   ev_stream =='h0; 
-      soft   hd_stream == 'h1;
+      soft  buf_ptr_address_sig == slot_addr_tracker;  // +4
+  //    soft  buf_ptr_address_sig == 'h000000d9;  // +4  
+      soft   ev_stream =='h1; 
+      soft   hd_stream == 'h0;
       soft   uid_reg== 'h0000; 
+      soft random_slot_address == 0;
+      soft valid_crc == 1'b1;  // Default valid_crc is 1 unless overridden in the test
+
+
     }
 
   // Build stream_ctrl from individual bits
   function void post_randomize();
     super.post_randomize();
+                  if (!random_slot_address)
+         slot_addr_tracker += 32'h00001080;
+         else 
+         slot_addr_tracker = slot_addr_random;
+
+
     // Build stream control byte: [spare(6)][hd_stream][ev_stream]
-    stream_ctrl = {spare_bits, hd_stream, ev_stream};
+    stream_ctrl = {'hD,2'h3 , hd_stream, ev_stream};
   //  stream_ctrl = 'h02;
     data[0]  = buf_ptr_address_sig[7:0];
     data[1]  = buf_ptr_address_sig[15:8];

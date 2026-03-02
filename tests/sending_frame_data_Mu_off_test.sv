@@ -165,7 +165,7 @@ end
 
 
 
-        #100us;
+        #10000us;
 
     	phase.drop_objection (this);
    endtask

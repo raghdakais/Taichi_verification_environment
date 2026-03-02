@@ -134,6 +134,26 @@ config_asic();
 
        endtask
 
+
+ //=====================================================================================
+  // Function to generate values to hit coverage bins
+       task send_diagnostical_transaction(rw_type_t  rw_type, bit[23:0] address, bit [31:0]  data );
+//=====================================================================================
+          //    int i = $urandom_range(OPER_REGISTERS.size() - 1, 0); // Generate a random index between 0 and size-1
+        m_diag_txrx_seq = TXRX_sequence::type_id::create($sformatf("m_diag_txrx_seq"));
+           if (!this.m_diag_txrx_seq.randomize() with { 
+              m_diag_txrx_seq.item.rw_type == rw_type;     
+              m_diag_txrx_seq.item.wr_data == data;  
+              m_diag_txrx_seq.item.address == address;    
+               }) 
+            `uvm_fatal("RUN_PHASE", "Randomization failed for m_diag_txrx_seq write operational")
+           this.m_diag_txrx_seq.start(this.m_taichi_tmb_env.diag_txrx_agent.seqr);
+ #1.5us;
+
+       endtask
+
+
+
  //=====================================================================================
  task config_asic();
  //=====================================================================================

@@ -50,6 +50,9 @@ class sync_txrx_seq_item extends uvm_sequence_item;
     rand bit [7:0] stream_type;            // Byte 6 (Bits 49 - HD, 48 - RLT)
     rand bit fq_stream_enable;
     rand bit [7:0] fs_sequence_counter;            // Byte 6 (Bits 49 - HD, 48 - RLT)
+   static logic [31:0] slot_addr_tracker = 'h0;
+   rand logic [31:0] slot_addr_random = 'h0;
+rand bit   random_slot_address;
 
 
 `uvm_object_utils_begin(sync_txrx_seq_item)
@@ -111,7 +114,7 @@ class sync_txrx_seq_item extends uvm_sequence_item;
         footer[8]  = merging_factor;
         footer[9]  = focal_spot_merging_factor;
         footer[10][0]  = fq_stream_enable;
-        footer[11][0]  =  fq_stream_enable;
+        footer[11][0]  =  fs_sequence_counter;
 
         // TODO REMOVE LATER footer[11]  =  fs_sequence_counter;
 
@@ -165,10 +168,15 @@ class sync_txrx_seq_item extends uvm_sequence_item;
             pkt_type_ = "[SYNC - IP_PACKET]";
         else if (pkt_type == SYNC_HEADER)
         begin
+                if (!random_slot_address)
+         slot_addr_tracker += 32'h00001080;
+         else 
+         slot_addr_tracker += 32'h00001080*5;
             pkt_type_ = "[SYNC - HEADER_PACKET]";
                 init_data_header();
                 init_footer();
         end
+          
     endfunction
 
      // Constraint to ensure valid_crc defaults to 1 unless explicitly constrained to 0 in a test
@@ -180,7 +188,7 @@ class sync_txrx_seq_item extends uvm_sequence_item;
      soft    header_header[0] == 'h5E;
      soft    fq_stream_enable ==1'b0; 
      soft    focal_spot_merging_factor == 'h0;
-     soft    merging_factor == 'h02;
+     soft    merging_factor == 'h00;
      soft    dms_status_i  ==  'h4200;
      soft    DFS =='h0;
      soft    READING_NUMBER_REG =='h0;
@@ -190,9 +198,10 @@ class sync_txrx_seq_item extends uvm_sequence_item;
     }
    // Constraint to ensure valid_crc defaults to 1 unless explicitly constrained to 0 in a test
     constraint sync_header_footer_default_c {
-       soft  slot_pointer_address == 'h00001080;
+      soft slot_pointer_address == slot_addr_tracker;
        soft  hd_pointer_address == 'h06D7B500;
        soft  fs_sequence_counter == 'h00;
+       soft random_slot_address == 0;
     }
 
 

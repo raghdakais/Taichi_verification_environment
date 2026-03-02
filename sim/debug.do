@@ -19,6 +19,29 @@ add wave -noupdate -color Salmon -label Mu_activation /taichi_tmb_tb/DUT/registe
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/MU_CTRL
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Operational_DIAGNSOTICS
 add wave -noupdate -divider <NULL>
+add wave -noupdate -color Yellow -itemcolor Firebrick /taichi_tmb_tb/DUT/registers_inst_A/S_WRITE
+add wave -noupdate -color Yellow -itemcolor Firebrick /taichi_tmb_tb/DUT/registers_inst_A/S_READ
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/ADDR
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/DATA_IN
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/DATA_OUT
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/S_REGISTER_41
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Module_Status_Errors_reg
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_too_long
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_too_short
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/AMS_CrcError
+add wave -noupdate -expand -group ERRORS -color Yellow /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Buffer_Control_RX_ERRs
+add wave -noupdate -expand -group ERRORS -color Yellow /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_HEADER_RX_ERRs
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Data_TX_ERRs
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/ddr_driver_errors
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Diag_RX_ERRs
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Diag_TX_ERRs
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Operational_RX_ERRs
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Operational_TX_ERRs
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/power_monitor_footer_Asic_error
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/SPI_Errs
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Status_and_Errors
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/S_REGISTER_53
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/S_REGISTER_53
 add wave -noupdate -expand -group {IP --> HEADER} -color Magenta /taichi_tmb_tb/DUT/Sync_P
 add wave -noupdate -expand -group {IP --> HEADER} -color Magenta /taichi_tmb_tb/DUT/SYNC
 add wave -noupdate -expand -group {IP --> HEADER} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/sDataIn
@@ -78,44 +101,69 @@ add wave -noupdate -group ASIC_TILES /taichi_tmb_tb/DUT/DATA1
 add wave -noupdate -group ASIC_TILES /taichi_tmb_tb/DUT/DATA1_N
 add wave -noupdate -group ASIC_TILES /taichi_tmb_tb/DUT/DATA2
 add wave -noupdate -group ASIC_TILES /taichi_tmb_tb/DUT/DATA2_N
-add wave -noupdate -expand -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/din
-add wave -noupdate -expand -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/dout
-add wave -noupdate -expand -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/empty
-add wave -noupdate -expand -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/full
-add wave -noupdate -expand -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/overflow
-add wave -noupdate -expand -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/rd_clk
-add wave -noupdate -expand -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/rd_data_count
-add wave -noupdate -expand -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/rd_en
-add wave -noupdate -expand -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/rst
-add wave -noupdate -expand -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/underflow
-add wave -noupdate -expand -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/valid
-add wave -noupdate -expand -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/wr_clk
-add wave -noupdate -expand -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/wr_data_count
-add wave -noupdate -expand -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/wr_en
+add wave -noupdate -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/din
+add wave -noupdate -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/dout
+add wave -noupdate -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/empty
+add wave -noupdate -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/full
+add wave -noupdate -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/overflow
+add wave -noupdate -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/rd_clk
+add wave -noupdate -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/rd_data_count
+add wave -noupdate -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/rd_en
+add wave -noupdate -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/rst
+add wave -noupdate -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/underflow
+add wave -noupdate -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/valid
+add wave -noupdate -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/wr_clk
+add wave -noupdate -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/wr_data_count
+add wave -noupdate -group {write fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/data_sort_ddr3_wr_1/dcfifo_a/wr_en
 add wave -noupdate -divider <NULL>
-add wave -noupdate -group {BUFFER REQ } /taichi_tmb_tb/DUT/io_inst_1/RX_series7_1/pDataIn
-add wave -noupdate -group {BUFFER REQ } /taichi_tmb_tb/DUT/Buffer_N
-add wave -noupdate -group {BUFFER REQ } /taichi_tmb_tb/DUT/Buffer_P
-add wave -noupdate -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/clk
-add wave -noupdate -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/srst
-add wave -noupdate -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/din
-add wave -noupdate -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/wr_en
-add wave -noupdate -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/rd_en
-add wave -noupdate -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/dout
-add wave -noupdate -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/full
-add wave -noupdate -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/empty
-add wave -noupdate -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/data_count
-add wave -noupdate -group ev_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_fifo2048x32_1/clk
-add wave -noupdate -group ev_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_fifo2048x32_1/data_count
-add wave -noupdate -group ev_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_fifo2048x32_1/din
-add wave -noupdate -group ev_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_fifo2048x32_1/dout
-add wave -noupdate -group ev_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_fifo2048x32_1/empty
-add wave -noupdate -group ev_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_fifo2048x32_1/full
-add wave -noupdate -group DDR3 /taichi_tmb_tb/DUT/ddr3_dq
-add wave -noupdate -group DDR3 /taichi_tmb_tb/DUT/ddr3_dqs_n
-add wave -noupdate -group DDR3 /taichi_tmb_tb/DUT/ddr3_dqs_p
-add wave -noupdate -group DDR3 -color Gold /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/init_calib_complete
-add wave -noupdate -group DDR3 -color Gold /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/INIT_DONE_A_O
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_B/REGISTER_BANK_B/S_REGISTER_41
+add wave -noupdate -expand -group {BUFFER REQ } /taichi_tmb_tb/DUT/io_inst_1/RX_series7_1/pDataIn
+add wave -noupdate -expand -group {BUFFER REQ } /taichi_tmb_tb/DUT/Buffer_N
+add wave -noupdate -expand -group {BUFFER REQ } /taichi_tmb_tb/DUT/Buffer_P
+add wave -noupdate -expand -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/clk
+add wave -noupdate -expand -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/srst
+add wave -noupdate -expand -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/din
+add wave -noupdate -expand -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/wr_en
+add wave -noupdate -expand -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/rd_en
+add wave -noupdate -expand -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/dout
+add wave -noupdate -expand -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/full
+add wave -noupdate -expand -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/empty
+add wave -noupdate -expand -group fq_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/fq_fifo2048x32_1/data_count
+add wave -noupdate -expand -group {HEADER FIFO} /taichi_tmb_tb/DUT/memory_buffer_if_1/header_fifo_rn_1/clk
+add wave -noupdate -expand -group {HEADER FIFO} /taichi_tmb_tb/DUT/memory_buffer_if_1/header_fifo_rn_1/rd_en
+add wave -noupdate -expand -group {HEADER FIFO} /taichi_tmb_tb/DUT/memory_buffer_if_1/header_fifo_rn_1/wr_en
+add wave -noupdate -expand -group {HEADER FIFO} /taichi_tmb_tb/DUT/memory_buffer_if_1/header_fifo_rn_1/data_count
+add wave -noupdate -expand -group {HEADER FIFO} /taichi_tmb_tb/DUT/memory_buffer_if_1/header_fifo_rn_1/din
+add wave -noupdate -expand -group {HEADER FIFO} /taichi_tmb_tb/DUT/memory_buffer_if_1/header_fifo_rn_1/dout
+add wave -noupdate -expand -group {HEADER FIFO} /taichi_tmb_tb/DUT/memory_buffer_if_1/header_fifo_rn_1/empty
+add wave -noupdate -expand -group {HEADER FIFO} /taichi_tmb_tb/DUT/memory_buffer_if_1/header_fifo_rn_1/full
+add wave -noupdate -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/dout
+add wave -noupdate -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/empty
+add wave -noupdate -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/full
+add wave -noupdate -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/rd_clk
+add wave -noupdate -group {ddr fifo} -radix unsigned /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/rd_data_count
+add wave -noupdate -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/rd_en
+add wave -noupdate -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/rd_rst
+add wave -noupdate -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/valid
+add wave -noupdate -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/wr_clk
+add wave -noupdate -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/wr_en
+add wave -noupdate -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/din
+add wave -noupdate -group {ddr fifo} -radix unsigned /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/wr_data_count
+add wave -noupdate -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/wr_rst
+add wave -noupdate -expand -group ev_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_fifo2048x32_1/clk
+add wave -noupdate -expand -group ev_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_fifo2048x32_1/data_count
+add wave -noupdate -expand -group ev_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_fifo2048x32_1/rd_en
+add wave -noupdate -expand -group ev_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_fifo2048x32_1/srst
+add wave -noupdate -expand -group ev_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_fifo2048x32_1/wr_en
+add wave -noupdate -expand -group ev_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_fifo2048x32_1/din
+add wave -noupdate -expand -group ev_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_fifo2048x32_1/dout
+add wave -noupdate -expand -group ev_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_fifo2048x32_1/empty
+add wave -noupdate -expand -group ev_ddr3_fifo /taichi_tmb_tb/DUT/memory_buffer_if_1/ev_fifo2048x32_1/full
+add wave -noupdate -expand -group DDR3 /taichi_tmb_tb/DUT/ddr3_dq
+add wave -noupdate -expand -group DDR3 /taichi_tmb_tb/DUT/ddr3_dqs_n
+add wave -noupdate -expand -group DDR3 /taichi_tmb_tb/DUT/ddr3_dqs_p
+add wave -noupdate -expand -group DDR3 -color Gold /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/init_calib_complete
+add wave -noupdate -expand -group DDR3 -color Gold /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/INIT_DONE_A_O
 add wave -noupdate /taichi_tmb_tb/DUT/slices_sorter_1/tile_sim_data
 add wave -noupdate -group {DDR - AXI} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/ddr3_axi_if_inst/u_DDR3_AXI_IF_mig/u_memc_ui_top_axi/u_axi_mc/axi_register_slice_d1/ACLK
 add wave -noupdate -group {DDR - AXI} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/ddr3_axi_if_inst/u_DDR3_AXI_IF_mig/u_memc_ui_top_axi/u_axi_mc/axi_register_slice_d1/ARESETN
@@ -227,7 +275,9 @@ add wave -noupdate -group debug /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/m
 add wave -noupdate -group debug /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/m00_axi_awaddr
 add wave -noupdate -group debug /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/test_write_burst_len
 add wave -noupdate -divider <NULL>
-add wave -noupdate -expand -group {DATA OUT } -color {Violet Red} -itemcolor {Violet Red} -expand -subitemconfig {/taichi_tmb_tb/DUT/DATA_OUT(1) {-color {Violet Red} -height 15 -itemcolor {Violet Red}} /taichi_tmb_tb/DUT/DATA_OUT(0) {-color {Violet Red} -height 15 -itemcolor {Violet Red}}} /taichi_tmb_tb/DUT/DATA_OUT
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/S_REGISTER_41
+add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_B/REGISTER_BANK_B/S_REGISTER_53
+add wave -noupdate -expand -group {DATA OUT } -color {Violet Red} -itemcolor {Violet Red} /taichi_tmb_tb/DUT/DATA_OUT
 add wave -noupdate -expand -group {DATA OUT } -color Turquoise /taichi_tmb_tb/DUT/TX_series7_1/TX_data_byte
 add wave -noupdate -expand -group {DATA OUT } /taichi_tmb_tb/data_out_tx_vif/start_package
 add wave -noupdate -expand -group {DATA OUT } /taichi_tmb_tb/DUT/TX_series7_1/TX_det_byte
@@ -250,19 +300,6 @@ add wave -noupdate -expand -group {DATA OUT } /taichi_tmb_tb/DUT/use_ddr3_phy_g/
 add wave -noupdate -expand -group {DATA OUT } /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/rdempty_h_a_fifo
 add wave -noupdate -expand -group {DATA OUT } /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/axi_rdata
 add wave -noupdate -expand -group {DATA OUT } -divider <NULL>
-add wave -noupdate -expand -group {DATA OUT } -expand -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/dout
-add wave -noupdate -expand -group {DATA OUT } -expand -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/empty
-add wave -noupdate -expand -group {DATA OUT } -expand -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/full
-add wave -noupdate -expand -group {DATA OUT } -expand -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/rd_clk
-add wave -noupdate -expand -group {DATA OUT } -expand -group {ddr fifo} -radix unsigned /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/rd_data_count
-add wave -noupdate -expand -group {DATA OUT } -expand -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/rd_en
-add wave -noupdate -expand -group {DATA OUT } -expand -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/rd_rst
-add wave -noupdate -expand -group {DATA OUT } -expand -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/valid
-add wave -noupdate -expand -group {DATA OUT } -expand -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/wr_clk
-add wave -noupdate -expand -group {DATA OUT } -expand -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/wr_en
-add wave -noupdate -expand -group {DATA OUT } -expand -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/din
-add wave -noupdate -expand -group {DATA OUT } -expand -group {ddr fifo} -radix unsigned /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/wr_data_count
-add wave -noupdate -expand -group {DATA OUT } -expand -group {ddr fifo} /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/read_ddr3_rd_1/fifo_dc_2k_32_1/wr_rst
 add wave -noupdate -color Magenta /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/DATA_SORT_DOUT
 add wave -noupdate -color Magenta /taichi_tmb_tb/DUT/use_ddr3_phy_g/ddr_driver_1/EVOLVING_DOUT
 add wave -noupdate /taichi_tmb_tb/DUT/memory_buffer_if_1/params_ready
@@ -321,7 +358,7 @@ add wave -noupdate -group {CHANNEL OK} /taichi_tmb_tb/DUT/sig_2_packet_received_
 add wave -noupdate -group {CHANNEL OK} /taichi_tmb_tb/DUT/sig_2_good_packet
 add wave -noupdate -group {CHANNEL OK} /taichi_tmb_tb/DUT/sig_2_data_50m
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 2} {982956627 ps} 0} {{Cursor 2} {13088959013 ps} 0}
+WaveRestoreCursors {{Cursor 2} {386025336 ps} 0} {{Cursor 2} {13088959013 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 187
 configure wave -valuecolwidth 93
@@ -337,4 +374,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {1114225875 ps}
+WaveRestoreZoom {0 ps} {838407005 ps}

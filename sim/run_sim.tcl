@@ -11,11 +11,19 @@ set PROJ_PATH ".."
 set LOG_PATH  "log_result"
 set COV_PATH  [file join $LOG_PATH "coverage"]
 
-# Flags / inputs
 if {![info exists enable_cov]} { set enable_cov 0 }
-if {![info exists test_name]} {
-    puts "Error: No test name provided!"
-    exit 1
+# Default test if none supplied
+set DEFAULT_TEST "check_status_register_test"
+
+if {![info exists test_name] || $test_name eq ""} {
+    # Allow override via environment variable too (optional)
+    if {[info exists ::env(TEST_NAME)] && $::env(TEST_NAME) ne ""} {
+        set test_name $::env(TEST_NAME)
+        puts "Info: test_name not set; using TEST_NAME env: $test_name"
+    } else {
+        set test_name $DEFAULT_TEST
+        puts "Info: test_name not set; defaulting to: $test_name"
+    }
 }
 puts "Running test: $test_name"
 

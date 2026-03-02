@@ -106,6 +106,9 @@ task drive_packet(buffer_tx_seq_item pkt);
           end
                  crc_calc = calculate_crc16_byte(crc_calc, pkt.footer[i]); // Start1 (21)
          end
+     
+     if(pkt.valid_crc == 0)
+     crc_calc = crc_calc+'h20;
          // Send CRC (iterate from max index down to 0 - 1 variable for 16 bits)
          for (int j = 0 ; j <=15 ; j++) begin
                   @(posedge vif.clk);

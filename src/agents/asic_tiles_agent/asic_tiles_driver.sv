@@ -24,8 +24,7 @@ class asic_tiles_driver extends uvm_driver #(asic_tiles_seq_item);
         wait_for_reset();
 
         // Ensure that the CSV file is read before proceeding
-        read_rx_in_csv("C:/scripts/TAICHI_Repo/Taichi_verification_environment/src/agents/asic_tiles_agent/iladata_packet_40bit_dw.csv");
-
+        read_rx_in_csv("C:/Verification/TAICHI_Repo/Taichi_verification_environment/src/agents/asic_tiles_agent/iladata_packet_40bit_dw.csv");
         fork
             begin
                 @(posedge vif.SYNC);

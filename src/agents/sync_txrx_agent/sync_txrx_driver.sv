@@ -166,7 +166,11 @@ task drive_HEADER_packet(sync_txrx_seq_item pkt);
                  crc_calc = calculate_crc16_byte(crc_calc, pkt.footer[i]); // Start1 (21)
          end
 
-
+//-----------------------------------
+// Invalid CRC
+//-----------------------------------
+        if (pkt.header_valid_crc == 0)
+        crc_calc = crc_calc +'h10;
 
          // Send CRC (iterate from max index down to 0 - 1 variable for 16 bits)
          for (int j = 0 ; j <=15 ; j++) begin
