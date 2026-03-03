@@ -13,7 +13,7 @@ set COV_PATH  [file join $LOG_PATH "coverage"]
 
 if {![info exists enable_cov]} { set enable_cov 0 }
 # Default test if none supplied
-set DEFAULT_TEST "check_status_register_test"
+set DEFAULT_TEST "sync_invalid_crc_test"
 
 if {![info exists test_name] || $test_name eq ""} {
     # Allow override via environment variable too (optional)

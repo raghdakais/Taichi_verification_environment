@@ -163,14 +163,15 @@ task drive_HEADER_packet(sync_txrx_seq_item pkt);
                  @(posedge vif.clk);
                  vif.tx <= pkt.footer[i][j];  // Send the bits of start2 in Big Endian order
           end
-                 crc_calc = calculate_crc16_byte(crc_calc, pkt.footer[i]); // Start1 (21)
+               // Storing footer fields
+                crc_calc = calculate_crc16_byte(crc_calc, pkt.footer[i]); // Start1 (21)
          end
 
 //-----------------------------------
 // Invalid CRC
 //-----------------------------------
         if (pkt.header_valid_crc == 0)
-        crc_calc = crc_calc +'h10;
+        crc_calc = crc_calc +'hAA;
 
          // Send CRC (iterate from max index down to 0 - 1 variable for 16 bits)
          for (int j = 0 ; j <=15 ; j++) begin

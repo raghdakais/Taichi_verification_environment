@@ -25,6 +25,10 @@ package taichi_tmb_tests_package;
   `include "random_data_path_test.sv"
   `include "send_syncs_for_buffer_full_test.sv"
   `include "sig2_sync_test.sv"
-  `include "check_status_register_test.sv"
+ //// `include "check_status_register_test.sv"
+  `include "buffer_invalid_address_test.sv"
+  `include "buffer_invalid_crc_test.sv"
+  `include "sync_invalid_crc_test.sv"
+  `include "sync_invalid_address_test.sv"
 endpackage : taichi_tmb_tests_package
 

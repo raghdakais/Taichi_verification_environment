@@ -8,6 +8,12 @@
  //  parameter int  HEADER_DATA_SIZE       ='d64;
 
 
+typedef enum {
+    WAIT_SYNC,
+    WAIT_START1,
+    WAIT_START2,
+    COLLECT_PAYLOAD
+} sync_state_e;
 
 
 // Parameter definitions

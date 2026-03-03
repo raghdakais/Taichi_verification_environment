@@ -15,5 +15,9 @@ interface sync_txrx_agent_if(input logic clk, input logic rst);
 
     bit tx_sync_signal;
     bit rx_sync_signal;
+    byte slot_pointer_address;
+    sync_state_e state;
+    byte  byte_collected;
+    logic [7:0]   shift_reg ;
 endinterface
 `endif

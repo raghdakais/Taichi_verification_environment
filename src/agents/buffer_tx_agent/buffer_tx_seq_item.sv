@@ -22,10 +22,11 @@ class buffer_tx_seq_item extends uvm_sequence_item;
   rand bit [5:0] spare_bits;        // bits 7:2
   bit [7:0] stream_ctrl;            // full control byte, built manually
    static logic [31:0] slot_addr_tracker = 'h0;
-   rand logic [31:0] slot_addr_random = 'h0;
-rand bit   random_slot_address;
+   rand logic [31:0] random_address_jump = 'h0;
+rand bit   allow_random_address = 0;
 rand bit valid_crc =1;
     string item_name = "[BUFFER REQUEST]";
+static bit dummy_passed = 0;
 
   // Constants
   const bit [15:0] fixed_header = 16'hba5e;
@@ -70,7 +71,7 @@ rand bit valid_crc =1;
       soft   ev_stream =='h1; 
       soft   hd_stream == 'h0;
       soft   uid_reg== 'h0000; 
-      soft random_slot_address == 0;
+      soft allow_random_address == 0;
       soft valid_crc == 1'b1;  // Default valid_crc is 1 unless overridden in the test
 
 
@@ -79,10 +80,6 @@ rand bit valid_crc =1;
   // Build stream_ctrl from individual bits
   function void post_randomize();
     super.post_randomize();
-                  if (!random_slot_address)
-         slot_addr_tracker += 32'h00001080;
-         else 
-         slot_addr_tracker = slot_addr_random;
 
 
     // Build stream control byte: [spare(6)][hd_stream][ev_stream]
@@ -96,6 +93,18 @@ rand bit valid_crc =1;
     data[5]  = uid_reg[15:8];
     data[6]  = stream_ctrl;
     data[7]  = 8'h00;
+
+                if (!allow_random_address && dummy_passed)
+         slot_addr_tracker += 32'h00001080;
+         else if( !dummy_passed)
+         begin
+         slot_addr_tracker = 0;
+         dummy_passed = 1;
+         end
+         else 
+         slot_addr_tracker = 32'h00001080*random_address_jump;
+
+
   endfunction
 
 endclass : buffer_tx_seq_item

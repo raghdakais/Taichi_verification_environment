@@ -51,9 +51,9 @@ class sync_txrx_seq_item extends uvm_sequence_item;
     rand bit fq_stream_enable;
     rand bit [7:0] fs_sequence_counter;            // Byte 6 (Bits 49 - HD, 48 - RLT)
    static logic [31:0] slot_addr_tracker = 'h0;
-   rand logic [31:0] slot_addr_random = 'h0;
-rand bit   random_slot_address;
-
+   rand int random_address_jump = 'h0;
+rand bit   allow_random_address;
+static bit dummy_passed = 0;
 
 `uvm_object_utils_begin(sync_txrx_seq_item)
  	`uvm_field_string (pkt_type_  ,					UVM_DEFAULT)
@@ -168,10 +168,15 @@ rand bit   random_slot_address;
             pkt_type_ = "[SYNC - IP_PACKET]";
         else if (pkt_type == SYNC_HEADER)
         begin
-                if (!random_slot_address)
+                if (!allow_random_address && dummy_passed)
          slot_addr_tracker += 32'h00001080;
+         else if( !dummy_passed)
+         begin
+         slot_addr_tracker = 0;
+         dummy_passed = 1;
+         end
          else 
-         slot_addr_tracker += 32'h00001080*5;
+         slot_addr_tracker += slot_addr_tracker*random_address_jump;
             pkt_type_ = "[SYNC - HEADER_PACKET]";
                 init_data_header();
                 init_footer();
@@ -201,7 +206,7 @@ rand bit   random_slot_address;
       soft slot_pointer_address == slot_addr_tracker;
        soft  hd_pointer_address == 'h06D7B500;
        soft  fs_sequence_counter == 'h00;
-       soft random_slot_address == 0;
+       soft allow_random_address == 0;
     }
 
 

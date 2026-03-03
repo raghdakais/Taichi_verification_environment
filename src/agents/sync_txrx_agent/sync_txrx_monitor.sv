@@ -9,7 +9,7 @@ class sync_txrx_monitor extends uvm_monitor;
     sync_txrx_config cfg;            // Configuration object
     sync_txrx_seq_item item;
     uvm_analysis_port #(sync_txrx_seq_item) analysis_port;
-
+        bit [7:0] byte_collected;
 
 
 
@@ -20,156 +20,209 @@ class sync_txrx_monitor extends uvm_monitor;
         analysis_port = new("sync_txrx_analysis_port", this);
     endfunction
 
-//----------------------------------------------------------------
+    // -----------------------------
+    // MAIN RUN PHASE
+    // -----------------------------
     task run_phase(uvm_phase phase);
-//----------------------------------------------------------------
-    bit start_ip_found = 0;
-    bit start_header_found = 0;
-    int item_id = 0;
-    bit ip_start2_found = 0;
-    bit header_start2_found = 0;
-    byte  buffer[$];
-    int ip_package_count = 0;
-    int header_package_count = 0;
-    int ip_bytes_count = 0;
-    int data_bytes_count=0;
-    bit ip_package_found=0;
-    bit header_package_found=0;
-    byte  byte_collected;
-    bit [15:0] header;
-    int header_bytes_count = 1;
-    bit base_found = 0;
-          int bit_index;
+
+        sync_state_e state = WAIT_SYNC;
+
+        sync_txrx_seq_item item;
+
+        byte payload[$];
+        byte start1, start2;
+
+        // Local SYNC detection
+        logic [7:0] shift_reg = 0;
         fork
-           sync_serial( );
+          sync_serial();
         join
-     item = sync_txrx_seq_item::type_id::create("sync_item");
-        
 
- forever
-     begin
-         byte_collected = 0;
-         for (int i = 0 ; i <=7 ; i++) begin
-               @(negedge vif.clk);
-             byte_collected[i] = vif.tx;  // Correct signal reference
-          end
-             // Check if the collected byte is IDLE and not zero
-////         if (byte_collected != 8'hB5) begin
-         if (!header_package_found) begin
-         
-        //---------------------------------------
-        //  check if its start1 - 'h21
-        //----------------------------------------
-         if (byte_collected == 8'h21 && !start_ip_found && !ip_start2_found && !header_start2_found) begin // Detected start1
-                    `uvm_info("MON", "Detected START1 (0x21)", UVM_LOW)
-                    start_ip_found = 1;
-                end       
-        else if (byte_collected == 8'h1B && start_ip_found  && !ip_start2_found && !header_start2_found) begin // Detected start2 - header packge 
-                    `uvm_info("MON", "Detected IP PACKAGE (0x1B)", UVM_LOW)
-                      ip_start2_found=1;
-                end     
-           else   if (ip_start2_found & start_ip_found)
-            begin
-                 `uvm_info("MON", "Detected IP DATA", UVM_LOW)
-                 
-                    ip_bytes_count++;  // DATA 1 byte + 2 bytes crc
-                    if(ip_bytes_count==3) 
-                    ip_package_found=1;
-            end 
-   ////     else if (!ip_package_found)
-   ////       $display(" INVALID PACKAGE - no collection");
-        
-  
-         if( ip_package_found )
-        begin
-            ip_package_count++;
-            ip_bytes_count=0;
-            start_ip_found = 0;
-            ip_start2_found = 0;
-        end
-        
+        forever begin
+          //  @(negedge vif.clk);
 
-        // must wait for header
-   if( ip_package_found && !header_package_found )
-        begin
-           if ( byte_collected == 8'h21 && !start_header_found  && !header_start2_found) begin // Detected start1
-           `uvm_info("MON", "Detected START1 for HEADER PACKAGE (0x21)", UVM_LOW)
-           start_header_found = 1;
-       end       
-        else if (byte_collected == 8'h43 && start_header_found   && !header_start2_found) begin // Detected start2 - header packge 
-                    `uvm_info("MON", "Detected HEADER PACKAGE (0x43)", UVM_LOW)
-                      header_start2_found=1;
-                     
-                end 
+            // Collect raw byte
+            collect_byte();
 
-          else   if (!base_found &&header_start2_found & start_header_found  )
-            begin
-                bit_index = 8 * header_bytes_count ;
+            case (state)
 
-                header[bit_index +: 8] = byte_collected; // This works in most simulation environments
-             //   header[15-7*header_bytes_count -1 :87*header_bytes_count -1] = byte_collected;
-                header_bytes_count--;
-                if(header == 'hBA5E )
-                begin
-                base_found = 1;
-                 buffer.delete();
+                // ----------------------------------------------------
+                WAIT_SYNC: begin
+                // ----------------------------------------------------
+                  begin
+                   ///   shift_reg = {vif.tx, shift_reg[7:1]};
+                    if ( byte_collected == 8'hB5) begin
+                        state = WAIT_START1;
+                        payload.delete();
+                        `uvm_info("MON","SYNC 0xB5 detected",UVM_LOW)
+                        vif.state = state;
+                    end
                 end
-           end
-                
-        else   if (header_start2_found & start_header_found && base_found)
-            begin
-             data_bytes_count++;
-             if(data_bytes_count%2==0)
-                item.expected_data_out[15:8] = byte_collected;
-             else   
-                item.expected_data_out[7 :0] = byte_collected;
-                if( data_bytes_count%2==0)  begin
-//$display(" expected_data_out is %x", item.expected_data_out );
-     item.expected_data_out_fifo.push_back(item.expected_data_out);  
-               
-     end       
-                 if (data_bytes_count <= 72) begin   // data+footer
-                  //  buffer.push_back(byte_collected);  
-                  //  item.expected_data_out_fifo.push_back(item.expected_data_out);  
-                 end  
-                 else
+                end
+                // ----------------------------------------------------
+                WAIT_START1:
+                // ----------------------------------------------------
                  begin
-                    header_package_found=1;
-                    
-                    header_package_count++;
-                    ip_package_found=0;
-                    data_bytes_count=0;
-                    start_header_found=0;
-                    header_start2_found=0;
-                    base_found=0;
-                    header_bytes_count=1;
-                    item.header_buffer = buffer;
-                    item_id++;
-                    item.item_id = item_id;
-                    bit_index=1;
-                    header='h0;
-                     header_package_found=0;
-                      analysis_port.write(item);
+                       if (byte_collected == 8'h21) begin
+                        start1 = byte_collected;
+                        state  = WAIT_START2;
+                    end
+                        vif.state = state;
+                 end
+                // ----------------------------------------------------
+                WAIT_START2:
+                // ----------------------------------------------------
+                 begin
+                    if (byte_collected == 8'h1B || byte_collected == 8'h43) begin
+                        start2 = byte_collected;
+                        item = sync_txrx_seq_item::type_id::create("item", this);
+                        item.start1 = start1;
+                        item.start2_ip = (byte_collected == 8'h1B);
+                        payload.delete();
+                        state = COLLECT_PAYLOAD;
+                    end
+                        vif.state = state;
+                 end
+                // ----------------------------------------------------
+                COLLECT_PAYLOAD:
+                // ----------------------------------------------------
+                begin
+                        vif.state = state;
+                        payload.push_back(byte_collected);
+
+                    if (is_packet_complete(start2, payload)) begin
+
+                          if (start2 == 8'h1B) begin
+                                    // IP PACKET = 1 data + 2 CRC bytes
+                                    if(payload.size() != 3)
+                                     `uvm_error(get_type_name(), "INVALID IP PLAYLOAD SIZE!!");
+                                end
+
+
+                      if (start2 == 8'h43) begin
+                            // HEADER packet:
+                            //    BA 5E + 128 data + 12 footer = 142 bytes
+                           $display("  SIZE HEADER %d  ",payload.size()  );
+                            if (payload.size()  != 142)
+                             `uvm_error(get_type_name(), "INVALID HEADER PLAYLOAD SIZE!! " );
+                           $display("   HEADER Sign %h  ",{payload[0],payload[1]}  );
+                            if ({payload[0],payload[1]} != 16'hBA5E)
+                             `uvm_error(get_type_name(), "INVALID HEADER SIGNATURE!!");
+                            // total = 2 + 128 + 12 = 142
+
+                      end
+                        fill_item(item, start2, payload);
+
+                        analysis_port.write(item);
+
+                        `uvm_info("MON","Packet completed and sent",UVM_LOW)
+
+         if (get_report_verbosity_level() >= UVM_DEBUG)
+         begin
+           $display("[SYNC TXRX] Monitor Printing %s Item: ", this.get_type_name());
+           item.print();
+         end   
+                        state = WAIT_START1; // Ready for next packet
+                        payload.delete();
+                    end
                 end
+            endcase
+        end
+    endtask
 
-            end 
+
+    // -------------------------------
+    // Helper: Collect 8 bits into byte
+    // -------------------------------
+    task  collect_byte();
+        for (int i = 0 ; i <=7 ; i++) begin
+           
+            byte_collected[i] = vif.tx;
+                 @(negedge vif.clk);
+        end
+         vif.byte_collected = byte_collected;
+    endtask
+
+
+    // -------------------------------
+    // Helper: Detect end of packet
+    // -------------------------------
+    function bit is_packet_complete(byte start2, ref byte payload[$]);
+
+        if (start2 == 8'h1B) begin
+            // IP PACKET = 1 data + 2 CRC bytes
+//// maybe e no neeed               if(payload.size() != 3)
+//// maybe e no neeed                `uvm_error(get_type_name(), "INVALID IP PLAYLOAD SIZE!!");
+            
+            return (payload.size() == 3);
+        end
+
+        if (start2 == 8'h43) begin
+            // HEADER packet:
+   ///// maybe no need          //    BA 5E + 128 data + 12 footer = 142 bytes
+   ///// maybe no need          $display("  SIZE HEADER %d  ",payload.size()  );
+   ///// maybe no need          if (payload.size()  != 142)
+   ///// maybe no need           `uvm_error(get_type_name(), "INVALID HEADER PLAYLOAD SIZE!!");
+   ///// maybe no need          if ({payload[1],payload[0]} != 16'hBA5E)
+   ///// maybe no need           `uvm_error(get_type_name(), "INVALID HEADER SIGNATURE!!");
+   ///// maybe no need          // total = 2 + 128 + 12 = 142
+            return (payload.size() == 142);
+        end
+
+        return 0;
+    endfunction
+
+
+    // -------------------------------
+    // Helper: Move collected bytes into item
+    // -------------------------------
+    function void fill_item(
+        ref sync_txrx_seq_item item,
+        byte start2,
+        ref byte payload[$]
+    );
+
+        if (start2 == 8'h1B) begin
+            // IP PACKET
+            item.pkt_type = SYNC_IP;
+            item.ip_data = payload[0];
+            item.crc     = {payload[2], payload[1]};
+        end
+
+        else if (start2 == 8'h43) begin
+            // HEADER PACKET
+            item.pkt_type = SYNC_HEADER;
+
+            // BA 5E already checked
+            item.header_header = {payload[0], payload[1]};
+
+            // DATA (128 bytes)
+            for (int i=0; i<128; i++)
+                item.header_data[i] = payload[i+2];
+
+            // FOOTER (12 bytes)
+            item.footer = new[12];
+            for (int i=0; i<12; i++)
+                item.footer[i] = payload[130 + i];
      
-  
+item.slot_pointer_address[7:0]   = item.footer[0];
+item.slot_pointer_address[15:8]  = item.footer[1];
+item.slot_pointer_address[23:16] = item.footer[2];
+item.slot_pointer_address[31:24] = item.footer[3];
+item.hd_pointer_address[7:0]     = item.footer[4];
+item.hd_pointer_address[15:8]    = item.footer[5];
+item.hd_pointer_address[23:16]   = item.footer[6];
+item.hd_pointer_address[31:24]   = item.footer[7];
+            
+item.merging_factor              = item.footer[8];
+item.focal_spot_merging_factor   = item.footer[9];
+item.fq_stream_enable            = item.footer[11][0];
+
+
+vif.slot_pointer_address = item.slot_pointer_address;
         end
+    endfunction
 
-      
-                 // Create a new sequence item for this packet (Avoids overwriting)
-     //////            item = sync_txrx_seq_item::type_id::create($sformatf("sync_txrx_seq_item created"));       
-     //////             item.valid_start1 = vif.valid_start1;
-     //////             item.valid_start2 = vif.valid_start2;
-     //////             item.valid_crc    = vif.valid_crc;
-     //////             item.start1       = byte_collected;
-     //////             analysis_port.write(item);
-             end
-        end
-
-
-   endtask
 
 
 
@@ -185,6 +238,7 @@ while (!sync)
    begin
     @(negedge vif.clk); // Wait for a clock edge
      shift_reg = {vif.tx, shift_reg[7:1]}; // Shift bits from LSB to MSB
+     vif.shift_reg = shift_reg;
      if (shift_reg == 8'hB5) begin // Check for sync word
         sync  =1;  // Correct signal reference
         $display("[SYNC sync_tx monitor] Sync word 0xB5 detected at time %0t",  $time);
