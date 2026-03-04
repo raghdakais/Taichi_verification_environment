@@ -30,5 +30,7 @@ package taichi_tmb_tests_package;
   `include "buffer_invalid_crc_test.sv"
   `include "sync_invalid_crc_test.sv"
   `include "sync_invalid_address_test.sv"
+  `include "random_sign2_while_sending_sync_test.sv"
+  `include "wrap_arround_test.sv"
 endpackage : taichi_tmb_tests_package
 

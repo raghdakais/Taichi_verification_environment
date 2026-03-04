@@ -38,7 +38,7 @@ rand int i = 0;
     ////  0xB00X6790	Module Data Out Type selection
     send_operation_transaction(TXRX_READ, 'h064D0, 'h0); 
 
-send_diagnostical_transaction(TXRX_READ, 'h064D0, 'h0); 
+send_diagnostical_transaction(TXRX_WRITE, 'h064D0, 'hFFFF_FFFF); 
 
 //------------------------------------------------------
 // Sending VALOD 10 SYNCS

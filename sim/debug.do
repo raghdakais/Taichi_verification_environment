@@ -2,18 +2,21 @@ onerror {resume}
 quietly virtual signal -install /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1 { /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/S_HEADER_DATA_OUT(6 downto 0)} temp_num_from_ct_type
 quietly WaveActivateNextPane {} 0
 add wave -noupdate -divider <NULL>
-add wave -noupdate -group {Sig2 Sync} -color Magenta -itemcolor Magenta /taichi_tmb_tb/DUT/io_inst_1/lock2aclk_stop
-add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/CLK50
-add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/incr_RDY_delay_cnt
-add wave -noupdate -group {Sig2 Sync} -radix unsigned /taichi_tmb_tb/DUT/io_inst_1/aclk_filter_cnt
-add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_rise_detect
-add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_master_i_int
-add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_50m_rr
-add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_period_saved
-add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/Diag_in_P
-add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/Diag_in_N
-add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/registers_inst_A/S_IDLY_CNT
-add wave -noupdate -group {Sig2 Sync} /taichi_tmb_tb/DUT/registers_inst_A/S_EN
+add wave -noupdate -expand -group {Sig2 Sync} -color Magenta -itemcolor Magenta /taichi_tmb_tb/DUT/io_inst_1/lock2aclk_stop
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/CLK50
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/incr_RDY_delay_cnt
+add wave -noupdate -expand -group {Sig2 Sync} -radix unsigned /taichi_tmb_tb/DUT/io_inst_1/aclk_filter_cnt
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_rise_detect
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_master_i_int
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_50m_rr
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/io_inst_1/aclk_period_saved
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/Diag_in_P
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/Diag_in_N
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/registers_inst_A/S_IDLY_CNT
+add wave -noupdate -expand -group {Sig2 Sync} /taichi_tmb_tb/DUT/registers_inst_A/S_EN
+add wave -noupdate -color Khaki /taichi_tmb_tb/DUT/sig_2_good_packet
+add wave -noupdate -color Khaki /taichi_tmb_tb/DUT/sig_2_bad_packet
+add wave -noupdate -color Khaki /taichi_tmb_tb/DUT/sig_2_channel_RDY
 add wave -noupdate -divider <NULL>
 add wave -noupdate -color Salmon -label Mu_activation /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/MU_CTRL(0)
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/MU_CTRL
@@ -26,22 +29,24 @@ add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/DATA_IN
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/DATA_OUT
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/S_REGISTER_41
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/S_REGISTER_51
-add wave -noupdate -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Module_Status_Errors_reg
-add wave -noupdate -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/S_Error_inject
-add wave -noupdate -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_too_long
-add wave -noupdate -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_too_short
-add wave -noupdate -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/AMS_CrcError
-add wave -noupdate -group ERRORS -color Yellow /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Buffer_Control_RX_ERRs
-add wave -noupdate -group ERRORS -color Yellow -expand -subitemconfig {/taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_HEADER_RX_ERRs(3) {-color Yellow -height 15} /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_HEADER_RX_ERRs(2) {-color Yellow -height 15} /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_HEADER_RX_ERRs(1) {-color Yellow -height 15} /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_HEADER_RX_ERRs(0) {-color Yellow -height 15}} /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_HEADER_RX_ERRs
-add wave -noupdate -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Data_TX_ERRs
-add wave -noupdate -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/ddr_driver_errors
-add wave -noupdate -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Diag_RX_ERRs
-add wave -noupdate -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Diag_TX_ERRs
-add wave -noupdate -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Operational_RX_ERRs
-add wave -noupdate -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Operational_TX_ERRs
-add wave -noupdate -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/power_monitor_footer_Asic_error
-add wave -noupdate -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/SPI_Errs
-add wave -noupdate -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Status_and_Errors
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Module_Status_Errors_reg
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/OverRun_HD_reset_flag
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/OverRun_RTL_reset_flag
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/S_Error_inject
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_too_long
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_too_short
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/AMS_CrcError
+add wave -noupdate -expand -group ERRORS -color Yellow /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Buffer_Control_RX_ERRs
+add wave -noupdate -expand -group ERRORS -color Yellow -expand -subitemconfig {/taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_HEADER_RX_ERRs(3) {-color Yellow -height 15} /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_HEADER_RX_ERRs(2) {-color Yellow -height 15} /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_HEADER_RX_ERRs(1) {-color Yellow -height 15} /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_HEADER_RX_ERRs(0) {-color Yellow -height 15}} /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/IP_HEADER_RX_ERRs
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Data_TX_ERRs
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/ddr_driver_errors
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Diag_RX_ERRs
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Diag_TX_ERRs
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Operational_RX_ERRs
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Operational_TX_ERRs
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/power_monitor_footer_Asic_error
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/SPI_Errs
+add wave -noupdate -expand -group ERRORS /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/Status_and_Errors
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/S_REGISTER_53
 add wave -noupdate /taichi_tmb_tb/DUT/registers_inst_A/REGISTER_BANK_A/S_REGISTER_53
 add wave -noupdate -group {IP --> HEADER} -color Magenta /taichi_tmb_tb/DUT/Sync_P
@@ -57,6 +62,8 @@ add wave -noupdate -color {Spring Green} /taichi_tmb_tb/DUT/memory_buffer_if_1/f
 add wave -noupdate -expand -group SYNC_HEADER -color {Orange Red} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/F_ADDRA_R
 add wave -noupdate -expand -group SYNC_HEADER -color {Orange Red} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/F_DOUT
 add wave -noupdate -expand -group SYNC_HEADER /taichi_tmb_tb/sync_txrx_vif/slot_pointer_address
+add wave -noupdate -expand -group SYNC_HEADER /taichi_tmb_tb/sync_txrx_vif/state
+add wave -noupdate -expand -group SYNC_HEADER /taichi_tmb_tb/sync_txrx_vif/byte_collected
 add wave -noupdate -expand -group SYNC_HEADER -color Yellow /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/RX_IP_DATAVAL_HEADER_PINS/CRC_valid_int
 add wave -noupdate -expand -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/fq_stream_enable
 add wave -noupdate -expand -group SYNC_HEADER /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/FOOTER_CTRL_1/fs_merging_factor
@@ -82,7 +89,7 @@ add wave -noupdate -group {ASIC SPI } -group {oper asic write} /taichi_tmb_tb/DU
 add wave -noupdate -group {ASIC SPI } -group {oper asic write} /taichi_tmb_tb/DUT/Tiles_managment_m/Phoebe_CntrlSpiSplitMem_inst/phoebe_cntrlspisplit_inst/spi_ams_gen(0)/phoebe_controller_inst/configuring_sm_power
 add wave -noupdate -group {ASIC SPI } -group {oper asic write} /taichi_tmb_tb/DUT/Tiles_managment_m/Phoebe_CntrlSpiSplitMem_inst/phoebe_cntrlspisplit_inst/spi_ams_gen(0)/SPI_AMS_CORE_inst/sm_spi
 add wave -noupdate /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/DPR_HEADER_CTRL_PINS/S_IP_ACCEPTED
-add wave -noupdate -expand -group HEADER_DPR -color Yellow -expand -subitemconfig {/taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/DPR_HEADER_CTRL_PINS/WEA(0) {-color Yellow}} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/DPR_HEADER_CTRL_PINS/WEA
+add wave -noupdate -expand -group HEADER_DPR -color Yellow -expand -subitemconfig {/taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/DPR_HEADER_CTRL_PINS/WEA(0) {-color Yellow -height 15}} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/DPR_HEADER_CTRL_PINS/WEA
 add wave -noupdate -expand -group HEADER_DPR -color {Orange Red} /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/blk_mem_gen_0_PINS/enb
 add wave -noupdate -expand -group HEADER_DPR -color Yellow /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/blk_mem_gen_0_PINS/clka
 add wave -noupdate -expand -group HEADER_DPR /taichi_tmb_tb/DUT/IP_DATAVAL_HEADER_TOP_1/blk_mem_gen_0_PINS/clkb
@@ -381,7 +388,7 @@ add wave -noupdate -group {CHANNEL OK} /taichi_tmb_tb/DUT/sig_2_packet_received_
 add wave -noupdate -group {CHANNEL OK} /taichi_tmb_tb/DUT/sig_2_good_packet
 add wave -noupdate -group {CHANNEL OK} /taichi_tmb_tb/DUT/sig_2_data_50m
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 2} {896202203 ps} 0}
+WaveRestoreCursors {{Cursor 2} {363004796 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 187
 configure wave -valuecolwidth 93
@@ -397,4 +404,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {384892989 ps} {1393572381 ps}
+WaveRestoreZoom {0 ps} {1888573969 ps}

@@ -7,13 +7,15 @@ set UVM_MAX_QUIT_COUNT 10
 set UVM_REPORT_SEVERITY UVM_FATAL,UVM_ERROR,UVM_WARNING,UVM_INFO
 
 # Project & output dirs
+# Project & output dirs
 set PROJ_PATH ".."
 set LOG_PATH  "log_result"
 set COV_PATH  [file join $LOG_PATH "coverage"]
+set SIM_PATH  "../sim"
 
 if {![info exists enable_cov]} { set enable_cov 0 }
 # Default test if none supplied
-set DEFAULT_TEST "sync_invalid_crc_test"
+set DEFAULT_TEST "wrap_arround_test"
 
 if {![info exists test_name] || $test_name eq ""} {
     # Allow override via environment variable too (optional)
@@ -38,11 +40,12 @@ file mkdir $COV_PATH
 # Per-test/per-run log file
 ## for regression mode  set LOG_FILE [file join $LOG_PATH "transcript_${test_name}_${ts}.log"]
 set LOG_FILE [file join $LOG_PATH "transcript_${test_name}.log"]
+set TRANSCRIPT_FILE [file join $SIM_PATH "transcript"]
 
 # Work library under logs to avoid polluting repo
 ## for regression mode   set work_library_path [file join $LOG_PATH "work_${test_name}_${ts}"]
 set work_library_path [file join $LOG_PATH "work_${test_name}"]
-set QUESTA_LIBS [file join $PROJ_PATH "src" "QUESTA_LIBS"]
+set QUESTA_LIBS [file join $PROJ_PATH  "src" "QUESTA_LIBS"]
 
 # ---------- Libraries ----------
 vlib $work_library_path
@@ -96,7 +99,7 @@ vsim -t 1ps +model_data+ddr_tmp work.taichi_tmb_optimized_sim \
      +UVM_VERBOSITY=UVM_DEBUG +UVM_LOG=wlf \
      +UVM_TESTNAME=$test_name \
      -onfinish stop \
-     -l "$LOG_FILE" \
+     -l "$LOG_FILE" -l "$TRANSCRIPT_FILE"\
      {*}$vsim_args \
      -do "set StdArithNoWarnings 1 ; set NumericStdNoWarnings 1"
 

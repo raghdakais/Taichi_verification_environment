@@ -33,6 +33,7 @@ int crc_count = 0;
 bit [15:0] expected_crc = 16'hFFFF; 
 bit [15:0] actual_crc ;
 int data_bytes_count=0;
+int collect_addr_count= 0;
            fork
            sync_serial( );
         join
@@ -58,7 +59,10 @@ int data_bytes_count=0;
                  //-----------------------------------------------------------------------
                if (byte_collected == 8'h21 && !start1_recieved) 
                begin
+                crc_recieved = 0;
+                expected_crc = 16'hFFFF; 
                     start1_recieved = 1;
+                    data_out_packet_size = 0;
                     data_out_packet_size_count=0;
                    expected_crc =  calculate_crc16_byte(expected_crc, byte_collected  );
                end
@@ -144,7 +148,20 @@ int data_bytes_count=0;
                 begin
                     vif.first_data_byte = byte_collected;
                     expected_crc = calculate_crc16_byte(expected_crc, byte_collected  );
-                    
+                            // Storing footer fields
+
+                            if(collect_addr_count<4)
+                            begin
+                                case (collect_addr_count)
+                                0:  vif.buffer_ptr_addr[7:0]   = byte_collected ; // High byte 
+                                1:  vif.buffer_ptr_addr[15:8]  = byte_collected ;
+                                2:  vif.buffer_ptr_addr[23:16] = byte_collected ;
+                                3:  vif.buffer_ptr_addr[31:24] = byte_collected ;   // Low b
+                                endcase
+                            collect_addr_count++;
+                            end
+                            else
+                            collect_addr_count = 0;
                     item.footer_buffer.push_back( byte_collected);       
                     if(item.footer_buffer.size() ==`DATA_OUT_FOOTER_SIZE )
                     begin
@@ -168,7 +185,7 @@ int data_bytes_count=0;
                             end
                         else
                             begin
-                              if (expected_crc !== actual_crc)
+                              if (expected_crc !== actual_crc & !crc_recieved)
                               begin
                                      uvm_report_error (get_type_name (), $sformatf ("[ERROR] [DATA OUT -MONITOR]  DATA OUT CRC is NOT AS EXPECTED"));
                                      $display("[EXPECTED] - DATA OUT CRC  [%h]", expected_crc );

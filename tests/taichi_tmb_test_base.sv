@@ -50,24 +50,6 @@ config_asic();
 #50us;
 
  
-   repeat(0)
-   begin
-      send_valid_sync_packet (0); 
-        #60us;
-                    m_sync_txrx_seq = sync_txrx_sequence::type_id::create ("m_sync_txrx_seq");
-
-   if (!this.m_sync_txrx_seq.randomize() with { 
-              m_sync_txrx_seq.item.pkt_type ==1;
-              m_sync_txrx_seq.item.allow_random_address ==1;
-              m_sync_txrx_seq.item.random_address_jump  ==0;
-
-              
-                 }) 
-              `uvm_fatal("RUN_PHASE", "Randomization failed for m_sync_txrx_seq")
-             this.m_sync_txrx_seq.start(this.m_taichi_tmb_env.m_sync_txrx_agent.seqr);
-  send_diagnostical_transaction(TXRX_READ, 'h064D0, 'h0); 
- #60us;
-   end
 
    endtask
 

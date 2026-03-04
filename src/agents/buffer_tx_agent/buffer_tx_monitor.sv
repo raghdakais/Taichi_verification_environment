@@ -61,10 +61,9 @@ bit start2_recieved;
                                 endcase
                             end
                          if (byte_num==9)
-                               item.stream_ctrl = byte_collected;                            
-                         
-
-
+                               item.stream_ctrl = byte_collected;                                                
+                               vif.buffer_address = item.buf_ptr_address_sig;
+                              vif.stream_ctrl = item.stream_ctrl;
                         end
 
                 end

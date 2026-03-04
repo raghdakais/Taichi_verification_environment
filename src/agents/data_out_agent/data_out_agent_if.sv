@@ -15,5 +15,6 @@ bit start_package;
 byte first_data_byte;
 bit header_package_recieved;
 int data_out_packet_size;
+bit [31:0] buffer_ptr_addr;
 endinterface
 `endif

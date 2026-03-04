@@ -96,11 +96,11 @@ static bit dummy_passed = 0;
 
                 if (!allow_random_address && dummy_passed)
          slot_addr_tracker += 32'h00001080;
-         else if( !dummy_passed)
-         begin
-         slot_addr_tracker = 0;
-         dummy_passed = 1;
-         end
+     // maybe no need     else if( !dummy_passed)
+     // maybe no need     begin
+     // maybe no need     slot_addr_tracker = 0;
+     // maybe no need     dummy_passed = 1;
+     // maybe no need     end
          else 
          slot_addr_tracker = 32'h00001080*random_address_jump;
 

@@ -38,7 +38,7 @@ rand int i = 0;
     ////  0xB00X6790	Module Data Out Type selection
     send_operation_transaction(TXRX_READ, 'h064D0, 'h0); 
 
-send_diagnostical_transaction(TXRX_READ, 'h064D0, 'h0); 
+send_diagnostical_transaction(TXRX_WRITE, 'h064D0, 'hFFFF_FFFF); 
 
 //------------------------------------------------------
 // Sending VALOD 10 SYNCS
@@ -50,7 +50,7 @@ send_diagnostical_transaction(TXRX_READ, 'h064D0, 'h0);
         send_valid_sync_packet (1); 
         #60us;
    end
-send_diagnostical_transaction(TXRX_READ, 'h064D0, 'h0); 
+send_diagnostical_transaction(TXRX_READ, 'h06424, 'h0); 
 
 
 //==========================
@@ -69,7 +69,7 @@ begin
              this.m_buffer_tx_sequence.start(this.m_taichi_tmb_env.m_buffer_tx_agent.seqr);
         #60us;
 end
-send_diagnostical_transaction(TXRX_READ, 'h064D0, 'h0); 
+send_diagnostical_transaction(TXRX_READ, 'h06424, 'h0); 
 
 //------------------------------------------------------
 // random buffer 
@@ -86,7 +86,7 @@ begin
         #60us;
 end
 
-send_diagnostical_transaction(TXRX_READ, 'h064D0, 'h0); 
+send_diagnostical_transaction(TXRX_READ, 'h06424, 'h0); 
 
 //------------------------------------------------------
 // valid buffer 
@@ -100,7 +100,7 @@ begin
              this.m_buffer_tx_sequence.start(this.m_taichi_tmb_env.m_buffer_tx_agent.seqr);
         #60us;
 end
-send_diagnostical_transaction(TXRX_READ, 'h064D0, 'h0); 
+send_diagnostical_transaction(TXRX_READ, 'h06424, 'h0); 
 
 
 

@@ -8,5 +8,7 @@ interface buffer_tx_agent_if(input logic clk, input logic rst);
 //----------------------------------------------------------------
     bit tx;
         byte unsigned data_out_byte;
+        bit [15:0] buffer_address;
+        byte stream_ctrl;
 endinterface
 `endif
