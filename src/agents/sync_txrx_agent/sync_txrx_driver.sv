@@ -7,7 +7,7 @@ class sync_txrx_driver extends uvm_driver #(sync_txrx_seq_item);
 
     virtual sync_txrx_agent_if vif;
    sync_txrx_config cfg;            // Configuration object
-
+bit allow_lost_B5 = 0;
 
 
 
@@ -25,15 +25,32 @@ class sync_txrx_driver extends uvm_driver #(sync_txrx_seq_item);
      super.run_phase(phase);
         // Wait for reset to be deasserted
         wait_for_reset();
+      
+
+///////     fork
+///////       forever
+///////       begin
+///////          @(posedge vif.clk); // Wait for the next clock cycle
+///////          vif.allow_lost_B5 = allow_lost_B5;
+///////       end
+///////     join_none
+
+  fork
+    begin    
       forever begin
         // Try to get a sequence item (non-blocking)
             seq_item_port.try_next_item(req);
         if(req==null) begin
+         vif.allow_lost_B5 = allow_lost_B5;
+
           //  `uvm_info(get_type_name(), "No Request.. driving idle", UVM_DEBUG)
+            if(allow_lost_B5)
+                 send_invalid_idle();
             send_idle();
+
         end 
         else begin
-
+          $display("  sync transaction time is %t", $time );
             // Drive the received packet if its IP packet
              if (req.pkt_type == SYNC_IP)
               drive_IP_packet(req);
@@ -44,22 +61,34 @@ class sync_txrx_driver extends uvm_driver #(sync_txrx_seq_item);
             seq_item_port.item_done();
         end
     end
+    end
+    join
+    
+    
     endtask
 
 
-//----------------------------------------------------------------
-// Function to send IDLE byte (3B) bit-by-bit in Big Endian order
-task send_idle();
-    //----------------------------------------------------------------
-    bit [7:0] idle = IDLE; // IDLE byte value (0x3B = 0011 1011)
-    //----------------------------------------------------------------
-   
-    // Loop over bits from MSB to LSB (Big Endian order)
-   for (int i = 0 ; i <=7 ; i++) begin
+
+task send_invalid_idle();
+
+ bit [7:0] idle = IDLE; // IDLE byte value (0x3B = 0011 1011)
+      idle = 'hAA; /// ( not B5)
+      for (int i = 0 ; i <=7 ; i++) begin
         @(posedge vif.clk); // Wait for the next clock cycle
         vif.tx <= idle[i]; // Send each bit one-by-one
     end
 endtask
+//----------------------------------------------------------------
+// Function to send IDLE byte (3B) bit-by-bit in Big Endian order
+task send_idle();
+    //----------------------------------------------------------------
+   bit [7:0] idle = IDLE; // IDLE byte value (0x3B = 0011 1011)
+     // Loop over bits from MSB to LSB (Big Endian order)
+       for (int i = 0 ; i <=7 ; i++) begin
+        @(posedge vif.clk); // Wait for the next clock cycle
+        vif.tx <= idle[i]; // Send each bit one-by-one
+    end
+ endtask
 
 //----------------------------------------------------------------
 task drive_IP_packet(sync_txrx_seq_item pkt);

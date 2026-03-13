@@ -50,7 +50,7 @@ bit expected_data_synth = 0;
 bit expected_raw_data_mode = 0;
 bit expected_calibrated_data_mode = 0;
 byte  expected_sync_header_buffer[$];
-bit[15:0] actual_sync_header_buffer[$];
+bit[7:0] actual_sync_header_buffer[$];
 sync_txrx_seq_item sync_tx_items_fifo[$];
 bit read_buffer_req = 0;
 bit  write_buffer_req = 0;

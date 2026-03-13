@@ -4,6 +4,7 @@
 class buffer_tx_driver extends uvm_driver #(buffer_tx_seq_item);
 //----------------------------------------------------------------
     `uvm_component_utils(buffer_tx_driver)
+bit allow_lost_B5 = 0;
 
     virtual buffer_tx_agent_if vif;
    buffer_tx_config cfg;            // Configuration object
@@ -17,20 +18,41 @@ class buffer_tx_driver extends uvm_driver #(buffer_tx_seq_item);
      super.run_phase(phase);
         // Wait for reset to be deasserted
         wait_for_reset();
+  
+  fork
+    begin
       forever begin
         // Try to get a sequence item (non-blocking)
             seq_item_port.try_next_item(req);
-        if(req==null) begin
+              if(req==null) begin
+         vif.allow_lost_B5 = allow_lost_B5;
+
           //  `uvm_info(get_type_name(), "No Request.. driving idle", UVM_DEBUG)
+            if(allow_lost_B5)
+                 send_invalid_idle();
             send_idle();
+
         end 
         else begin
+             $display("  Buffer transaction time is %t", $time );
               drive_packet(req);
             seq_item_port.item_done();
         end
     end
+    end
+  join
     endtask
 
+
+task send_invalid_idle();
+
+ bit [7:0] idle = IDLE; // IDLE byte value (0x3B = 0011 1011)
+      idle = 'hAA; /// ( not B5)
+      for (int i = 0 ; i <=7 ; i++) begin
+        @(posedge vif.clk); // Wait for the next clock cycle
+        vif.tx <= idle[i]; // Send each bit one-by-one
+    end
+endtask
 
 //----------------------------------------------------------------
 // Function to send IDLE byte (3B) bit-by-bit in Big Endian order

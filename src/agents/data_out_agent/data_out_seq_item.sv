@@ -5,11 +5,13 @@
 class data_out_seq_item extends uvm_sequence_item;
 //----------------------------------------------------------------
 
-bit [15:0]   header_buffer[$];
+bit [7:0]   header_buffer[$];
 byte   data_buffer[$];
 byte   footer_buffer[$];
 int data_out_packet_size;
 bit [15:0] actual_header_sync;
+       byte start1, start2;
+ bit [15:0]  ct_type;  
 
 
   // Each variable has to be registered with a macro corresponding to its data

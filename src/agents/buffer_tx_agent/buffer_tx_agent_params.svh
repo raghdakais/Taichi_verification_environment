@@ -9,5 +9,10 @@
     `define BUFFER_DATA_SIZE    8
     `define BUFFER_FOOTER_SIZE  2 
 
-
+typedef enum {
+    WAIT_BUFFER,
+    WAIT_START1,
+    WAIT_START2,
+    COLLECT_PAYLOAD
+} buffer_state_e;
 `endif

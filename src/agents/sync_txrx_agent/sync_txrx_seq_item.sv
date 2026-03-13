@@ -54,6 +54,8 @@ class sync_txrx_seq_item extends uvm_sequence_item;
    rand int random_address_jump = 'h0;
 rand bit   allow_random_address;
 static bit dummy_passed = 0;
+rand bit request_last_address = 0;
+rand bit allow_lost_B5;
 
 `uvm_object_utils_begin(sync_txrx_seq_item)
  	`uvm_field_string (pkt_type_  ,					UVM_DEFAULT)
@@ -143,7 +145,7 @@ static bit dummy_passed = 0;
           //          for (int i = 114; i <124 ; i=i+2 )
           //      store_word(i,  'h0);
         store_word(122, 16'h06d7); 
-        store_word(123, 16'hb500); 
+        store_word(124, 16'hb500); 
 
         store_word(126, 16'hFACE); // Final Stamp
 
@@ -153,34 +155,27 @@ static bit dummy_passed = 0;
         end
     endfunction
 
-    // Helper function to store 16-bit words as two 8-bit values
-    function void store_word(int index, bit [15:0] value);
-        if (index <= HEADER_DATA_SIZE - 1) begin
-            header_data[index]     = value[7:0];   // Low byte
-            header_data[index+1] = value[15:8];  // High byte
-        end
-    endfunction
-
+function void store_word(int index, bit [15:0] value);
+    if ((index >= 0) && (index + 1 < header_data.size())) begin
+        header_data[index]   = value[7:0];
+        header_data[index+1] = value[15:8];
+    end
+    else begin
+        `uvm_fatal("STORE_WORD",
+          $sformatf("Out-of-range write in store_word: index=%0d size=%0d",
+                    index, header_data.size()))
+    end
+endfunction
 
     // Ensure pkt_type_ is set correctly based on pkt_type
     function void post_randomize();
-        if (pkt_type == SYNC_IP)
-            pkt_type_ = "[SYNC - IP_PACKET]";
-        else if (pkt_type == SYNC_HEADER)
-        begin
-                if (!allow_random_address && dummy_passed)
-         slot_addr_tracker += 32'h00001080;
-         else if( !dummy_passed)
-         begin
-         slot_addr_tracker = 0;
-         dummy_passed = 1;
-         end
-         else 
-         slot_addr_tracker += slot_addr_tracker*random_address_jump;
-            pkt_type_ = "[SYNC - HEADER_PACKET]";
-                init_data_header();
-                init_footer();
-        end
+     if (pkt_type == SYNC_IP) begin
+         pkt_type_ = "[SYNC - IP_PACKET]";
+    end
+    else if (pkt_type == SYNC_HEADER) begin
+        pkt_type_ = "[SYNC - HEADER_PACKET]";
+
+    end
           
     endfunction
 
@@ -203,10 +198,12 @@ static bit dummy_passed = 0;
     }
    // Constraint to ensure valid_crc defaults to 1 unless explicitly constrained to 0 in a test
     constraint sync_header_footer_default_c {
-      soft slot_pointer_address == slot_addr_tracker;
        soft  hd_pointer_address == 'h06D7B500;
        soft  fs_sequence_counter == 'h00;
        soft allow_random_address == 0;
+       soft request_last_address == 0;
+       soft allow_lost_B5 == 0;
+       soft random_address_jump == 0;
     }
 
 

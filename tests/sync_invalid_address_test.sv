@@ -53,7 +53,7 @@ send_diagnostical_transaction(TXRX_WRITE, 'h064D0, 'hFFFF_FFFF);
 send_diagnostical_transaction(TXRX_READ, 'h06424, 'h0); 
 
 //------------------------------------------------------
-// Sending INVALID CRC SYNC
+// Sending INVALID ADDRESS SYNC
 //------------------------------------------------------
    
    repeat(1)
@@ -92,7 +92,7 @@ send_diagnostical_transaction(TXRX_READ, 'h06424, 'h0);
 // valid buffer 
 //------------------------------------------------------
  `uvm_warning("DEBUG", "START OF BUFFER REQUEST")
-repeat(3)
+repeat(1)
 begin
                 m_buffer_tx_sequence = buffer_tx_sequence::type_id::create ("m_buffer_tx_sequence");
 

@@ -8,6 +8,8 @@ class data_out_monitor extends uvm_monitor;
     virtual data_out_agent_if vif;
     data_out_config cfg;            // Configuration object
     data_out_seq_item item;
+ byte unsigned byte_collected;
+
     uvm_analysis_port #(data_out_seq_item) analysis_port;
 
     function new(string name="m_data_out_monitor", uvm_component parent);
@@ -22,7 +24,6 @@ class data_out_monitor extends uvm_monitor;
    bit start2_recieved = 0;
    int count_bytes_for_size = 0;
    int data_out_packet_size = 0;
-byte unsigned byte_collected;
 int data_out_packet_size_count=0;
 bit size_collected=0;
 bit header_package_recieved = 0;
@@ -34,196 +35,189 @@ bit [15:0] expected_crc = 16'hFFFF;
 bit [15:0] actual_crc ;
 int data_bytes_count=0;
 int collect_addr_count= 0;
+ int size_bytes_count = 0;
+ int ct_type_count = 0;  
+ bit [15:0]  ct_type;  
+ int data_collected_count = 0;  
+ int footer_collected_count = 0;  
+       byte start1, start2;
+    data_out_state_e state = WAIT_DATA_OUT;
+
            fork
            sync_serial( );
         join
   
     
-    item = data_out_seq_item::type_id::create("data_out_item");
             
-        forever 
+     forever 
         begin
-                byte_collected = 0;
-                for (int i = 0 ; i <=7 ; i++) begin
-                    if (i==0)
-                       vif.collect_en=1;
-                    else
-                       vif.collect_en=0;
-             
-                    @(negedge vif.clk);
-                    byte_collected[i] = vif.rx[0];  // Correct signal reference
-                end
-                 vif.data_out_byte = byte_collected;
-                 //-----------------------------------------------------------------------
-                 // Collecting Start1
-                 //-----------------------------------------------------------------------
-               if (byte_collected == 8'h21 && !start1_recieved) 
-               begin
-                crc_recieved = 0;
-                expected_crc = 16'hFFFF; 
-                    start1_recieved = 1;
-                    data_out_packet_size = 0;
-                    data_out_packet_size_count=0;
-                   expected_crc =  calculate_crc16_byte(expected_crc, byte_collected  );
-               end
-                 //-----------------------------------------------------------------------
-                 // Collecting Start2
-                 //-----------------------------------------------------------------------
-               else if (byte_collected == 8'hDD && start1_recieved && !start2_recieved) 
-               begin
-                    start2_recieved = 1; 
-                    expected_crc = calculate_crc16_byte(expected_crc, byte_collected  );
-               end
-                 //-----------------------------------------------------------------------
-                 // Collecting DATA SIZE FEILD FROM HEADER
-                 //-----------------------------------------------------------------------
-               else if( start1_recieved && start2_recieved && !size_collected)
-                begin
-                    expected_crc = calculate_crc16_byte(expected_crc, byte_collected  );
-                    count_bytes_for_size++;
-                    if(count_bytes_for_size<=4)
-                         //data_out_packet_size = {data_out_packet_size[23:0], byte_collected};  // Shift in from LSB
-                         data_out_packet_size = {byte_collected, data_out_packet_size[31:8]};   
-                    else
-                    begin
-                        $display("sents size is [%h] at time %t",data_out_packet_size , $time );
-                        item.data_out_packet_size = data_out_packet_size;
-                        vif.data_out_packet_size = data_out_packet_size;
-                         size_collected = 1;
+            // Collect raw byte
+            collect_byte();
+            case (state)
+                // ----------------------------------------------------
+                WAIT_DATA_OUT: begin
+                // ----------------------------------------------------
+                  begin
+                    if ( byte_collected == 8'hB5) begin
+                        state = WAIT_START1;
+                        `uvm_info("MON","buffer 0xB5 detected",UVM_LOW)
+                        vif.state = state;
                     end
                 end
-                 //-----------------------------------------------------------------------
-                 // Collecting HEADER PACKAGE
-                 //-----------------------------------------------------------------------
-             else  if( start1_recieved && start2_recieved && size_collected && !header_package_recieved )
-                begin
-                    
-                    expected_crc = calculate_crc16_byte(expected_crc, byte_collected  );
-                    
-                               if(data_bytes_count%2==0)
-                item.actual_header_sync[15:8] = byte_collected;
-             else   
-                item.actual_header_sync[7 :0] = byte_collected;
-                data_bytes_count++;
-                if( data_bytes_count%2==0)  begin
-//$display(" actual_header_sync is %x", item.actual_header_sync );
-  ///   item.actual_header_sync_fifo.push_back(item.actual_header_sync);  
-  
-
-
-
-                    item.header_buffer.push_back( item.actual_header_sync);  
-                     ///   vif.header_buffer = item.header_buffer;
-                    // Capture observed values
                 end
-                    if(item.header_buffer.size() ==`DATA_OUT_HEADER_SIZE - 1)
-                    begin
-                       // item.data_out_packet_size= data_out_packet_size;
-                        header_package_recieved = 1;
-                        vif.header_package_recieved = header_package_recieved;
-                    end
-                end
-                 //-----------------------------------------------------------------------
-                 // Collecting DATA PACKAGE
-                 //-----------------------------------------------------------------------
-              else  if( start1_recieved && start2_recieved && size_collected && header_package_recieved && !data_package_recieved)
-                begin
+                // ----------------------------------------------------
+                WAIT_START1:
+                // ----------------------------------------------------
+                 begin
+                       if (byte_collected == 8'h21) begin
+                        start1 = byte_collected;
+                        state  = WAIT_START2;
                         expected_crc = calculate_crc16_byte(expected_crc, byte_collected  );
-                        vif.start_package = 1;
-                        if(data_out_packet_size_count==0)
-                        vif.first_data_byte = byte_collected;
-                         data_out_packet_size_count++;
-                         item.data_buffer.push_back( byte_collected);  
-                         vif.data_out_packet_size = data_out_packet_size; 
-                         if(item.data_buffer.size() ==data_out_packet_size)
-                         begin
-                             vif.end_package = 1;
-                             data_package_recieved = 1;                         
-                         end
-                end
-                 //-----------------------------------------------------------------------
-                 // Collecting FOOTER PACKAGE
-                 //-----------------------------------------------------------------------
-              else  if( start1_recieved && start2_recieved && size_collected && header_package_recieved && data_package_recieved && !footer_package_recieved )
+                    end
+                        vif.state = state;
+                 end
+                // ----------------------------------------------------
+                WAIT_START2:
+                // ----------------------------------------------------
+                 begin
+                    if (byte_collected == 8'hDD) begin
+                        start2 = byte_collected;
+                        item = data_out_seq_item::type_id::create("data_out_item");
+                        item.start1 = start1;
+                        item.start2 = byte_collected;
+                        state = COLLECT_HEADER;
+                         vif.state = state;
+                         expected_crc = calculate_crc16_byte(expected_crc, byte_collected  );
+                    end
+                 end            
+                // ----------------------------------------------------
+                COLLECT_PACKET_SIZE:
+                // ----------------------------------------------------
                 begin
-                    vif.first_data_byte = byte_collected;
                     expected_crc = calculate_crc16_byte(expected_crc, byte_collected  );
-                            // Storing footer fields
+                    size_bytes_count++;
+                    if (size_bytes_count <= 4) 
+                      data_out_packet_size = {byte_collected, data_out_packet_size[31:8]};
 
-                            if(collect_addr_count<4)
-                            begin
-                                case (collect_addr_count)
-                                0:  vif.buffer_ptr_addr[7:0]   = byte_collected ; // High byte 
-                                1:  vif.buffer_ptr_addr[15:8]  = byte_collected ;
-                                2:  vif.buffer_ptr_addr[23:16] = byte_collected ;
-                                3:  vif.buffer_ptr_addr[31:24] = byte_collected ;   // Low b
-                                endcase
-                            collect_addr_count++;
-                            end
-                            else
-                            collect_addr_count = 0;
-                    item.footer_buffer.push_back( byte_collected);       
-                    if(item.footer_buffer.size() ==`DATA_OUT_FOOTER_SIZE )
-                    begin
-                        footer_package_recieved = 1;
-                     
-                    end
-
+                    if (size_bytes_count == 4)
+                     begin
+                          $display("sent size is [%h] at time %t", data_out_packet_size, $time);
+                          item.data_out_packet_size = data_out_packet_size;
+                          vif.data_out_packet_size  = data_out_packet_size;
+                          size_bytes_count = 0;
+                          state = COLLECT_HEADER;
+                          vif.state = state;
+                      end
                 end
-                //-----------------------------------------------------------------------
-                 // Collecting CRC
-                 //-----------------------------------------------------------------------
-                else if( header_package_recieved && data_package_recieved && footer_package_recieved)
-                    begin
-                        if (crc_count < 2)
-                            begin
-                                case (crc_count)
-                                  0: actual_crc[15:8] = byte_collected;
-                                  1: actual_crc[7:0]  = byte_collected;
-                                endcase
-                                crc_count++;
-                            end
-                        else
-                            begin
-                              if (expected_crc !== actual_crc & !crc_recieved)
-                              begin
-                                     uvm_report_error (get_type_name (), $sformatf ("[ERROR] [DATA OUT -MONITOR]  DATA OUT CRC is NOT AS EXPECTED"));
-                                     $display("[EXPECTED] - DATA OUT CRC  [%h]", expected_crc );
-                                     $display("[ACTUAL]   - DATA OUT CRC  [%h]", actual_crc );
-                              end
-                           analysis_port.write(item);
-                           if (get_report_verbosity_level() >= UVM_DEBUG)
-                            begin
-                                $display("DATA OUT Monitor Printing %s Item: ",this.get_type_name);
-                                item.print();
-                            end
-                            item.header_buffer.delete();
-                            item.data_buffer.delete();
-                            item.footer_buffer.delete();
-                             crc_recieved = 1;
-                             // reset all flags 
-                             size_collected = 0;
-                             start1_recieved = 0 ;
-                             start2_recieved = 0 ;
-                             header_package_recieved = 0 ;
-                             data_package_recieved = 0 ;
-                             footer_package_recieved = 0 ;
-                             count_bytes_for_size = 0;
-                             crc_count = 0;
 
-                         end
-                    end
-                if (byte_collected != 8'hB5 && crc_recieved)
+                // ----------------------------------------------------
+                COLLECT_HEADER:
+                // ----------------------------------------------------
                 begin
-                       data_out_packet_size_count++;
-                       uvm_report_error (get_type_name (), $sformatf ("[ERROR] [DATA OUT -MONITOR]  Number of bytes is more than the size that was sent"));
-                       $display("[EXPECTED] - data_out_packet_size       [%d]", data_out_packet_size );
-                       $display("[ACTUAL] - data_out_packet_size_count [%d]", data_out_packet_size_count );
-                end   
+                   expected_crc = calculate_crc16_byte(expected_crc, byte_collected  );
+                  item.header_buffer.push_back(byte_collected);
+                    ct_type_count++;
+                    if(ct_type_count<=2)
+                      ct_type = {byte_collected, ct_type[15:8]};
+                      if(ct_type_count==4 )
+                        begin
+                          vif.ct_type = ct_type;
+                          item.ct_type = ct_type;
+                       ///   ct_type_count = 0;
+                        end
+
+                   // Your original condition: size() == `DATA_OUT_HEADER_SIZE - 1
+                   // Keeping the same behavior:
+                   if (item.header_buffer.size() == (`DATA_OUT_HEADER_SIZE - 1)) begin
+                     state = COLLECT_DATA;
+                     vif.state = state;
+                     ct_type_count=0 ;
+                   end
+                 end
+        // ----------------------------------------------------
+        COLLECT_DATA:
+       // ----------------------------------------------------         
+                 begin
+                     expected_crc = calculate_crc16_byte(expected_crc, byte_collected  );
+                     if(data_collected_count< data_out_packet_size )
+                         begin
+                         item.data_buffer.push_back(byte_collected);
+                         data_collected_count++;
+                         end
+                     if (item.data_buffer.size() == (data_out_packet_size - 1)) begin
+                         state = COLLECT_FOOTER;
+                         vif.state = state;
+                         data_collected_count = 0;
+                   end
+             
+                 end
+        // ----------------------------------------------------
+        COLLECT_FOOTER:
+       // ----------------------------------------------------         
+        begin
+            expected_crc = calculate_crc16_byte(expected_crc, byte_collected  );
+            if(footer_collected_count< `DATA_OUT_FOOTER_SIZE )
+                begin
+                footer_collected_count++;
+                end
+                else
+                begin
+                   state = COLLECT_FOOTER;
+                   vif.state = state;
+                   footer_collected_count = 0;
+                end
         end
+
+        COLLECT_CRC:
+        begin
+           if (crc_count < 2)
+               begin
+                   case (crc_count)
+                     0: actual_crc[15:8] = byte_collected;
+                     1: actual_crc[7:0]  = byte_collected;
+                   endcase
+                   crc_count++;
+               end
+              else
+                  begin
+                    if (expected_crc !== actual_crc & !expected_crc)
+                    begin
+                           uvm_report_error (get_type_name (), $sformatf ("[ERROR] [DATA OUT -MONITOR]  DATA OUT CRC is NOT AS EXPECTED"));
+                           $display("[EXPECTED] - DATA OUT CRC  [%h]", expected_crc );
+                           $display("[ACTUAL]   - DATA OUT CRC  [%h]", actual_crc );
+                    end
+                 analysis_port.write(item);
+                 if (get_report_verbosity_level() >= UVM_DEBUG)
+                  begin
+                      $display("DATA OUT Monitor Printing %s Item: ",this.get_type_name);
+                      item.print();
+                  end
+                  item.header_buffer.delete();
+                  item.data_buffer.delete();
+                  item.footer_buffer.delete();
+                   // reset all flags 
+                   crc_count = 0;
+                   state = WAIT_START1;
+                   vif.state = state;
+               end
+        end
+    endcase
+
+        end
+
     endtask
 
-
+     // -------------------------------
+    // Helper: Collect 8 bits into byte
+    // -------------------------------
+    task  collect_byte();
+        for (int i = 0 ; i <=7 ; i++) begin
+           
+            byte_collected[i] = vif.rx;
+                 @(negedge vif.clk);
+        end
+         vif.byte_collected = byte_collected;
+    endtask
 
 
     

@@ -43,19 +43,58 @@ class taichi_tmb_test_base extends uvm_test;
             `uvm_fatal("RUN_PHASE", "Randomization failed for m_controllers_seq")
            this.m_controllers_seq.start(this.m_taichi_tmb_env.m_controllers_agent.seqr);
 
-#5us;
+#30us;
 
 
 config_asic();
-#50us;
-
- 
+ #10us;
 
    endtask
 
+task automatic send_forced_sync_addr(int addr);
+  sync_txrx_sequence seq;
+
+  send_valid_sync_packet(0);
+  #60us;
+  seq = sync_txrx_sequence::type_id::create($sformatf("sync_addr_%0d", addr));
+  if (!seq.randomize() with {
+    item.pkt_type == 1;
+    item.random_address_jump == addr;
+    item.allow_random_address == 1;
+  }) begin
+    `uvm_fatal("RUN_PHASE", $sformatf("Randomization failed for addr %0d", addr))
+  end
+
+  `uvm_info("RUN_PHASE", $sformatf("Starting sync sequence addr=%0d", addr), UVM_MEDIUM)
+  seq.start(m_taichi_tmb_env.m_sync_txrx_agent.seqr);
+  `uvm_info("RUN_PHASE", $sformatf("Finished sync sequence addr=%0d", addr), UVM_MEDIUM)
+
+  #60us;
+endtask
 
 
+task automatic send_sync_burst(int cnt);
+repeat(cnt)
+begin
+    send_valid_sync_packet(0);
+    #60us;
+    send_valid_sync_packet(1);
+    #80us;
+end
+endtask
 
+
+task automatic send_buffer_read_burst(int cnt);
+  repeat (cnt)
+   begin
+     m_buffer_tx_sequence = buffer_tx_sequence::type_id::create ("m_buffer_tx_sequence");
+               if (!this.m_buffer_tx_sequence.randomize() with { 
+                         }) 
+                      `uvm_fatal("RUN_PHASE", "Randomization failed for m_buffer_tx_sequence")
+                     this.m_buffer_tx_sequence.start(this.m_taichi_tmb_env.m_buffer_tx_agent.seqr);
+    #170us;
+  end
+endtask
 
 
 
@@ -69,7 +108,7 @@ config_asic();
                  }) 
               `uvm_fatal("RUN_PHASE", "Randomization failed for m_sync_txrx_seq")
              this.m_sync_txrx_seq.start(this.m_taichi_tmb_env.m_sync_txrx_agent.seqr);
-  
+            #10us;
       endtask
  
     //=====================================================================================
@@ -135,7 +174,7 @@ config_asic();
                }) 
             `uvm_fatal("RUN_PHASE", "Randomization failed for m_oper_txrx_seq write operational")
            this.m_oper_txrx_seq.start(this.m_taichi_tmb_env.oper_txrx_agent.seqr);
- #1.5us;
+ #1us;
 
        endtask
 
@@ -153,7 +192,7 @@ config_asic();
                }) 
             `uvm_fatal("RUN_PHASE", "Randomization failed for m_diag_txrx_seq write operational")
            this.m_diag_txrx_seq.start(this.m_taichi_tmb_env.diag_txrx_agent.seqr);
- #1.5us;
+ #1us;
 
        endtask
 
@@ -194,7 +233,7 @@ config_asic();
      ///   send_operation_transaction(TXRX_WRITE, 'h015204, 'h0); // Stop Reset Transceiver
      ///   send_operation_transaction(TXRX_WRITE, 'h015204, 'h1); // Request Resetting Communication FIFOs
      ///   send_operation_transaction(TXRX_WRITE, 'h015204, 'h0); // Stop Requesting Resetting Communication FIFOs
-#60us;
+// #60us;
  endtask
 
 //=====================================================================================

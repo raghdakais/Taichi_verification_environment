@@ -32,5 +32,8 @@ package taichi_tmb_tests_package;
   `include "sync_invalid_address_test.sv"
   `include "random_sign2_while_sending_sync_test.sv"
   `include "wrap_arround_test.sv"
+  `include "lost_b5_in_header_test.sv"
+  `include "send_syncs_test.sv"
+  `include "lost_b5_buffer_test.sv"
 endpackage : taichi_tmb_tests_package
 

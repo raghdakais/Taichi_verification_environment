@@ -16,5 +16,9 @@ byte first_data_byte;
 bit header_package_recieved;
 int data_out_packet_size;
 bit [31:0] buffer_ptr_addr;
+ bit [15:0]  ct_type;  
+    data_out_state_e state = WAIT_DATA_OUT;
+ byte unsigned byte_collected;
+
 endinterface
 `endif

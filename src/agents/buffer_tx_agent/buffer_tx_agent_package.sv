@@ -3,6 +3,7 @@
 
 
 package buffer_tx_agent_package;
+    typedef enum bit { BUFFER  } packet_buffer_type_e;
 
   import uvm_pkg::*; // Import UVM base classes
   `include "uvm_macros.svh"

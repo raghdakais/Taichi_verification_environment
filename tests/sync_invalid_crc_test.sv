@@ -49,7 +49,7 @@ send_diagnostical_transaction(TXRX_WRITE, 'h064D0, 'hFFFF_FFFF);
         #60us;
         send_valid_sync_packet (1); 
         #60us;
-        send_diagnostical_transaction(TXRX_READ, 'h064D0, 'h0); 
+send_diagnostical_transaction(TXRX_READ, 'h06424, 'h0); 
 
    end
 
@@ -69,7 +69,7 @@ send_diagnostical_transaction(TXRX_WRITE, 'h064D0, 'hFFFF_FFFF);
                  }) 
               `uvm_fatal("RUN_PHASE", "Randomization failed for m_sync_txrx_seq")
              this.m_sync_txrx_seq.start(this.m_taichi_tmb_env.m_sync_txrx_agent.seqr);
-  send_diagnostical_transaction(TXRX_READ, 'h064D0, 'h0); 
+send_diagnostical_transaction(TXRX_READ, 'h06424, 'h0); 
  #80us;
    end
 //------------------------------------------------------
@@ -98,7 +98,7 @@ begin
               `uvm_fatal("RUN_PHASE", "Randomization failed for m_buffer_tx_sequence")
              this.m_buffer_tx_sequence.start(this.m_taichi_tmb_env.m_buffer_tx_agent.seqr);
         #60us;
-send_diagnostical_transaction(TXRX_READ, 'h064D0, 'h0); 
+send_diagnostical_transaction(TXRX_READ, 'h06424, 'h0); 
 
 end
 
