@@ -1,0 +1,38 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dD:/Users/EugeneS/MODEL/Taichi_TMB/src/models/W634GU8QB
+vW634GU8QB
+DXx6 sv_std 3 std 0 22 d=_JfHTnXCN[H5FjiaJJc0
+!s110 1708957834
+!i10b 1
+!s100 inNmbcSJoL09mgW29Y]1?3
+I=f>OjY:CPD0aMPZ<2=LFm2
+VDg1SIo80bB@j0V0VzS_@n1
+!i119 1
+!s105 W634GU8QB_modelsim_vp_unit
+S1
+R0
+w1662104572
+8W634GU8QB.modelsim.vp
+FW634GU8QB.modelsim.vp
+FConfig-AC.v
+L0 88
+OP;L;10.7f;67
+r1
+!s85 0
+31
+!s108 1708957834.000000
+!s107 Config-AC.v|W634GU8QB.modelsim.vp|
+!s90 -reportprogress|300|+access+rwc|+define+T12|-sv|W634GU8QB.modelsim.vp|
+!i113 1
+o+access+rwc -sv -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+!s92 +access+rwc +define+T12 -sv -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+tCvgOpt 0
+n@w634@g@u8@q@b

@@ -1,0 +1,34 @@
+
+# !debug: assign simulation environment
+#vlib work
+set MY_SIMDIR "d:/EugeneS/PR/MODEL/Trident_Module_DDR3/"
+proc ensure_lib { lib } { if ![file isdirectory $lib] { vlib $lib } }
+ensure_lib          $MY_SIMDIR/work     
+vmap       work     $MY_SIMDIR/work
+#vlib modelsim_lib/work
+#vlib modelsim_lib/msim
+# 
+#vlib modelsim_lib/msim/xil_defaultlib
+#vlib modelsim_lib/msim/xpm
+# 
+#vmap xil_defaultlib modelsim_lib/msim/xil_defaultlib
+#vmap xpm modelsim_lib/msim/xpm
+vlib $MY_SIMDIR/work/xil_defaultlib
+vlib $MY_SIMDIR/work/xpm
+vmap xil_defaultlib $MY_SIMDIR/work/xil_defaultlib
+vmap xpm $MY_SIMDIR/work/xpm
+
+vlog -work xil_defaultlib -64 -incr -sv \
+"C:/Xilinx/Vivado/2018.2/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv" \
+
+vcom -work xpm -64 -93 \
+"C:/Xilinx/Vivado/2018.2/data/ip/xpm/xpm_VCOMP.vhd" \
+
+vcom -work xil_defaultlib -64 -93 \
+"axi4_master_vhdl_0/hdl/axi4_master_vhdl_v1_0_M00_AXI.vhd" \
+"axi4_master_vhdl_0/hdl/axi4_master_vhdl_v1_0.vhd" \
+"axi4_master_vhdl_0/sim/axi4_master_vhdl_0.vhd" \
+
+vlog -work xil_defaultlib \
+"glbl.v"
+

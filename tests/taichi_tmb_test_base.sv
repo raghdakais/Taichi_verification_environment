@@ -26,8 +26,6 @@ class taichi_tmb_test_base extends uvm_test;
         m_oper_txrx_seq = TXRX_sequence::type_id::create ("m_oper_txrx_seq");
         m_sync_txrx_seq = sync_txrx_sequence::type_id::create ("m_sync_txrx_seq");
         m_buffer_tx_sequence = buffer_tx_sequence::type_id::create ("m_buffer_tx_sequence");
- 
- 
     endfunction
 
  //  [Recommended] start a sequence for this particular test

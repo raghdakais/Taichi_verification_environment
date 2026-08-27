@@ -1,0 +1,34 @@
+#!/bin/csh -f
+
+#-MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON-
+#-MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON-
+#-MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON-
+#
+#  N25Q256A11E
+#
+#  Verilog Behavioral Model
+#  Version 1.0
+#
+#  Copyright (c) 2013 Micron Inc.
+#
+#-MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON-
+#-MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON-
+#-MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON--MICRON-
+
+
+
+
+
+rm sim/simv.daidir/* 
+#vcs -full64 +v2k -debug_all -timescale=1ns/100fs  -o ./sim/simv code/N25Q032A13E.v stim/plrs_xip_qiofr.v top/*.v
+#vcs -full64 +v2k -debug_all -timescale=1ns/100fs  -o ./sim/simv code/N25Qxxx.v stim/read.v top/*.v
+#vcs -full64 +v2k -debug_all -timescale=1ns/100fs  -o ./sim/simv code/N25Qxxx.v stim/read_dtr.v top/*.v
+vcs -full64 +v2k -debug_all -timescale=1ns/100fs  -o ./sim/simv code/N25Qxxx.v /nfs/fm/disks/fm_fpg_n7006/global_work/p72/evillega/DS4/bfm/N25Q/256Mb_1_8V/sandbox/N25Q256A11E_VG11/stim/read_dtr.v top/*.v
+#vcs -full64 -sverilog -debug_all -timescale=1ns/100fs  -o ./sim/simv code/N25Qxxx.v stim/read.v top/*.v
+#vcs -full64 -sverilog -debug_all -timescale=1ns/100fs  -o ./sim/simv code/N25Qxxx.v stim/read_altera_debug.v top/*.v
+#vcs -full64 -sverilog -debug_all -timescale=1ns/100fs  -o ./sim/simv code/N25Qxxx.v stim/program_top.v top/*.v
+#vcs -full64 -sverilog -debug_all -timescale=1ns/100fs  -o ./sim/simv code/N25Qxxx.v 
+
+cd ./sim
+./simv -gui -dve_opt -cmd='run 4000 ms'
+#simv -gui -dve_opt -session=session.inter.vpd.tcl -dve_opt -cmd='run 10 ms'

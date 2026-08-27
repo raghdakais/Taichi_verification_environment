@@ -1,0 +1,207 @@
+
+ - run_modelsim - shell script:
+   set CODEDIR = ./code
+   set SIMDIR  = ./sim
+   vlog -work $SIMDIR/work $CODEDIR/N25Qxxx.v 
+   requires: include/UserData.h, include/DevParam.h, include/Decoders.h, include/PLRSDetectors.h, include/StackDecoder.h
+ - MT25QU512ABB8E0
+ - in UserData.h exist:
+   `define N25Q256A11E
+   `define FILENAME_mem "mem_Q256.vmf" // Memory File Name  // in sim directory
+   `define FILENAME_sfdp "sfdp.vmf" // SFDP File Name   // in sim directory
+ - V Feature_8
+   V HOLD_pin
+   - RESET_pin
+   - Vcc='d1800 / 'd3000
+   
+###
+
+vgencomp -s -lib $SIMDIR/work N25Qxxx
+# component N25Qxxx
+#     generic(
+#         dataDim         : integer := 8;
+#         dummyDim        : integer := 15;
+#         devName         : vl_logic_vector(120 downto 1) := (Hi0, Hi1, Hi0, Hi0, Hi1, Hi1, Hi0, Hi1, Hi0, Hi1, Hi0, Hi1, Hi0, Hi1, Hi0, Hi0, Hi0, Hi0, Hi1, Hi1, Hi0, Hi0, Hi1, Hi0, Hi0, Hi0, Hi1, Hi1, Hi0, Hi1, Hi0, Hi1, Hi0, Hi1, Hi0, Hi1, Hi0, Hi0, Hi0, Hi1, Hi0, Hi1, Hi0, Hi1, Hi0, Hi1, Hi0, Hi1, Hi0, Hi0, Hi1, Hi1, Hi0, Hi1, Hi0, Hi1, Hi0, Hi0, Hi1, Hi1, Hi0, Hi0, Hi0, Hi1, Hi0, Hi0, Hi1, Hi1, Hi0, Hi0, Hi1, Hi0, Hi0, Hi1, Hi0, Hi0, Hi0, Hi0, Hi0, Hi1, Hi0, Hi1, Hi0, Hi0, Hi0, Hi0, Hi1, Hi0, Hi0, Hi1, Hi0, Hi0, Hi0, Hi0, Hi1, Hi0, Hi0, Hi0, Hi1, Hi1, Hi1, Hi0, Hi0, Hi0, Hi0, Hi1, Hi0, Hi0, Hi0, Hi1, Hi0, Hi1, Hi0, Hi0, Hi1, Hi1, Hi0, Hi0, Hi0, Hi0);
+#         addrDim         : integer := 26;
+#         sectorAddrDim   : integer := 10;
+#         Manufacturer_ID : vl_logic_vector;
+#         MemoryType_ID   : vl_logic_vector;
+#         MemoryCapacity_ID: vl_logic_vector;
+#         UID             : vl_logic_vector;
+#         EDID_0          : vl_logic_vector;
+#         EDID_1          : vl_logic_vector;
+#         CFD_0           : vl_logic_vector;
+#         CFD_1           : vl_logic_vector;
+#         CFD_2           : vl_logic_vector;
+#         CFD_3           : vl_logic_vector;
+#         CFD_4           : vl_logic_vector;
+#         CFD_5           : vl_logic_vector;
+#         CFD_6           : vl_logic_vector;
+#         CFD_7           : vl_logic_vector;
+#         CFD_8           : vl_logic_vector;
+#         CFD_9           : vl_logic_vector;
+#         CFD_10          : vl_logic_vector;
+#         CFD_11          : vl_logic_vector;
+#         CFD_12          : vl_logic_vector;
+#         CFD_13          : vl_logic_vector;
+#         RESET_PIN       : integer := 0;
+#         fC              : integer := 108;
+#         TC              : time;
+#         fC_dtr          : integer := 66;
+#         TC_dtr          : integer := 15;
+#         fR              : integer := 54;
+#         TR              : time;
+#         fR_dtr          : integer := 27;
+#         TR_dtr          : integer := 37;
+#         tCH             : time;
+#         tCL             : time;
+#         tSLCH           : time;
+#         tSHCH           : time;
+#         tHLCH           : time;
+#         tHHCH           : time;
+#         tCH_dtr         : real    := 6.750000;
+#         tCL_dtr         : real    := 6.750000;
+#         tCHSL           : time;
+#         tCHSH           : time;
+#         tSHSL           : time;
+#         tVPPHSL         : time;
+#         tWHSL           : time;
+#         tSLCH_dtr       : real    := 6.750000;
+#         tSHCH_dtr       : real    := 6.750000;
+#         tCHSL_dtr       : real    := 6.750000;
+#         tCHSH_dtr       : real    := 6.750000;
+#         tCLSH           : real    := 3.375000;
+#         tCHDX           : time;
+#         tSHWL           : time;
+#         tCHHH           : time;
+#         tCHHL           : time;
+#         tRLRH           : time;
+#         tSHRH           : time;
+#         tRHSL_1         : time;
+#         tRHSL_2         : time;
+#         tRHSL_3         : time;
+#         tRHSL_4         : time;
+#         tRHSL_5         : time;
+#         tRHSL_6         : time;
+#         tSHQZ           : time;
+#         tCLQV           : time;
+#         tCLQX           : time;
+#         tHHQX           : time;
+#         tHLQZ           : time;
+#         tCHQV           : integer := 6;
+#         tCHQX           : integer := 1;
+#         tDP             : time;
+#         tRDP            : time;
+#         tPP             : time;
+#         tSSE            : time;
+#         t32SSE          : time;
+#         tSE             : time;
+#         tBE             : time;
+#         tDE             : time;
+#         tWNVCR          : time;
+#         tWRASP          : time;
+#         tW              : time;
+#         tWVCR           : time;
+#         tWRVECR         : time;
+#         tCFSR           : time;
+#         tPOTP           : time;
+#         tWREAR          : time;
+#         tEN4AD          : time;
+#         tEX4AD          : time;
+#         tP_latency      : real    := 7.000000;
+#         tSE_latency     : real    := 15.000000;
+#         tSSE_latency    : real    := 15.000000;
+#         write_PMR_delay : real    := 500000.000000;
+#         progSusp_latencyTime: real    := 25000.000000;
+#         eraseSusp_latencyTime: real    := 25000.000000;
+#         tVTR            : time;
+#         tVTW            : time;
+#         program_delay   : time;
+#         program_OTP_delay: time;
+#         program_latency : time;
+#         write_SR_delay  : time;
+#         clear_FSR_delay : time;
+#         write_NVCR_delay: time;
+#         write_ASP_delay : time;
+#         write_VCR_delay : time;
+#         write_VECR_delay: time;
+#         write_EAR_delay : time;
+#         enable4_address_delay: time;
+#         exit4_address_delay: time;
+#         erase_delay     : time;
+#         erase_latency   : time;
+#         erase_bulk_delay: time;
+#         erase_die_delay : time;
+#         full_access_power_up_delay: time;
+#         read_access_power_up_delay: time;
+#         erase_ss_delay  : time;
+#         erase_ss_latency: time;
+#         erase_ss32k_delay: time;
+#         deep_power_down_delay: time;
+#         release_power_down_delay: time;
+#         tPPBP           : time;
+#         tPPBE           : time;
+#         write_PPB_delay : time;
+#         erase_PPB_delay : time;
+#         write_PLB_delay : time;
+#         write_PASSP_delay: time;
+#         tDVCH           : time;
+#         T               : time;
+#         cmdDim          : integer := 8;
+#         addrDimLatch    : integer := 24;
+#         addrDimLatch4   : integer := 32;
+#         colAddrDim      : integer := 8;
+#         colAddr_sup     : vl_notype;
+#         pageDim         : vl_notype;
+#         nSector         : vl_notype;
+#         memDim          : vl_notype;
+#         sectorAddr_inf  : vl_notype;
+#         EARvalidDim     : integer := 2;
+#         sectorAddr_sup  : vl_notype;
+#         sectorSize      : vl_notype;
+#         subsecAddrDim   : vl_notype;
+#         subsecAddr_inf  : integer := 12;
+#         subsecAddr_sup  : vl_notype;
+#         subsecSize      : vl_notype;
+#         nSSector        : vl_notype;
+#         subsec32AddrDim : vl_notype;
+#         subsec32Addr_inf: integer := 15;
+#         subsec32Addr_sup: vl_notype;
+#         subsec32Size    : vl_notype;
+#         TOP_sector      : integer := 0;
+#         BOTTOM_sector   : integer := 0;
+#         pageAddrDim     : vl_notype;
+#         pageAddr_inf    : vl_notype;
+#         pageAddr_sup    : vl_notype;
+#         OTP_dim         : integer := 65;
+#         OTP_addrDim     : integer := 7;
+#         FDP_dim         : integer := 16384;
+#         FDP_addrDim     : integer := 11;
+#         data_NP         : vl_logic_vector;
+#         Vcc_wi          : vl_logic_vector(31 downto 0) := (Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi1, Hi0, Hi1, Hi1, Hi1, Hi0, Hi1, Hi1, Hi1, Hi0, Hi0);
+#         Vcc_min         : vl_logic_vector(31 downto 0) := (Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi1, Hi1, Hi0, Hi1, Hi0, Hi1, Hi0, Hi0, Hi1, Hi0, Hi0);
+#         Vcc_max         : vl_logic_vector(31 downto 0) := (Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi1, Hi1, Hi1, Hi1, Hi1, Hi0, Hi1, Hi0, Hi0, Hi0, Hi0);
+#         PLRS_1st_x4_byte3: integer := 7;
+#         PLRS_1st_x4_byte4: integer := 9;
+#         PLRS_1st_x2_byte3: integer := 13;
+#         PLRS_1st_x2_byte4: integer := 17;
+#         PLRS_1st_x1_byte3: integer := 25;
+#         PLRS_1st_x1_byte4: integer := 33;
+#         PLRS_2nd        : integer := 8;
+#         rdeasystacken   : vl_logic_vector(1 downto 0) := (Hi0, Hi0);
+#         rdeasystacken2  : vl_logic_vector(1 downto 0) := (Hi0, Hi0);
+#         NVConfigReg_default: vl_logic_vector(15 downto 0) := (Hi1, Hi1, Hi1, Hi1, Hi1, Hi1, Hi1, Hi1, Hi1, Hi1, Hi1, Hi1, Hi1, Hi1, Hi1, Hi1);
+#         memory_file     : vl_logic_vector(320 downto 1) := (Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi1, Hi1, Hi0, Hi1, Hi1, Hi0, Hi1, Hi0, Hi1, Hi1, Hi0, Hi0, Hi1, Hi0, Hi1, Hi0, Hi1, Hi1, Hi0, Hi1, Hi1, Hi0, Hi1, Hi0, Hi1, Hi0, Hi1, Hi1, Hi1, Hi1, Hi1, Hi0, Hi1, Hi0, Hi1, Hi0, Hi0, Hi0, Hi1, Hi0, Hi0, Hi1, Hi1, Hi0, Hi0, Hi1, Hi0, Hi0, Hi0, Hi1, Hi1, Hi0, Hi1, Hi0, Hi1, Hi0, Hi0, Hi1, Hi1, Hi0, Hi1, Hi1, Hi0, Hi0, Hi0, Hi1, Hi0, Hi1, Hi1, Hi1, Hi0, Hi0, Hi1, Hi1, Hi1, Hi0, Hi1, Hi1, Hi0, Hi0, Hi1, Hi1, Hi0, Hi1, Hi1, Hi0, Hi1, Hi0, Hi1, Hi1, Hi0, Hi0, Hi1, Hi1, Hi0);
+#         fdp_file        : vl_logic_vector(384 downto 1) := (Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi1, Hi1, Hi1, Hi0, Hi0, Hi1, Hi1, Hi0, Hi1, Hi1, Hi0, Hi0, Hi1, Hi1, Hi0, Hi0, Hi1, Hi1, Hi0, Hi0, Hi1, Hi0, Hi0, Hi0, Hi1, Hi1, Hi1, Hi0, Hi0, Hi0, Hi0, Hi0, Hi0, Hi1, Hi0, Hi1, Hi1, Hi1, Hi0, Hi0, Hi1, Hi1, Hi1, Hi0, Hi1, Hi1, Hi0, Hi0, Hi1, Hi1, Hi0, Hi1, Hi1, Hi0, Hi1, Hi0, Hi1, Hi1, Hi0, Hi0, Hi1, Hi1, Hi0)
+#     );
+#     port(
+#         S               : in    std_logic;
+#         \C_\            : in    std_logic;
+#         HOLD_DQ3        : inout std_logic;
+#         DQ0             : inout std_logic;
+#         DQ1             : inout std_logic;
+#         Vcc             : in    std_logic_vector(31 downto 0);
+#         Vpp_W_DQ2       : inout std_logic;
+#         RESET2          : in    std_logic
+#     );
+# end component;

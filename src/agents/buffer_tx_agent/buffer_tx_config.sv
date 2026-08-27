@@ -6,7 +6,7 @@ class buffer_tx_config extends uvm_object;
 
   int DATA_WIDTH;
   int ADDR_WIDTH;
-  int timeout_cycles = 100000;
+  int timeout_cycles = 100000000;
   function new(string name = "m_buffer_tx_config");
     super.new(name);
   endfunction

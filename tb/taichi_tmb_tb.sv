@@ -36,7 +36,6 @@ bit ddr3_odt    ;
 
 
 
-
     always #750.75ns clk <= ~clk;
     always #2.5ns mclk <= ~mclk;
     always #20ns sig_2_clk <= ~sig_2_clk;

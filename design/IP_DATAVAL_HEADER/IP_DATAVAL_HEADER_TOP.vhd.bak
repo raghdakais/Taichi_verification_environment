@@ -1,0 +1,275 @@
+
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use ieee.numeric_std.all;
+
+
+entity IP_DATAVAL_HEADER_TOP is
+GENERIC (IP_DATA_OUT_VAL : INTEGER :=8;
+         HEADER_DATA_OUT_VAL: INTEGER :=16;
+         ADDR_BIT_VAL : INTEGER :=6;
+         DATA_BIT_VAL : INTEGER :=16  );
+Port (
+    CLK_200Mhz          : IN STD_LOGIC; 
+    CLK_50Mhz           : IN STD_LOGIC;
+    RST                 : IN STD_LOGIC; 
+    sDataIn             : IN STD_LOGIC;
+    Channel_RDY         : IN STD_LOGIC;
+    IP_READY            : OUT STD_LOGIC; 
+    IP_DATA_OUT         : OUT STD_LOGIC_VECTOR(IP_DATA_OUT_VAL-1 DOWNTO 0);    
+    HEADER_DATA_OUT     : OUT STD_LOGIC_VECTOR(HEADER_DATA_OUT_VAL-1 DOWNTO 0);--HEADER_DATA_OUT_VAL-1 DOWNTO 0);
+    --NOT USED:
+    clkb                : IN STD_LOGIC;                     
+    enb                 : IN STD_LOGIC;            
+    web                 : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
+    addrb               : IN STD_LOGIC_VECTOR(ADDR_BIT_VAL-1 DOWNTO 0); 
+    dinb                : IN STD_LOGIC_VECTOR(DATA_BIT_VAL-1 DOWNTO 0); 
+    doutb               : OUT STD_LOGIC_VECTOR(DATA_BIT_VAL-1 DOWNTO 0); 
+  
+    ---
+    bad_packet_received : OUT   std_logic; 
+    crc_error           : OUT   std_logic;
+    std_error           : OUT   std_logic
+ );
+end IP_DATAVAL_HEADER_TOP;
+
+architecture IP_DATAVAL_HEADER_TOP of IP_DATAVAL_HEADER_TOP is
+
+SIGNAL  S_HEADER_DATA_OUT     :  STD_LOGIC_VECTOR(HEADER_DATA_OUT_VAL-1 DOWNTO 0);--HEADER_DATA_OUT_VAL-1 DOWNTO 0);  
+COMPONENT DPR_HEADER_CTRL is 
+generic (
+         DIN_DATA_BIT_VAL : INTEGER :=8;
+         ADDR_BIT_VAL : INTEGER :=6;
+         DATA_BIT_VAL : INTEGER :=16  );
+Port (
+
+    CLK                 : IN STD_LOGIC; 
+    RST                 : IN STD_LOGIC; 
+    IP_Packet_valid     : IN STD_LOGIC;
+    DATA_VALID          : IN STD_LOGIC;
+    GOOD_PACKET_RECEIVED : IN STD_LOGIC; 
+    DIN                 :IN STD_LOGIC_VECTOR(DIN_DATA_BIT_VAL-1 DOWNTO 0);    
+    ADDRA               : OUT STD_LOGIC_VECTOR(ADDR_BIT_VAL-1 DOWNTO 0);  
+    DOUT                 :OUT STD_LOGIC_VECTOR(DATA_BIT_VAL-1 DOWNTO 0);   
+    ENA                 : OUT STD_LOGIC;
+    WEA                 : OUT STD_LOGIC_VECTOR(0 DOWNTO 0)
+    );
+  END COMPONENT ;
+  ------------------
+COMPONENT IP_REG is
+GENERIC (DATA_VAL : INTEGER :=8);
+ Port ( 
+    CLK                 : IN STD_LOGIC; 
+    RST                 : IN STD_LOGIC; 
+    IP_PACKET_VALID     : IN STD_LOGIC;
+    GOOD_PACKET_RECEIVED : IN STD_LOGIC; 
+    IP_DATA_IN             : IN STD_LOGIC_VECTOR(DATA_VAL-1 DOWNTO 0);
+    IP_READY               : OUT STD_LOGIC;
+    IP_DATA_OUT            : OUT STD_LOGIC_VECTOR(DATA_VAL-1 DOWNTO 0)  
+
+ );
+END COMPONENT ;
+------------------
+COMPONENT RX_series7 IS--RX_IP_DATAVAL_HEADER IS
+    Generic (
+      IDLE_word      : std_logic_vector (7 downto 0):=x"B5";
+	  StartWord      : std_logic_vector (7 downto 0):=x"21";
+	  Stream_type1   : std_logic_vector (7 downto 0):=x"43";
+	  Stream_type2   : std_logic_vector (7 downto 0):=x"DD";
+	  TapWidth       : natural :=5;
+	  ParallelWidth  : natural :=8;
+      NumHeaderBytes : natural :=0;
+	  NumDataBytes   : natural :=128;--64 Word of header data
+	  NumFooterBytes : natural :=0
+	  
+	  );
+    PORT( 
+        RESET       		    : IN    std_logic;
+        CLKDIV          	    : IN    std_logic;
+		FCLK      		        : in    std_logic;   --serial clock input side
+		channel_RDY   	        : in    std_logic;     
+		sDataIn                 : in    std_logic;  		
+		IDLY_CNT  		        : out   std_logic_vector(TapWidth-1 downto 0);  --IDELAYE2 Current Tap Count								
+		RX_det_o       	        : OUT   std_logic_vector (7 downto 0);		
+		start_valid             : OUT   std_logic;
+		Headers_valid           : OUT   std_logic;
+		data_valid              : OUT   std_logic;
+		Footers_valid           : OUT   std_logic;
+		IP_pckt_valid           : OUT   std_logic;
+		packet_received         : OUT   std_logic;
+		good_packet_received    : OUT   std_logic;
+		bad_packet_received     : OUT   std_logic;
+		crc_error               : OUT   std_logic;
+        std_error               : OUT   std_logic
+		
+    	);
+
+END COMPONENT;
+---------------------
+COMPONENT blk_mem_gen_0 IS
+  PORT (
+
+    
+    clka : in STD_LOGIC;
+    ena : in STD_LOGIC;
+    wea : in STD_LOGIC_VECTOR ( 0 to 0 );
+    addra : in STD_LOGIC_VECTOR ( 5 downto 0 );
+    dina : in STD_LOGIC_VECTOR ( 15 downto 0 );
+    douta : out STD_LOGIC_VECTOR ( 15 downto 0 );
+    
+    clkb : in STD_LOGIC;
+    enb : in STD_LOGIC;
+    web : in STD_LOGIC_VECTOR ( 0 to 0 );
+    addrb : in STD_LOGIC_VECTOR ( 5 downto 0 );
+    dinb : in STD_LOGIC_VECTOR ( 15 downto 0 );
+    doutb : out STD_LOGIC_VECTOR ( 15 downto 0 )
+    
+    
+    
+    
+    
+    
+    
+    
+  );
+  
+  END COMPONENT;
+---------------------
+
+
+signal S_RX_det_o               :  std_logic_vector (7 DOWNTO 0);
+signal S_data_valid             :  std_logic;
+signal S_IP_pckt_valid          :  std_logic;  
+signal S_good_packet_received   :  std_logic;
+signal S_ADDRA                  :  std_logic_vector (5 DOWNTO 0);--  std_logic_vector (6 DOWNTO 0);
+signal S_ENA                    :  std_logic;
+signal S_WEA                  :  std_logic_vector (0 DOWNTO 0);
+SIGNAL S_DPR_CTRL_OUT       :STD_LOGIC_VECTOR(15 DOWNTO 0);
+
+  -- 20/03/2023
+  signal reading_number_sampled      :STD_LOGIC_VECTOR(15 DOWNTO 0) := (others => '0');
+  signal reading_number_err1 : std_logic := '0';
+  
+-- !debug: 18/12/2022
+ SIGNAL IDLY_CNT  		    : std_logic_vector(5-1 downto 0); 
+ attribute DONT_TOUCH                    : string;
+ attribute DONT_TOUCH of bad_packet_received, IDLY_CNT, reading_number_sampled, S_DPR_CTRL_OUT, reading_number_err1, S_ADDRA : signal is "true";
+ attribute mark_debug                    : string;
+ attribute mark_debug of bad_packet_received, IDLY_CNT, reading_number_sampled, S_DPR_CTRL_OUT, reading_number_err1, S_ADDRA : signal is "true";
+
+begin
+
+RX_IP_DATAVAL_HEADER_PINS: RX_series7--RX_IP_DATAVAL_HEADER 
+    Generic MAP(
+      IDLE_word      =>x"B5",
+	  StartWord      =>x"21",
+	  Stream_type1   =>x"43",
+	  Stream_type2   =>x"DD",
+	  TapWidth       =>5    ,
+	  ParallelWidth  =>8    ,
+      NumHeaderBytes =>2    , -- !debug: 08/01/2023 was 0 Tzvika: change in SYNC generics header/footer size = 2
+	  NumDataBytes   =>128  ,--64 Word of header data
+	  NumFooterBytes =>8 -- !debug: 14/09/2023 was 0 Tzvika: change in SYNC generics header/footer size = 2 -> 9
+	  
+	  )
+    PORT MAP( 
+        RESET       		   => RST,
+        CLKDIV          	   => clk_50MHz,
+		FCLK      		       => clk_200MHz,
+		channel_RDY   	       => channel_RDY, -- !debug: ES: 02/01/2023  '1',
+		sDataIn                => sDataIn,
+		IDLY_CNT  		       => IDLY_CNT, -- ES: 02/01/2023
+		RX_det_o       	       => S_RX_det_o,
+		start_valid            => open,
+		Headers_valid          => open,
+		data_valid             => S_data_valid,
+		Footers_valid          => open,
+		IP_pckt_valid          => S_IP_pckt_valid,
+		packet_received        => open,
+		good_packet_received   => S_good_packet_received,
+		bad_packet_received    =>bad_packet_received    , 
+		crc_error              =>crc_error              ,
+        std_error              =>std_error           
+     );
+-------------
+IP_REG_PINS: IP_REG 
+GENERIC MAP (DATA_VAL => 8)
+ Port MAP(                                             
+    CLK                 => CLK_50Mhz                 ,
+    RST                 => RST                       ,
+    IP_PACKET_VALID     => S_IP_pckt_valid           ,
+    GOOD_PACKET_RECEIVED => S_good_packet_received   ,
+    IP_DATA_IN          => S_RX_det_o                ,
+    IP_READY            => IP_READY                  ,
+    IP_DATA_OUT         => IP_DATA_OUT
+
+ );
+ -------------
+ 
+DPR_HEADER_CTRL_PINS: DPR_HEADER_CTRL 
+
+
+GENERIC MAP(      
+            DIN_DATA_BIT_VAL =>8,
+            ADDR_BIT_VAL=>6,
+            DATA_BIT_VAL =>16  )
+            
+
+            
+Port MAP(
+                                                            
+    CLK                     =>CLK_50Mhz                     ,
+    RST                     =>RST                           ,
+    IP_Packet_valid         =>S_IP_pckt_valid               ,
+    DATA_VALID              =>S_DATA_VALID                  ,
+    GOOD_PACKET_RECEIVED    =>S_good_packet_received        ,
+    ADDRA                   =>S_ADDRA                       ,   
+    DIN                    =>S_RX_det_o                     ,
+    DOUT                   =>S_DPR_CTRL_OUT                 ,  
+    ENA                    =>S_ENA                          ,    
+    WEA                    =>S_WEA
+    );
+ ---------------
+ 
+ 
+ blk_mem_gen_0_PINS: blk_mem_gen_0
+  PORT MAP(
+    clka =>CLK_50Mhz            ,
+    ena  =>S_ENA                ,
+    wea   =>  S_WEA             ,
+    addra=>S_ADDRA              ,   
+    dina=>S_DPR_CTRL_OUT        ,
+    douta=>S_HEADER_DATA_OUT    ,    
+    
+    clkb =>CLK_50Mhz            ,
+    enb  =>'1'                  ,
+    web(0)  =>'0'               ,
+    addrb=>addrb        ,
+    dinb => (others=>'0')       ,
+    doutb=>HEADER_DATA_OUT 
+  );
+  
+ ---------------
+ 
+
+-- !debug: 20/03/2023 non-incremental reading number check
+misc_test_pr: process (CLK_50Mhz) is
+ begin  -- process misc_test_pr
+   if (CLK_50Mhz'event and CLK_50Mhz = '1') then  -- rising clock edge
+
+     if (S_WEA(0) = '1' and to_integer(unsigned(S_ADDRA)) = 8) then -- !debug: 16/04/2023 9 -> 8
+       reading_number_sampled <= S_DPR_CTRL_OUT;
+       if ((unsigned(reading_number_sampled) + 1) /= unsigned(S_DPR_CTRL_OUT)) then
+         reading_number_err1 <= '1';
+       else
+         reading_number_err1 <= '0';
+       end if;
+     end if;
+     
+   end if;
+ end process misc_test_pr; 
+ 
+ 
+ 
+end IP_DATAVAL_HEADER_TOP;

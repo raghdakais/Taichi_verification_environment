@@ -1,0 +1,703 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dD:/Users/EugeneS/MODEL/Taichi_TMB/src/models/N25Q256A11E_VG15
+vASPRegister
+Z1 !s110 1718547496
+!i10b 1
+!s100 UD7Ff<VH:Ve:Ong?InhG?3
+I;<D<7=3CNN<eEI^?Mc]=T1
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+R0
+Z3 w1718547303
+Z4 8./code/N25Qxxx.v
+Z5 F./code/N25Qxxx.v
+Z6 Finclude/DevParam.h
+Z7 Finclude/UserData.h
+Z8 Finclude/TimingData.h
+L0 11287
+Z9 OP;L;10.7f;67
+r1
+!s85 0
+31
+Z10 !s108 1718547494.000000
+!s107 include/PLRSDetectors.h|include/Decoders.h|include/TimingData.h|include/DevParam.h|include/UserData.h|./code/N25Qxxx.v|
+Z11 !s90 -reportprogress|300|-work|./sim/work|./code/N25Qxxx.v|
+!i113 1
+Z12 o-work ./sim/work -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z13 tCvgOpt 0
+n@a@s@p@register
+vCUIdecoder
+Z14 !s110 1718547495
+!i10b 1
+!s100 alVcj4N[BMf1cza>flR>92
+I2MYNRTfTYdbXG`[11c9@?0
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 2573
+R9
+r1
+!s85 0
+31
+R10
+Z15 !s107 include/PLRSDetectors.h|include/Decoders.h|include/TimingData.h|include/DevParam.h|include/UserData.h|./code/N25Qxxx.v|
+R11
+!i113 1
+R12
+R13
+n@c@u@idecoder
+vDebugModule
+R1
+!i10b 1
+!s100 lAkU1EzieIUS=aJz4o<KE3
+IW>?Y8>l_9nVn`]Uz7@EmQ3
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 11340
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@debug@module
+vDualQuadOps
+R14
+!i10b 1
+!s100 FnfIXFPSXc6E5Wh_Rc2BG2
+I^[iPBiF6gFRz?2UhmBm=]0
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 8224
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@dual@quad@ops
+vExtendedAddressRegister
+R14
+!i10b 1
+!s100 fDV@Y6LDM=;k0iLcIU>M[2
+I4FP<<Dj70JS^V3]Kl`o@U3
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 9759
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@extended@address@register
+vFlagStatusRegister
+R14
+!i10b 1
+!s100 cj[MWH>ETD:J5V;Y87I?Z2
+IbfU`7jjY0Da`E6TXCY8Uz3
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 6332
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@flag@status@register
+vFlashDiscoveryParameter
+R14
+!i10b 1
+!s100 ObhI1h8J1lefc3d]d:maC1
+IUNTAbEVzDah^F4TTL6BjA0
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 7544
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@flash@discovery@parameter
+vGeneralPurposeRegister
+R14
+!i10b 1
+!s100 bmIJVU4kh]9Bk39h4RI923
+I@kVb962nf4OB6ODacbXh42
+R2
+R0
+Z16 w1413910101
+R4
+R5
+L0 10939
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@general@purpose@register
+vLockManager
+R14
+!i10b 1
+!s100 WjBm1cRZL?RMe=mko^b6_3
+II60^0b2E>cnMZaP=4eDQn2
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 7635
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@lock@manager
+vLockManager4KB
+R14
+!i10b 1
+!s100 ^KZ2o[2ozkjFHcfSHjLd51
+IYIb?H]2VJ2BJ@kihfE4Ti2
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 7934
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@lock@manager4@k@b
+vMemory
+R14
+!i10b 1
+!s100 CAgWbTZ2mIRb`D;hPM5?T1
+IccYc?Q>]0KDBG@ZNWJkAk0
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 3774
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@memory
+vN25Qxxx
+R14
+!i10b 1
+!s100 DRajIolZIAkViUj4dcThC0
+I=gohnNQ][QKAGzN@JhC_?1
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+Finclude/Decoders.h
+Finclude/PLRSDetectors.h
+L0 77
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@n25@qxxx
+vNonVolatileConfigurationRegister
+R14
+!i10b 1
+!s100 bfg[E4JCF<Mjm@Ibk11dI2
+I]Gf^a]UjcG>:D5JT;R4D73
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 6589
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@non@volatile@configuration@register
+vOTP_memory
+R14
+!i10b 1
+!s100 fX1F2=3IEfHKP54W_3jWo3
+IN0kQaF]_gGHO3@1fo1RQ<2
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 9209
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@o@t@p_memory
+vparamConfig
+R14
+!i10b 1
+!s100 0h>j1M`J5lb34=[kVI<m@1
+I5d@L;Pej6ZF:iS6eW9SM_0
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 63
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+nparam@config
+vPasswordRegister
+R14
+!i10b 1
+!s100 @RN`AaRCY;gUn5:]<8]Pn0
+IY]W_PGD;c<k?mJnc>HRoN2
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 6934
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@password@register
+vPLRSpart1Detect
+R14
+!i10b 1
+!s100 G651lCLQeMkGjkMd:zK0>3
+IbN:>QZzWUV7l;fdHj]ZnV0
+R2
+R0
+R16
+R4
+R5
+L0 10710
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@p@l@r@spart1@detect
+vPLRSpart2Detect
+R14
+!i10b 1
+!s100 T05aIfb7j07=9Yg1RICGg3
+Iz0e@HRWN4J0EN=4PSW^N_3
+R2
+R0
+R16
+R4
+R5
+L0 10813
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@p@l@r@spart2@detect
+vPPBLockBitRegister
+R14
+!i10b 1
+!s100 V6WPBZUR`i7klO_P2ae`X3
+I4=V@N[A=aLAIH@?lSdnFf1
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 11217
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@p@p@b@lock@bit@register
+vPPBManager
+R14
+!i10b 1
+!s100 z@NPWU`hGkmR_7Yh=R[W_0
+Id]<oQV;PZg^_3]W4d37N^1
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 10996
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@p@p@b@manager
+vProgram
+R14
+!i10b 1
+!s100 ]PY:9d5>>4e^Q1R>SMWoZ0
+IAaZCZ4j7[SS=SSDO@D8N[1
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 4462
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@program
+vProtectionManagementRegister
+R14
+!i10b 1
+!s100 9YVa`a:g]5l]^9KjmfhNl0
+IU3XBg:NNJ[N]XgdT@W^Y00
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 6517
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@protection@management@register
+vRead
+R14
+!i10b 1
+!s100 QEIk:VfecSU?K=962zzjF3
+Ii^lGl9IMib[EiH?KMT5Wj0
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 7034
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@read
+vStatusRegister
+R14
+!i10b 1
+!s100 GR:d;[HOd6mKT?9Y0jKI40
+IKJiZ=]hMbj<kamcMZQ[l]1
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 6153
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@status@register
+vTimingCheck
+R14
+!i10b 1
+!s100 k@[;LimD6SL;nG4lS2GP53
+IkG_3=Qdc>eXW:CPGB1QQc2
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 9365
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@timing@check
+vUtilFunctions
+R14
+!i10b 1
+!s100 _aOoBmePa[aH9XT_i8_<S2
+IgWMA[^FjQ<az1OjJb7W>d2
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 4181
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@util@functions
+vVolatileConfigurationRegister
+R14
+!i10b 1
+!s100 mjXkZ_nEYOO@_mhWfn0]j0
+I:PF_`3EIVCYET=VHD`INa3
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 6695
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@volatile@configuration@register
+vVolatileEnhancedConfigurationRegister
+R14
+!i10b 1
+!s100 <oD1X25<3X^VAO>S7F4T02
+I4Wd7]^Pd?bdKEOKh4K2o43
+R2
+R0
+R3
+R4
+R5
+R6
+R7
+R8
+L0 6788
+R9
+r1
+!s85 0
+31
+R10
+R15
+R11
+!i113 1
+R12
+R13
+n@volatile@enhanced@configuration@register

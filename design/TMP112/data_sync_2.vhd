@@ -1,0 +1,80 @@
+--
+-- VHDL Architecture TMC.data_sync.behave
+--
+-- Created:
+--          by - ilq00571.UNKNOWN (ILQHFAATC1WS159)
+--          at - 16:34:14 19/03/2007
+--
+-- using Mentor Graphics HDL Designer(TM) 2005.3 (Build 74)
+--
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+-- USE ieee.std_logic_arith.all;
+-- USE IEEE.std_logic_unsigned.ALL;
+-- LIBRARY altera_mf;
+-- USE altera_mf.all;
+-- USE IEEE.numeric_std.all;
+
+ENTITY data_sync2 IS
+   PORT( 
+      CLK_A   : IN     std_logic;
+      CLK_B   : IN     STD_LOGIC;
+      D_in    : IN     std_logic_vector (15 DOWNTO 0);
+      RESET_a : IN     std_logic;
+      RESET_b : IN     std_logic;
+      ena_sel : IN     std_logic;
+      D_out   : BUFFER std_logic_vector (15 DOWNTO 0)
+   );
+
+-- Declarations
+
+END data_sync2 ;
+
+--
+ARCHITECTURE behave OF data_sync2 IS
+signal ena_sel_s1_a : std_logic;
+signal ena_sel_s2_b : std_logic;
+signal ena_sel_s3_b : std_logic;
+signal D_in_s1_a : std_logic_vector (15 downto 0);
+signal D_in_muxed : std_logic_vector (15 downto 0);
+
+BEGIN
+-------------------------------------------------------------
+	process (RESET_a,CLK_A)
+	begin
+	if reset_a ='0' then
+		D_in_s1_a <= x"0000";
+		ena_sel_s1_a <= '0';
+	elsif CLK_A'event and CLK_A ='1' then
+			D_in_s1_a <= D_in;
+			ena_sel_s1_a <= ena_sel;
+	end if;
+	end process;
+--------------------------------------------------------------	
+	process (RESET_b,CLK_B)
+	begin
+	if reset_b ='0' then
+		
+		ena_sel_s2_b <= '0';
+		ena_sel_s3_b <= '0';
+		D_out <= x"0000";
+	elsif CLK_B'event and CLK_B ='1' then
+			D_out <= D_in_muxed;
+			ena_sel_s2_b <= ena_sel_s1_a;			
+			ena_sel_s3_b <= ena_sel_s2_b;						   
+			
+	end if;
+	end process;
+--------------------------------------------------------------	
+	
+	process (ena_sel_s3_b,D_out,D_in_s1_a)
+	begin
+	if  ena_sel_s3_b ='0' then
+		D_in_muxed <= D_out;				
+	else 
+		D_in_muxed <= D_in_s1_a;				
+	end if;
+	end process;	
+			
+END ARCHITECTURE behave;
+

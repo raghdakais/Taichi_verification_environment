@@ -1,0 +1,226 @@
+-------------------------------------------------------------------------------
+-- Title      : Taichi TMB evolving calculation
+-- Project    : Taichi module board, TMB
+-------------------------------------------------------------------------------
+-- File       : evolving_calc_ams.vhd
+-- Author     : Shinderman Eugene  <eu1@localhost-localdomain>
+-- Company    : HBtech
+-- Created    : 20/08/2023
+-- Last update: 22/08/2023
+-- Platform   : Vivado v.2022.2, Device : xc7s75fgga484-2
+-- Standard   : VHDL
+-------------------------------------------------------------------------------
+-- Description: evolving calculation after AMS slices sorter
+-------------------------------------------------------------------------------
+-- Copyright (c) 2023
+-------------------------------------------------------------------------------
+-- Revisions  :
+-- Date        Version  Author  Description
+-- 20/08/2023  1.0      eu1	
+-------------------------------------------------------------------------------
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+use ieee.numeric_std.all;
+
+
+entity evolving_calc_ams is
+  port (
+    sys_clk            : in  std_logic;  -- system clock @50MHz
+    rst_n              : in  std_logic;
+    slice_merge        : in  std_logic;                   -- merging enable
+    num_of_slices      : in std_logic_vector(6 downto 0); -- slice number before merge
+    ev_num_of_slices   : out std_logic_vector(6 downto 0); -- slice number after merge
+    merge_factor       : in std_logic_vector(4 downto 0); -- 2,4,8,16
+    fq_data_valid      : in std_logic;
+    fq_data_in         : in std_logic_vector(31 downto 0);
+    ev_data_valid      : out std_logic;
+    ev_data            : out std_logic_vector(31 downto 0)
+  );
+end entity evolving_calc_ams;
+
+
+architecture ar of evolving_calc_ams is
+
+  signal num_of_slices_after_merge : std_logic_vector(6 downto 0); -- must be even
+  signal shift_val : natural range 0 to 7;
+
+  component slice_buffer_dpr is
+  Port ( 
+    clka : in STD_LOGIC;
+    wea : in STD_LOGIC_VECTOR ( 0 to 0 );
+    addra : in STD_LOGIC_VECTOR ( 5 downto 0 );
+    dina : in STD_LOGIC_VECTOR ( 19 downto 0 );
+    clkb : in STD_LOGIC;
+    addrb : in STD_LOGIC_VECTOR ( 5 downto 0 );
+    doutb : out STD_LOGIC_VECTOR ( 19 downto 0 )
+  );
+  end component slice_buffer_dpr;
+
+  signal slice_buffer_addra : std_logic_vector(5 downto 0);
+  signal slice_buffer_addrb_r0, slice_buffer_addrb_r1, slice_buffer_addrb_r2, slice_buffer_addrb : std_logic_vector(5 downto 0);
+
+  signal merge_cnt : natural range 0 to 16;
+  signal fq_data_valid_shr : std_logic_vector(3 downto 0);
+  signal data_in_cnt, slice_in_cnt : natural range 0 to 63;
+  signal slice_buffer_doutb_lsw, slice_buffer_doutb_msw : std_logic_vector(19 downto 0);
+  signal slice_buffer_din_lsw, slice_buffer_din_msw : std_logic_vector(19 downto 0);
+  signal fq_data_in_r0, fq_data_in_r1, fq_data_in_r2 : std_logic_vector(31 downto 0);
+
+  
+begin  -- architecture ar
+
+
+  misc_pr: process (sys_clk, rst_n) is
+  begin  -- process misc_pr
+    if (rst_n = '0') then               -- asynchronous reset (active low)
+      num_of_slices_after_merge <= (others => '0');
+      shift_val <= 0;
+      fq_data_valid_shr <= (others => '0');
+      slice_buffer_addra <= (others => '0');
+      slice_buffer_addrb_r0 <= (others => '0');
+      slice_buffer_addrb_r1 <= (others => '0');
+      slice_buffer_addrb_r2 <= (others => '0');
+      fq_data_in_r0 <= (others => '0');
+      fq_data_in_r1 <= (others => '0');
+      fq_data_in_r2 <= (others => '0');
+    elsif (sys_clk'event and sys_clk = '1') then  -- rising clock edge
+
+      -- option: use log2
+      if (slice_merge = '1') then -- enable merge
+        case to_integer(unsigned(merge_factor)) is
+          when 2      => shift_val <= 1;
+          when 4      => shift_val <= 2;
+          when 8      => shift_val <= 3;
+          when 16     => shift_val <= 4;
+          when others => shift_val <= 0;  -- invalid merge factor
+        end case;
+      else
+        shift_val <= 0;                 -- no merge
+      end if;
+        
+      num_of_slices_after_merge <= num_of_slices srl shift_val;
+
+      assert (num_of_slices_after_merge(0) = '0') report "Error: slice number after merge must be even" severity ERROR;
+
+      fq_data_valid_shr <= fq_data_valid_shr(2 downto 0) & fq_data_valid;
+      
+      slice_buffer_addrb_r0 <= slice_buffer_addrb;
+      slice_buffer_addrb_r1 <= slice_buffer_addrb_r0;
+      slice_buffer_addrb_r2 <= slice_buffer_addrb_r1;
+      slice_buffer_addra <= slice_buffer_addrb_r2; -- write address is delayed read address
+
+      fq_data_in_r0 <= fq_data_in;
+      fq_data_in_r1 <= fq_data_in_r0;
+      fq_data_in_r2 <= fq_data_in_r1;   -- delayed write data
+      
+    end if;
+  end process misc_pr;
+  
+
+  slice_buffer_dpr_lsw: slice_buffer_dpr
+    port map (
+      clka  => sys_clk,
+      wea(0) => fq_data_valid_shr(3),
+      addra => slice_buffer_addra,
+      dina  => slice_buffer_din_lsw,
+      clkb  => sys_clk,
+      addrb => slice_buffer_addrb,
+      doutb => slice_buffer_doutb_lsw
+      );
+
+  slice_buffer_dpr_msw: slice_buffer_dpr
+    port map (
+      clka  => sys_clk,
+      wea(0) => fq_data_valid_shr(3),
+      addra => slice_buffer_addra,
+      dina  => slice_buffer_din_msw,
+      clkb  => sys_clk,
+      addrb => slice_buffer_addrb,
+      doutb => slice_buffer_doutb_msw
+      );
+
+
+  merge_ctl_pr: process (sys_clk, rst_n) is
+    variable slice_inc_v : boolean;
+  begin  -- process merge_ctl_pr
+    if (rst_n = '0') then               -- asynchronous reset (active low)
+      merge_cnt <= 0;
+      slice_buffer_addrb <= (others => '0');
+      slice_in_cnt <= 0;
+      data_in_cnt <= 0;
+      slice_inc_v := FALSE;
+      slice_buffer_din_lsw <= (others => '0');
+      slice_buffer_din_msw <= (others => '0');
+      ev_data <= (others => '0');
+      ev_data_valid <= '0';
+    elsif (sys_clk'event and sys_clk = '1') then  -- rising clock edge
+
+      -- incr data_in_cnt -> ? data_in_cnt = 32 -> slice_inc -> merge_cnt dec -> ? merge_cnt = 0
+
+      -- stage 1:
+      -- get FQ slice and count, slice size: 32 16bit detectors or 16 DW
+      if (fq_data_valid = '1') then
+        if (data_in_cnt < 15) then      -- end of slice
+          data_in_cnt <= data_in_cnt + 1;
+          slice_inc_v := FALSE;
+        else
+          data_in_cnt <= 0;
+          if (slice_in_cnt /= 63) then
+            slice_in_cnt <= slice_in_cnt + 1;
+          end if;
+          slice_inc_v := TRUE;            -- next slice
+        end if;
+      else
+        slice_in_cnt <= 0;
+        slice_inc_v := FALSE;
+      end if;
+
+      -- merge controls
+      if (slice_merge = '1' and shift_val /=0) then -- enable merge
+        if (fq_data_valid = '0') then
+          merge_cnt <= to_integer(unsigned(merge_factor)) - 1; -- init first
+        elsif (merge_cnt = 0 and data_in_cnt = 15) then
+          merge_cnt <= to_integer(unsigned(merge_factor)) - 1; -- init next
+        elsif (slice_inc_v) then                                 -- slice_inc
+          merge_cnt <= merge_cnt - 1;   -- count slices in merge loop
+        end if;
+      else
+        merge_cnt <= 0;
+      end if;
+
+      -- slice buffer controls
+      if (fq_data_valid = '0' and fq_data_valid_shr = X"0") then  -- no data
+        slice_buffer_addrb <= (others => '0');
+      elsif (slice_inc_v) then                                    -- slice_inc
+        slice_buffer_addrb <= (others => '0');
+      else
+        slice_buffer_addrb <= std_logic_vector(unsigned(slice_buffer_addrb) + 1);
+      end if;
+
+      if (merge_cnt = (to_integer(unsigned(merge_factor)) - 1)) then -- ignore old data in DPR
+        slice_buffer_din_lsw <= X"0" & fq_data_in_r2(15 downto 0);
+        slice_buffer_din_msw <= X"0" & fq_data_in_r2(31 downto 16);
+      else
+        slice_buffer_din_lsw <= std_logic_vector(unsigned(fq_data_in_r2(15 downto 0)) + unsigned(slice_buffer_doutb_lsw));
+        slice_buffer_din_msw <= std_logic_vector(unsigned(fq_data_in_r2(31 downto 16)) + unsigned(slice_buffer_doutb_msw));
+      end if;
+
+      -- send slice to EV buffer
+      if (merge_cnt = 0) then
+        ev_data_valid <= fq_data_valid_shr(3);
+        ev_data(15 downto 0) <= slice_buffer_din_lsw(shift_val+15 downto shift_val);
+        ev_data(31 downto 16) <= slice_buffer_din_msw(shift_val+15 downto shift_val);
+      end if;
+
+      if (fq_data_valid = '0' and fq_data_valid_shr(0) = '1') then -- last data
+        assert (slice_in_cnt = (to_integer(unsigned(num_of_slices)) - 1)) report "Error: reading data size not match to slice number" severity ERROR;
+      end if;
+      
+    end if;
+  end process merge_ctl_pr;
+
+
+  ev_num_of_slices <= num_of_slices_after_merge;
+  
+end architecture ar;

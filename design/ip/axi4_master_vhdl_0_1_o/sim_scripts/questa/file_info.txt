@@ -1,0 +1,7 @@
+xpm_cdc.sv,systemverilog,xil_defaultlib,../../../../../../../APPS/Xilinx/Vivado/2018.2/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv,
+xpm_memory.sv,systemverilog,xil_defaultlib,../../../../../../../APPS/Xilinx/Vivado/2018.2/data/ip/xpm/xpm_memory/hdl/xpm_memory.sv,
+xpm_VCOMP.vhd,vhdl,xpm,../../../../../../../APPS/Xilinx/Vivado/2018.2/data/ip/xpm/xpm_VCOMP.vhd,
+axi4_master_vhdl_v1_0_M00_AXI.vhd,vhdl,xil_defaultlib,../../../ip/axi4_master_vhdl_0_1/hdl/axi4_master_vhdl_v1_0_M00_AXI.vhd,
+axi4_master_vhdl_v1_0.vhd,vhdl,xil_defaultlib,../../../ip/axi4_master_vhdl_0_1/hdl/axi4_master_vhdl_v1_0.vhd,
+axi4_master_vhdl_0.vhd,vhdl,xil_defaultlib,../../../ip/axi4_master_vhdl_0_1/sim/axi4_master_vhdl_0.vhd,
+glbl.v,Verilog,xil_defaultlib,glbl.v

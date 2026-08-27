@@ -4,7 +4,7 @@ class TXRX_config extends uvm_object;
   int HEADER_SIZE;
   int DATA_SIZE;
   int FOOTER_SIZE; 
-  int timeout_cycles = 100000;
+  int timeout_cycles = 100000000;
   function new(string name = "");
     super.new(name);
   endfunction

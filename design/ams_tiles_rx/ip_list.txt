@@ -1,0 +1,5 @@
+
+config_regs_ram
+regs_fifo
+map4ams_lut
+det_arrange_dpr

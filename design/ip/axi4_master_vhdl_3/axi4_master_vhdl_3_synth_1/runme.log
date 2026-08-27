@@ -1,0 +1,350 @@
+
+*** Running vivado
+    with args -log axi4_master_vhdl_3.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source axi4_master_vhdl_3.tcl
+
+
+
+****** Vivado v2021.2 (64-bit)
+  **** SW Build 3367213 on Tue Oct 19 02:48:09 MDT 2021
+  **** IP Build 3369179 on Thu Oct 21 08:25:16 MDT 2021
+    ** Copyright 1986-2021 Xilinx, Inc. All Rights Reserved.
+
+source axi4_master_vhdl_3.tcl -notrace
+create_project: Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1445.805 ; gain = 0.000
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'd:/Users/EugeneS/PR/Vivado/v6_power/ip_repo/axi4_master_vhdl_3.0'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'D:/Program_Files/Xilinx/Vivado/2021.2/data/ip'.
+Command: synth_design -top axi4_master_vhdl_3 -part xc7s50csga324-2 -mode out_of_context
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7s50'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7s50'
+INFO: [Device 21-403] Loading part xc7s50csga324-2
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 543972
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'axi4_master_vhdl_3' [d:/Users/EugeneS/PR/Vivado/v6_power/project_1/project_1.gen/sources_1/ip/axi4_master_vhdl_3/synth/axi4_master_vhdl_3.vhd:108]
+	Parameter C_M00_AXI_TARGET_SLAVE_BASE_ADDR bound to: 32'b00000000000000000000000000000000 
+	Parameter C_M00_AXI_BURST_LEN bound to: 64 - type: integer 
+	Parameter C_M00_AXI_ID_WIDTH bound to: 4 - type: integer 
+	Parameter C_M00_AXI_ADDR_WIDTH bound to: 32 - type: integer 
+	Parameter C_M00_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M00_AXI_AWUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_M00_AXI_ARUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_M00_AXI_WUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_M00_AXI_RUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_M00_AXI_BUSER_WIDTH bound to: 1 - type: integer 
+INFO: [Synth 8-3491] module 'axi4_master_vhdl_v3_0' declared at 'd:/Users/EugeneS/PR/Vivado/v6_power/project_1/project_1.gen/sources_1/ip/axi4_master_vhdl_3/hdl/axi4_master_vhdl_v3_0.vhd:5' bound to instance 'U0' of component 'axi4_master_vhdl_v3_0' [d:/Users/EugeneS/PR/Vivado/v6_power/project_1/project_1.gen/sources_1/ip/axi4_master_vhdl_3/synth/axi4_master_vhdl_3.vhd:229]
+INFO: [Synth 8-638] synthesizing module 'axi4_master_vhdl_v3_0' [d:/Users/EugeneS/PR/Vivado/v6_power/project_1/project_1.gen/sources_1/ip/axi4_master_vhdl_3/hdl/axi4_master_vhdl_v3_0.vhd:83]
+	Parameter C_M_TARGET_SLAVE_BASE_ADDR bound to: 0 - type: integer 
+	Parameter C_M_AXI_BURST_LEN bound to: 64 - type: integer 
+	Parameter C_M_AXI_ID_WIDTH bound to: 4 - type: integer 
+	Parameter C_M_AXI_ADDR_WIDTH bound to: 32 - type: integer 
+	Parameter C_M_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_M_AXI_AWUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_M_AXI_ARUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_M_AXI_WUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_M_AXI_RUSER_WIDTH bound to: 1 - type: integer 
+	Parameter C_M_AXI_BUSER_WIDTH bound to: 1 - type: integer 
+INFO: [Synth 8-3491] module 'axi4_master_vhdl_v3_0_M00_AXI' declared at 'd:/Users/EugeneS/PR/Vivado/v6_power/project_1/project_1.gen/sources_1/ip/axi4_master_vhdl_3/hdl/axi4_master_vhdl_v3_0_M00_AXI.vhd:5' bound to instance 'axi4_master_vhdl_v3_0_M00_AXI_inst' of component 'axi4_master_vhdl_v3_0_M00_AXI' [d:/Users/EugeneS/PR/Vivado/v6_power/project_1/project_1.gen/sources_1/ip/axi4_master_vhdl_3/hdl/axi4_master_vhdl_v3_0.vhd:153]
+INFO: [Synth 8-638] synthesizing module 'axi4_master_vhdl_v3_0_M00_AXI' [d:/Users/EugeneS/PR/Vivado/v6_power/project_1/project_1.gen/sources_1/ip/axi4_master_vhdl_3/hdl/axi4_master_vhdl_v3_0_M00_AXI.vhd:160]
+INFO: [Synth 8-226] default block is never used [d:/Users/EugeneS/PR/Vivado/v6_power/project_1/project_1.gen/sources_1/ip/axi4_master_vhdl_3/hdl/axi4_master_vhdl_v3_0_M00_AXI.vhd:740]
+INFO: [Synth 8-256] done synthesizing module 'axi4_master_vhdl_v3_0_M00_AXI' (1#1) [d:/Users/EugeneS/PR/Vivado/v6_power/project_1/project_1.gen/sources_1/ip/axi4_master_vhdl_3/hdl/axi4_master_vhdl_v3_0_M00_AXI.vhd:160]
+INFO: [Synth 8-256] done synthesizing module 'axi4_master_vhdl_v3_0' (2#1) [d:/Users/EugeneS/PR/Vivado/v6_power/project_1/project_1.gen/sources_1/ip/axi4_master_vhdl_3/hdl/axi4_master_vhdl_v3_0.vhd:83]
+INFO: [Synth 8-256] done synthesizing module 'axi4_master_vhdl_3' (3#1) [d:/Users/EugeneS/PR/Vivado/v6_power/project_1/project_1.gen/sources_1/ip/axi4_master_vhdl_3/synth/axi4_master_vhdl_3.vhd:108]
+WARNING: [Synth 8-7129] Port M_AXI_BID[3] in module axi4_master_vhdl_v3_0_M00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port M_AXI_BID[2] in module axi4_master_vhdl_v3_0_M00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port M_AXI_BID[1] in module axi4_master_vhdl_v3_0_M00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port M_AXI_BID[0] in module axi4_master_vhdl_v3_0_M00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port M_AXI_BRESP[0] in module axi4_master_vhdl_v3_0_M00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port M_AXI_BUSER[0] in module axi4_master_vhdl_v3_0_M00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port M_AXI_RID[3] in module axi4_master_vhdl_v3_0_M00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port M_AXI_RID[2] in module axi4_master_vhdl_v3_0_M00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port M_AXI_RID[1] in module axi4_master_vhdl_v3_0_M00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port M_AXI_RID[0] in module axi4_master_vhdl_v3_0_M00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port M_AXI_RRESP[0] in module axi4_master_vhdl_v3_0_M00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port M_AXI_RUSER[0] in module axi4_master_vhdl_v3_0_M00_AXI is either unconnected or has no load
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:12 ; elapsed = 00:00:14 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:12 ; elapsed = 00:00:14 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.017 . Memory (MB): peak = 1445.805 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1445.805 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.041 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:24 ; elapsed = 00:00:26 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7s50csga324-2
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:24 ; elapsed = 00:00:26 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:24 ; elapsed = 00:00:26 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'mst_exec_state_reg' in module 'axi4_master_vhdl_v3_0_M00_AXI'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                    idle |                               00 |                               00
+              init_write |                               01 |                               01
+               init_read |                               10 |                               10
+            init_compare |                               11 |                               11
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'mst_exec_state_reg' using encoding 'sequential' in module 'axi4_master_vhdl_v3_0_M00_AXI'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:25 ; elapsed = 00:00:27 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input    7 Bit       Adders := 2     
+	   2 Input    5 Bit       Adders := 2     
++---Registers : 
+	                7 Bit    Registers := 2     
+	                5 Bit    Registers := 2     
+	                1 Bit    Registers := 18    
++---Muxes : 
+	   4 Input    2 Bit        Muxes := 1     
+	   2 Input    2 Bit        Muxes := 3     
+	   2 Input    1 Bit        Muxes := 7     
+	   4 Input    1 Bit        Muxes := 4     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 120 (col length:60)
+BRAMs: 150 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awid[3] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awid[2] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awid[1] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awid[0] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awlen[7] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awlen[6] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awlen[5] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awlen[4] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awlen[3] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awlen[2] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awlen[1] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awlen[0] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awsize[2] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awsize[1] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awsize[0] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awburst[1] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awburst[0] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awlock driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awcache[3] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awcache[2] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awcache[1] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awcache[0] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awprot[2] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awprot[1] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awprot[0] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awqos[3] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awqos[2] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awqos[1] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awqos[0] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_awuser[0] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_wstrb[3] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_wstrb[2] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_wstrb[1] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_wstrb[0] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_wuser[0] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arid[3] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arid[2] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arid[1] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arid[0] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arlen[7] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arlen[6] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arlen[5] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arlen[4] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arlen[3] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arlen[2] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arlen[1] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arlen[0] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arsize[2] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arsize[1] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arsize[0] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arburst[1] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arburst[0] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arlock driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arcache[3] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arcache[2] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arcache[1] driven by constant 1
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arcache[0] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arprot[2] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arprot[1] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arprot[0] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arqos[3] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arqos[2] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arqos[1] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_arqos[0] driven by constant 0
+INFO: [Synth 8-3917] design axi4_master_vhdl_3 has port m00_axi_aruser[0] driven by constant 1
+WARNING: [Synth 8-7129] Port m00_axi_bid[3] in module axi4_master_vhdl_3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port m00_axi_bid[2] in module axi4_master_vhdl_3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port m00_axi_bid[1] in module axi4_master_vhdl_3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port m00_axi_bid[0] in module axi4_master_vhdl_3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port m00_axi_bresp[0] in module axi4_master_vhdl_3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port m00_axi_buser[0] in module axi4_master_vhdl_3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port m00_axi_rid[3] in module axi4_master_vhdl_3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port m00_axi_rid[2] in module axi4_master_vhdl_3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port m00_axi_rid[1] in module axi4_master_vhdl_3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port m00_axi_rid[0] in module axi4_master_vhdl_3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port m00_axi_rresp[0] in module axi4_master_vhdl_3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port m00_axi_ruser[0] in module axi4_master_vhdl_3 is either unconnected or has no load
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:29 ; elapsed = 00:00:31 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:41 ; elapsed = 00:00:43 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:41 ; elapsed = 00:00:43 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:41 ; elapsed = 00:00:43 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:51 ; elapsed = 00:00:53 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:51 ; elapsed = 00:00:53 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:51 ; elapsed = 00:00:53 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:51 ; elapsed = 00:00:53 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:51 ; elapsed = 00:00:53 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:51 ; elapsed = 00:00:53 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+------+
+|      |Cell   |Count |
++------+-------+------+
+|1     |CARRY4 |    31|
+|2     |LUT1   |    10|
+|3     |LUT2   |    13|
+|4     |LUT3   |    12|
+|5     |LUT4   |    13|
+|6     |LUT5   |     4|
+|7     |LUT6   |    22|
+|8     |FDRE   |   154|
+|9     |FDSE   |     2|
++------+-------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:51 ; elapsed = 00:00:53 . Memory (MB): peak = 1445.805 ; gain = 0.000
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 13 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:35 ; elapsed = 00:00:50 . Memory (MB): peak = 1445.805 ; gain = 0.000
+Synthesis Optimization Complete : Time (s): cpu = 00:00:51 ; elapsed = 00:00:53 . Memory (MB): peak = 1445.805 ; gain = 0.000
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.013 . Memory (MB): peak = 1445.805 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 31 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1445.805 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete, checksum: 7413ad86
+INFO: [Common 17-83] Releasing license: Synthesis
+93 Infos, 25 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:58 ; elapsed = 00:01:03 . Memory (MB): peak = 1445.805 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'D:/Users/EugeneS/PR/Vivado/v6_power/project_1/project_1.runs/axi4_master_vhdl_3_synth_1/axi4_master_vhdl_3.dcp' has been generated.
+INFO: [Coretcl 2-1648] Added synthesis output to IP cache for IP axi4_master_vhdl_3, cache-ID = fa11734b7df9b95e
+INFO: [Coretcl 2-1174] Renamed 2 cell refs.
+INFO: [Common 17-1381] The checkpoint 'D:/Users/EugeneS/PR/Vivado/v6_power/project_1/project_1.runs/axi4_master_vhdl_3_synth_1/axi4_master_vhdl_3.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file axi4_master_vhdl_3_utilization_synth.rpt -pb axi4_master_vhdl_3_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Tue Aug 30 16:29:48 2022...

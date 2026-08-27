@@ -14,7 +14,16 @@ set tests {
     {operational_registers_random_test 5}
     {sending_frame_data_Mu_off_test 1}
     {random_data_path_test}
-    {read_from_empty_buffer_test}
+    {buffer_invalid_address_test}
+    {buffer_invalid_crc_test}
+    {sync_invalid_crc_test}
+    {sync_invalid_address_test}
+    {random_sign2_while_sending_sync_test}
+    {wrap_arround_test}
+    {lost_b5_in_header_test}
+    {send_syncs_test}
+    {lost_b5_buffer_test}
+
 }
 
 puts "================================================="
@@ -48,10 +57,11 @@ set work_library_path "${REG_PATH}/work"
 set QUESTA_LIBS $PROJ_PATH/src/QUESTA_LIBS
 vlib $work_library_path
 vmap work $work_library_path
-vmap fifo_generator_v13_2_7 $QUESTA_LIBS/fifo_generator_v13_2_7
-vmap secureip $QUESTA_LIBS/secureip
-vmap unisim $QUESTA_LIBS/unisim
-vmap xpm $QUESTA_LIBS/xpm
+vmap fifo_generator_v13_2_7 [file join $QUESTA_LIBS fifo_generator_v13_2_7]
+vmap secureip                 [file join $QUESTA_LIBS secureip]
+vmap unisim                   [file join $QUESTA_LIBS unisim]
+vmap xpm                      [file join $QUESTA_LIBS xpm]
+vmap unisims_ver              [file join $QUESTA_LIBS unisims_ver]
 
 # Compile the design and environment
 if { ![file exists compile_env.do] || ![file exists compile_design.do] } {
@@ -75,7 +85,8 @@ set vsim_args "-coverage"
 #-------------------------------
 puts "Start Optimization.."
 vopt work.taichi_tmb_tb work.glbl \
-    -L secureip -L fifo_generator_v13_2_7 -L xpm -L unisims_ver -L unisim \
+    -L secureip -L fifo_generator_v13_2_7 -L xpm \
+    -L unisims_ver -L unisim -L unisims_ver \
     -o taichi_tmb_optimized_sim \
     +acc \
     {*}$vopt_args

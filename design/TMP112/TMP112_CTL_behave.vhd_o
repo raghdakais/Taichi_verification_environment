@@ -1,0 +1,135 @@
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+USE ieee.std_logic_arith.all;
+USE IEEE.std_logic_unsigned.ALL;
+USE IEEE.numeric_std.all;
+
+ENTITY TMP112_CTL IS
+   PORT( 
+      RESET         : IN     std_logic;
+	  reset_64M     : IN     std_logic;
+      clk           : IN     std_logic;
+	  clk_64M       : IN     std_logic;
+      Sda           : INOUT  std_logic;
+      Scl           : INOUT  std_logic;    
+      data2read_out : Buffer    std_logic_vector (15 DOWNTO 0)
+   );
+
+-- Declarations
+
+END TMP112_CTL ;
+
+--
+ARCHITECTURE behave OF TMP112_CTL IS
+
+component SMBUS_IF_tmp IS
+   PORT(       
+      address       : IN     std_logic_vector (7 DOWNTO 0);
+      clk           : IN     std_logic;
+      data2write    : IN     std_logic_vector (15 DOWNTO 0);
+      ena           : IN     std_logic;
+      RESET         : IN     std_logic;
+      rw            : IN     std_logic;  
+      Sda           : INOUT  std_logic;
+      Scl           : INOUT std_logic;
+      data2read_out : OUT    std_logic_vector (15 DOWNTO 0);
+      busy          : OUT    std_logic;
+      read_valid    : OUT    std_logic
+   );
+
+END component ;
+
+component ini_SM_TMP IS
+   PORT( 
+      RESET         : IN    std_logic;
+      clk           : IN    std_logic;    
+      data2write    : OUT   std_logic_vector (15 DOWNTO 0);
+      ena           : buffer   std_logic;
+      rw            : OUT   std_logic;
+      address       : OUT   std_logic_vector (7 DOWNTO 0);
+      busy          : IN    std_logic
+   );
+
+-- Declarations
+
+END component ;
+
+component data_sync2 IS
+   PORT( 
+      CLK_A   : IN     std_logic;
+      CLK_B   : IN     STD_LOGIC;
+      D_in    : IN     std_logic_vector (15 DOWNTO 0);
+      RESET_a : IN     std_logic;
+      RESET_b : IN     std_logic;
+      ena_sel : IN     std_logic;
+      D_out   : BUFFER std_logic_vector (15 DOWNTO 0)
+   );
+
+-- Declarations
+
+END component ;
+
+
+
+
+signal address      :  std_logic_vector (7 DOWNTO 0);
+signal data2write   :  std_logic_vector (15 DOWNTO 0);
+signal ena          :  std_logic;
+signal rw           :  std_logic;  
+signal busy         :  std_logic;
+signal data2read    :  std_logic_vector (15 DOWNTO 0);
+signal read_valid   :  std_logic;
+begin
+
+label_ini_SM_TMP: ini_SM_TMP port map (RESET      => RESET,     
+                                       clk        => clk,       
+                                       data2write => data2write,
+                                       ena        => ena,       
+                                       rw         => rw,       
+                                       address    => address,   
+                                       busy       => busy);
+                                       
+-----------------------------------------------------------------------------------------------                                       
+                                       
+label_SMBUS_IF_tmp : SMBUS_IF_tmp port map ( address       => address,                                      
+                                clk           => clk,          
+                                data2write    => data2write,   
+                                ena           => ena,          
+                                RESET         => RESET,        
+                                rw            => rw,          
+                                Sda           => Sda,          
+                                Scl           => Scl,      
+                                data2read_out => data2read,                                
+                                busy          => busy,
+                                read_valid    => read_valid);
+								
+								
+data_sync_inst : data_sync2 port map (
+   
+      CLK_A   => clk              ,
+      CLK_B   => clk_64M          ,
+      D_in    => data2read        ,
+      RESET_a => RESET            ,
+      RESET_b => reset_64M        ,
+      ena_sel => read_valid       ,
+      D_out   => data2read_out                 
+   );                             
+
+
+
+							
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
+								
+end behave;                                         

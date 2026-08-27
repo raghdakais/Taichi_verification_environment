@@ -1,0 +1,6 @@
+# Warning in wave window restart: (vish-4014) No objects found matching '/tmb_ev_calc_tb/memory_buffer_if_1/fs_merging_factor_saved'.
+# Warning in wave window restart: (vish-4014) No objects found matching '/tmb_ev_calc_tb/memory_buffer_if_1/fs_sequence_counter_saved'.
+# Warning in wave window restart: (vish-4014) No objects found matching '/tmb_ev_calc_tb/memory_buffer_if_1/fq_stream_enable_r'.
+# Warning in wave window restart: (vish-4014) No objects found matching '/tmb_ev_calc_tb/memory_buffer_if_1/fq_stream_enable_saved'.
+# Warning in wave window restart: (vish-4014) No objects found matching '/tmb_ev_calc_tb/memory_buffer_if_1/ev_stream_enable_saved'.
+# Warning in wave window restart: (vish-4014) No objects found matching '/tmb_ev_calc_tb/memory_buffer_if_1/fs_merging_factor_saved'.

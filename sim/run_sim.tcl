@@ -15,7 +15,7 @@ set SIM_PATH  "../sim"
 
 if {![info exists enable_cov]} { set enable_cov 0 }
 # Default test if none supplied
-set DEFAULT_TEST "lost_b5_buffer_test"
+set DEFAULT_TEST "send_syncs_test"
 
 if {![info exists test_name] || $test_name eq ""} {
     # Allow override via environment variable too (optional)

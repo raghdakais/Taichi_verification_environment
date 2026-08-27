@@ -1,0 +1,43 @@
+session taichi_vrm {
+
+  top_dir ..
+  output_dir log_result/vrm_runs
+
+  #-----------------------------------------
+  # Test definitions
+  #-----------------------------------------
+  test lost_b5_buffer_test {
+    template sim_run
+    sv_seed random
+  }
+
+  test diagnostic_registers_random_test {
+    template sim_run
+    sv_seed random
+  }
+
+  test check_default_value_for_all_registers_test {
+    template sim_run
+    sv_seed random
+  }
+
+  test check_RO_registers_test {
+    template sim_run
+    sv_seed random
+  }
+
+  #-----------------------------------------
+  # Regression groups
+  #-----------------------------------------
+  group sanity {
+    test check_default_value_for_all_registers_test
+    test check_RO_registers_test
+  }
+
+  group full_regression {
+    test sending_frame_data_Mu_off_test
+    test read_from_empty_buffer_test
+    test random_data_path_test
+    test send_syncs_for_buffer_full_test
+  }
+}

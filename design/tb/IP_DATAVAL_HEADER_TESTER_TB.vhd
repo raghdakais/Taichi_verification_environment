@@ -1,0 +1,194 @@
+-----IP_DATAVAL_HEADER_TESTER_TB-----------------------------------------------------------------------------
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+
+entity IP_DATAVAL_HEADER_TESTER_TB is
+--  Port ( );
+end IP_DATAVAL_HEADER_TESTER_TB;
+
+architecture IP_DATAVAL_HEADER_TESTER_TB_ARC of IP_DATAVAL_HEADER_TESTER_TB is
+SIGNAL S_START_TEST  : STD_LOGIC ;
+SIGNAL S_RST         : STD_LOGIC ;
+SIGNAL S_RX_IN       : STD_LOGIC ;
+SIGNAL S_TX_DATA_out : STD_LOGIC; 
+SIGNAL S_CHANNEL_RDY : STD_LOGIC ;
+SIGNAL S_CLKp_200MHz : STD_LOGIC ;
+SIGNAL S_CLKn_200MHz : STD_LOGIC ;
+SIGNAL S_CLK_200MHz : STD_LOGIC ;
+SIGNAL S_CLK_50MHz : STD_LOGIC ;
+--SIGNAL S_TX_OUT      : STD_LOGIC;
+SIGNAL S_STATUS      : std_logic_vector (15 downto 0) ;
+
+--BANK REDISTER OUTPUTS
+SIGNAL S_MU_CTRL                    :STD_LOGIC_VECTOR (31 DOWNTO 0); 
+SIGNAL S_ADD_CONST_OFST_TO_MU       :STD_LOGIC_VECTOR (31 DOWNTO 0); 
+SIGNAL S_CONST_OFST_VAL_TO_MU       :STD_LOGIC_VECTOR (31 DOWNTO 0); 
+SIGNAL S_ASIC_TST_CAL_CTRL_TEST     :STD_LOGIC_VECTOR (31 DOWNTO 0); 
+SIGNAL S_TEST_ERROR                 :STD_LOGIC_VECTOR (31 DOWNTO 0); 
+SIGNAL S_DIAGNSOTICS                :STD_LOGIC_VECTOR (31 DOWNTO 0); 
+SIGNAL S_GLOBL_IP_COEF              :STD_LOGIC_VECTOR (31 DOWNTO 0); 
+SIGNAL S_DIAGNSOTICS_TMP            :STD_LOGIC_VECTOR (31 DOWNTO 0); 
+SIGNAL S_ASIC_DATA_ALIGNMENT        :STD_LOGIC_VECTOR (31 DOWNTO 0); 
+SIGNAL S_MODULE_DATA_OUT_SELCTION   :STD_LOGIC_VECTOR (31 DOWNTO 0); 
+SIGNAL S_BAD_PIX_HL                 :STD_LOGIC_VECTOR (31 DOWNTO 0); 
+SIGNAL S_BAD_PIX_LL                 :STD_LOGIC_VECTOR (31 DOWNTO 0); 
+SIGNAL S_BAD_PIX_PER_TILE           :STD_LOGIC_VECTOR (31 DOWNTO 0) ;
+--INDICATION FOR BAD RECEIVED 
+SIGNAL S_bad_packet_received        : STD_LOGIC;
+SIGNAL S_crc_error                  : STD_LOGIC;
+SIGNAL S_std_error                  : STD_LOGIC;
+----
+
+SIGNAL S_clkb                       : STD_LOGIC;
+SIGNAL S_enb                        : STD_LOGIC;
+SIGNAL S_web                        : STD_LOGIC_VECTOR(0 DOWNTO 0); 
+SIGNAL S_addrb                      : STD_LOGIC_VECTOR(5 DOWNTO 0);  
+SIGNAL S_dinb                       : STD_LOGIC_VECTOR(15 DOWNTO 0); 
+SIGNAL S_doutb                      : STD_LOGIC_VECTOR(15 DOWNTO 0); 
+
+SIGNAL S_LOCKED                     : STD_LOGIC;
+BEGIN 
+IP_DATAVAL_HEADER_TESTER: entity work.IP_DATAVAL_HEADER_TESTER
+Port MAP (
+     START_TEST    =>   S_START_TEST    ,
+     RST           =>   S_RST           ,
+     RX_IN         =>   S_RX_IN         ,
+     TX_DATA_out   =>   S_TX_DATA_out   ,
+     CHANNEL_RDY   =>   S_CHANNEL_RDY   ,
+     clk_200MHz  =>   S_clk_200MHz,
+     STATUS       =>   S_STATUS         ,
+     --BANK REGISTER OUTPUTS:
+     MU_CTRL                 => S_MU_CTRL                 ,
+     ADD_CONST_OFST_TO_MU    => S_ADD_CONST_OFST_TO_MU    ,
+     CONST_OFST_VAL_TO_MU    => S_CONST_OFST_VAL_TO_MU    ,
+     ASIC_TST_CAL_CTRL_TEST  => S_ASIC_TST_CAL_CTRL_TEST  ,
+     TEST_ERROR              => S_TEST_ERROR              ,
+     DIAGNSOTICS             => S_DIAGNSOTICS             ,
+     GLOBL_IP_COEF           => S_GLOBL_IP_COEF           ,
+     DIAGNSOTICS_TMP         => S_DIAGNSOTICS_TMP         ,
+     ASIC_DATA_ALIGNMENT     => S_ASIC_DATA_ALIGNMENT     ,
+     MODULE_DATA_OUT_SELCTION=> S_MODULE_DATA_OUT_SELCTION,
+     BAD_PIX_HL              => S_BAD_PIX_HL              ,
+     BAD_PIX_LL              => S_BAD_PIX_LL              ,
+     BAD_PIX_PER_TILE        => S_BAD_PIX_PER_TILE        ,
+     --INDICATION FOR BAD RECEIVED 
+     bad_packet_received     =>  S_bad_packet_received,
+     crc_error               =>  S_crc_error          ,
+     std_error               =>  S_std_error          
+);
+  
+  
+     
+ S_RST<='1', '0' AFTER 0.3 us;   
+ S_START_TEST<='0' , '1' AFTER 0.4 ns; 
+
+ 
+ MODULE_IP_DATAVAL_HEADER_TOP: entity work.IP_DATAVAL_HEADER_TOP
+GENERIC MAP (IP_DATA_OUT_VAL =>8,
+              HEADER_DATA_OUT_VAL=>16,
+              ADDR_BIT_VAL =>6,
+              DATA_BIT_VAL =>16  )
+              
+              
+Port MAP (
+
+
+    CLK_200Mhz    =>    S_CLK_200MHz ,
+    CLK_50Mhz     =>    S_clk_50MHz ,
+    RST            =>    S_RST         ,
+    channel_RDY    =>    S_channel_RDY ,
+    sDataIn        =>    S_TX_DATA_out ,
+    --NOT USED                     
+    clkb                 => S_clkb     ,
+    enb                  => S_enb      ,
+    web                  => S_web   ,
+    addrb                => S_addrb    ,
+    dinb                 => S_dinb      ,
+    doutb                => S_doutb    ,
+   
+    bad_packet_received  => S_bad_packet_received,
+    crc_error            => S_crc_error          ,
+    std_error            => S_std_error         ); 
+   
+   
+ ----
+
+  -----clk_wiz_1-----------
+ MODULE_clk_wiz_1: entity work.clk_wiz_1
+port MAP
+ (-- Clock in ports
+  -- Clock out ports
+  clk_200MHz        =>S_clk_200MHz ,
+  clk_50MHz         =>S_clk_50MHz  ,
+  -- Status and control signals
+  reset             =>S_RST,
+  locked            =>S_LOCKED,
+  clk_in1_p         => S_CLKp_200MHz ,
+  clk_in1_n         => S_CLKn_200MHz 
+ );                 
+
+ 
+
+---------------------    
+   
+    
+clk200MHz_proc: PROCESS
+             
+   BEGIN 
+    S_CLKp_200MHz <= '1';
+    S_CLKn_200MHz <= '0';
+    wait for 2.5 ns;
+    S_CLKp_200MHz <= '0';
+    S_CLKn_200MHz <= '1';
+    wait for 2.5 ns;
+end process;	
+ 
+
+    
+    
+S_addrb<="000010", "000011" AFTER 1100ns, "000100" AFTER 1110ns; 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+--          --BANK REGISTER OUTPUTS:
+--    MU_CTRL                 =>S_MU_CTRL                 , 
+--    ADD_CONST_OFST_TO_MU    =>S_ADD_CONST_OFST_TO_MU    , 
+--    CONST_OFST_VAL_TO_MU    =>S_CONST_OFST_VAL_TO_MU    , 
+--    ASIC_TST_CAL_CTRL_TEST  =>S_ASIC_TST_CAL_CTRL_TEST  , 
+--    TEST_ERROR              =>S_TEST_ERROR              , 
+--    DIAGNSOTICS             =>S_DIAGNSOTICS             , 
+--    GLOBL_IP_COEF           =>S_GLOBL_IP_COEF           , 
+--    DIAGNSOTICS_TMP         =>S_DIAGNSOTICS_TMP         , 
+--    ASIC_DATA_ALIGNMENT     =>S_ASIC_DATA_ALIGNMENT     , 
+--    MODULE_DATA_OUT_SELCTION=>S_MODULE_DATA_OUT_SELCTION, 
+--    BAD_PIX_HL              =>S_BAD_PIX_HL              , 
+--    BAD_PIX_LL              =>S_BAD_PIX_LL              , 
+--    BAD_PIX_PER_TILE        =>S_BAD_PIX_PER_TILE        ,     
+--    bad_packet_received     =>S_bad_packet_received                  ,--OUTPUT FAILURE INDICATION      
+--    crc_error               =>S_crc_error                            ,--OUTPUT FAILURE INDICATION      
+--    std_error               =>S_std_error                             --OUTPUT FAILURE INDICATION
+    
+    
+    
+--);
+     
+
+
+ 
+ 
+ 
+ 
+ 
+ end IP_DATAVAL_HEADER_TESTER_TB_ARC;
+
